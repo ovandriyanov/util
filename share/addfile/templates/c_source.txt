@@ -1,0 +1,8 @@
+/*
+ *  {{FILE_NAME}}
+ *  {{PROJECT_NAME}}
+ *
+ *  Created by {{USER}} on {{DATE}}.
+ *
+ */
+{{#S_INCLUDE_FILE_NAME}}{{NEWLINE_INCLUDE_FILE_NAME}}#include "{{INCLUDE_FILE_NAME}}"{{/S_INCLUDE_FILE_NAME}}

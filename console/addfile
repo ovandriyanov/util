@@ -1,0 +1,157 @@
+#!/bin/bash
+
+# Adds (and creates if does not exist) the given file(s) to the *.pro file in
+# the project root directory. Initializes file contents with proper header
+# comment section and ifdefs if necessary (depends on the extension of the given
+# file(s)).
+
+#################################### utils #####################################
+
+find_root_file() {
+    local FILE_REGEX="$1"
+
+    local DIR="$PWD"
+    while true; do
+        local ROOT_FILE="`ls $DIR | grep "$FILE_REGEX" | head -1`"
+        if [ -n "$ROOT_FILE" ]; then
+            echo "${DIR}/${ROOT_FILE}"
+            return 0
+        fi
+        if [ "$DIR" != '/' ]; then
+            DIR="`dirname $DIR`"
+        else
+            echo "Cannot find root file matching pattern \"$FILE_REGEX\" for \"$PWD\" "\
+                 "(searched up to the \"/\")" >&2
+            return 1
+        fi
+    done
+}
+
+get_relpath() {
+    local DIR="$1"
+    local DIR="`echo $DIR | sed -r s,//+,/,g`"
+    local SUBDIR="`pwd | sed -r s,//+,/,g`"
+    if echo "$SUBDIR" | grep -q "^$DIR"; then
+        echo "$SUBDIR" | tail -c +`expr ${#DIR} + 2`
+        return 0
+    fi
+    echo "$SUBDIR is not a subdirectory of $DIR" >&2
+    return 1
+}
+
+get_extension() {
+    local FILE="$1"
+    basename "$FILE" | sed -r 's,.*\.(.*)$,\1,'
+}
+
+get_unextended() {
+    local FILE="$1"
+    local EXT="`get_extension \"$FILE\"`"
+    echo "$FILE" | sed "s,\\.$EXT\$,,"
+}
+
+################################## templates ###################################
+
+instantiate_template() {
+    declare -a local SED_ARGS
+    for arg; do
+        local KEY="`echo $arg | cut -d = -f 1 -s`"
+        local VALUE="`echo $arg | cut -d = -f 2 -s`"
+        [ -z "$VALUE" ] && continue
+        SED_ARGS+=("-es,{{$KEY}},$VALUE,g")
+        SED_ARGS+=("-es,{{#S_${KEY}}},,g")
+        SED_ARGS+=("-es,{{/S_${KEY}}},,g")
+        SED_ARGS+=("-es,{{NEWLINE_${KEY}}},\\n,g")
+    done
+
+    sed "${SED_ARGS[@]}" | sed 's,{{#[a-zA-Z0-9_]\+}}.*{{/[a-zA-Z0-9_]\+}},,g'
+}
+
+c_header() {
+    local FILE="$1"
+    local PRO_FILE="$2"
+    
+    local TEMPLATE="$TEMPLATES_DIR/c_header.txt"
+
+    local DATE="`date +%d/%m/%Y`"
+    local RELPATH="`get_relpath $(dirname \"$PRO_FILE\")`"
+    local INCLUDE_MACRO="`echo $RELPATH/$FILE | tr [:lower:] [:upper:] | sed s,[^a-zA-Z0-9_],_,g`"
+    local FILE_NAME="`basename $FILE`"
+    local PROJECT_NAME="`basename \"$PRO_FILE\"| cut -d . -f 1`"
+    
+    [ -f "$FILE" ] || instantiate_template       \
+       "DATE=$DATE"                              \
+       "USER=$USER"                              \
+       "FILE_NAME=$FILE_NAME"                    \
+       "PROJECT_NAME=$PROJECT_NAME"              \
+       "INCLUDE_MACRO=$INCLUDE_MACRO"            \
+       <"$TEMPLATE" >"$FILE"
+
+    grep -q "$RELPATH/$FILE" "$PRO_FILE" || echo "HEADERS += $RELPATH/$FILE" >>"$PRO_FILE"
+}
+
+c_source() {
+    local FILE="$1"
+    local PRO_FILE="$2"
+    
+    local TEMPLATE="$TEMPLATES_DIR/c_source.txt"
+    local EXT="`get_extension \"$FILE\"`"
+    local HEADER="`get_unextended \"$FILE\"`"'.h'
+    local PROJECT_NAME="`basename \"$PRO_FILE\"| cut -d . -f 1`"
+
+    local DATE="`date +%d/%m/%Y`"
+    local RELPATH="`get_relpath $(dirname \"$PRO_FILE\")`"
+    local INCLUDE_MACRO="`echo $RELPATH/$FILE | tr [:lower:] [:upper:] | sed s,[^a-zA-Z0-9_],_,g`"
+    local FILE_NAME="`basename $FILE`"
+    [ -f "$HEADER" ] && local INCLUDE_FILE_NAME="$RELPATH/$FILE"
+    
+    [ -f "$FILE" ] || instantiate_template       \
+       "DATE=$DATE"                              \
+       "USER=$USER"                              \
+       "FILE_NAME=$FILE_NAME"                    \
+       "PROJECT_NAME=$PROJECT_NAME"              \
+       "INCLUDE_FILE_NAME=$INCLUDE_FILE_NAME"    \
+       <"$TEMPLATE" >"$FILE"
+
+    grep -q "$RELPATH/$FILE" "$PRO_FILE" || echo "SOURCES += $RELPATH/$FILE" >>"$PRO_FILE"
+}
+
+################################# main utils ###################################
+
+handle_file() {
+    local FILE="$1"
+    local PRO_FILE="$2"
+
+    local EXT="`get_extension $(basename $FILE)`"
+    case "$EXT" in
+        h|hpp|hxx)
+            c_header "$FILE" "$PRO_FILE";;
+        c|cpp|cxx)
+            c_source "$FILE" "$PRO_FILE";;
+        *)
+            echo "Unknown file type: \"$EXT\"" >&2
+            return 1
+            ;;
+    esac
+}
+
+usage() {
+    echo "Usage: $0 FILE..."
+}
+
+##################################### main #####################################
+
+set -e
+
+. "$HOME/.config/addfile/addfile.conf"
+
+if [ $# = 0 ]; then
+    echo 'Cannot run without arguments' >&2
+    usage >&2
+    exit 1
+fi
+
+PRO_FILE="`find_root_file '.pro$'`"
+for file; do
+    handle_file "$file" "$PRO_FILE"
+done
