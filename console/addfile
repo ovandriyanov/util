@@ -77,7 +77,7 @@ c_header() {
     local YEAR="`date +%Y`"
     local RELPATH="`get_relpath $(dirname \"$PRO_FILE\")`"
     local INCLUDE_MACRO="`echo $RELPATH/$FILE | tr [:lower:] [:upper:] | sed s,[^a-zA-Z0-9_],_,g`"
-    local FILE_NAME="`basename $FILE`"
+    local FILE_NAME="$RELPATH/$FILE"
     local PROJECT_NAME="`basename \"$PRO_FILE\"| cut -d . -f 1`"
     
     [ -f "$FILE" ] || instantiate_template       \
@@ -105,7 +105,7 @@ c_source() {
     local YEAR="`date +%Y`"
     local RELPATH="`get_relpath $(dirname \"$PRO_FILE\")`"
     local INCLUDE_MACRO="`echo $RELPATH/$FILE | tr [:lower:] [:upper:] | sed s,[^a-zA-Z0-9_],_,g`"
-    local FILE_NAME="`basename $FILE`"
+    local FILE_NAME="$RELPATH/$FILE"
     [ -f "$HEADER" ] && local INCLUDE_FILE_NAME="$RELPATH/$FILE"
     
     [ -f "$FILE" ] || instantiate_template       \
