@@ -74,6 +74,7 @@ c_header() {
     local TEMPLATE="$TEMPLATES_DIR/c_header.txt"
 
     local DATE="`date +%d/%m/%Y`"
+    local YEAR="`date +%Y`"
     local RELPATH="`get_relpath $(dirname \"$PRO_FILE\")`"
     local INCLUDE_MACRO="`echo $RELPATH/$FILE | tr [:lower:] [:upper:] | sed s,[^a-zA-Z0-9_],_,g`"
     local FILE_NAME="`basename $FILE`"
@@ -85,6 +86,7 @@ c_header() {
        "FILE_NAME=$FILE_NAME"                    \
        "PROJECT_NAME=$PROJECT_NAME"              \
        "INCLUDE_MACRO=$INCLUDE_MACRO"            \
+       "YEAR=$YEAR"                              \
        <"$TEMPLATE" >"$FILE"
 
     grep -q "$RELPATH/$FILE" "$PRO_FILE" || echo "HEADERS += $RELPATH/$FILE" >>"$PRO_FILE"
@@ -100,6 +102,7 @@ c_source() {
     local PROJECT_NAME="`basename \"$PRO_FILE\"| cut -d . -f 1`"
 
     local DATE="`date +%d/%m/%Y`"
+    local YEAR="`date +%Y`"
     local RELPATH="`get_relpath $(dirname \"$PRO_FILE\")`"
     local INCLUDE_MACRO="`echo $RELPATH/$FILE | tr [:lower:] [:upper:] | sed s,[^a-zA-Z0-9_],_,g`"
     local FILE_NAME="`basename $FILE`"
@@ -111,6 +114,7 @@ c_source() {
        "FILE_NAME=$FILE_NAME"                    \
        "PROJECT_NAME=$PROJECT_NAME"              \
        "INCLUDE_FILE_NAME=$INCLUDE_FILE_NAME"    \
+       "YEAR=$YEAR"                              \
        <"$TEMPLATE" >"$FILE"
 
     grep -q "$RELPATH/$FILE" "$PRO_FILE" || echo "SOURCES += $RELPATH/$FILE" >>"$PRO_FILE"
