@@ -5,3 +5,8 @@
  *  Created by {{USER}} on {{DATE}}.
  *
  */
+
+#ifndef {{INCLUDE_MACRO}}
+#define {{INCLUDE_MACRO}}
+
+#endif // {{INCLUDE_MACRO}}
