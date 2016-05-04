@@ -1,0 +1,19 @@
+[user]
+    name = Oleg Andriyanov
+    email = o.andriyanov@drweb.com
+
+[push]
+    default = current
+
+[alias]
+    co = checkout
+    br = branch
+    ci = commit
+    st = status
+    df = diff --word-diff=color --minimal --word-diff-regex='[a-zA-Z0-9_:]+|[^[:space:]]'
+
+[diff]
+    algorithm = minimal
+
+[core]
+    editor = vim
