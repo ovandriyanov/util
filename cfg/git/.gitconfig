@@ -11,6 +11,8 @@
     ci = commit
     st = status
     df = diff --word-diff=color --minimal --word-diff-regex='[a-zA-Z0-9_:]+|[^[:space:]]'
+    rb = rebase
+    rbi = rebase -i
 
 [diff]
     algorithm = minimal
