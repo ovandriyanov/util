@@ -1,0 +1,2 @@
+1. Download a branch from remote repository:
+    git checkout --track <remote>/<branch>
