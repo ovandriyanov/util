@@ -106,7 +106,7 @@ c_source() {
     local RELPATH="`get_relpath $(dirname \"$PRO_FILE\")`"
     local INCLUDE_MACRO="`echo $RELPATH/$FILE | tr [:lower:] [:upper:] | sed s,[^a-zA-Z0-9_],_,g`"
     local FILE_NAME="$RELPATH/$FILE"
-    [ -f "$HEADER" ] && local INCLUDE_FILE_NAME="$RELPATH/$FILE"
+    [ -f "$HEADER" ] && local INCLUDE_FILE_NAME="$RELPATH/$HEADER"
     
     [ -f "$FILE" ] || instantiate_template       \
        "DATE=$DATE"                              \
