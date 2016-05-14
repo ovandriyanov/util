@@ -1,0 +1,13 @@
+CONFIGURING TWO INTERFACES WITH TWO DEFAULT GATEWAYYS
+
+    ip route add default via <GW> dev <IFACE>  proto static  src <IFACE IP> table <TABLE> #1
+    ip route add <IP/MASK> dev <IFACE>  scope link  src <IFACE IP>                        #2
+    ip rule add from <IFACE IP> lookup <TABLE>                                            #3
+    ip rule add from all oif <IFACE> lookup <TABLE>                                       #4
+
+1) Add default gateway for interface <IFACE> into table <TABLE>.
+2) Add a route to the gateway itself.
+3) Tell kernel to lookup new table <TABLE> when sending packets from <IFACE IP>.
+4) Tell kernel to lookup new table <TABLE> when sending packets from interface <IFACE>.
+
+It is a mystery to me why ping(1) requires both (3) and (4) while traceroute(1) requires only (3).
