@@ -1,0 +1,13 @@
+In order to enable "none" cipher in OpenSSH apply patch
+"openssh6.3-none_switch.diff" to OpenSSH sources of appropriate version and
+compile OpenSSH. Then run ssh and specify cipher:
+    
+    ssh -c none user@host
+
+Patch has been taken from:
+    
+    http://www.psc.edu/index.php/hpn-ssh
+
+OpenSSH sources:
+    
+    ftp://mirror.yandex.ru/pub/OpenBSD/OpenSSH/portable/
