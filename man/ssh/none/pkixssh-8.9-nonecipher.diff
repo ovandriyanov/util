@@ -1,0 +1,133 @@
+diff pkixssh-8.9/cipher.c pkixssh-8.9-nonecipher/cipher.c
+287c287,288
+< 		if (c == NULL || c->number != SSH_CIPHER_SSH2) {
+---
+> 		if (c == NULL || (c->number != SSH_CIPHER_SSH2 &&
+> 				  c->number != SSH_CIPHER_NONE)) {
+639a641
+> 	case SSH_CIPHER_NONE:
+687a690
+> 	case SSH_CIPHER_NONE:
+Common subdirectories: pkixssh-8.9/contrib and pkixssh-8.9-nonecipher/contrib
+Common subdirectories: pkixssh-8.9/m4 and pkixssh-8.9-nonecipher/m4
+diff pkixssh-8.9/myproposal.h pkixssh-8.9-nonecipher/myproposal.h
+162a163,165
+> #define KEX_ENCRYPT_INCLUDE_NONE KEX_CLIENT_ENCRYPT \
+> 	",none"
+> 
+Common subdirectories: pkixssh-8.9/openbsd-compat and pkixssh-8.9-nonecipher/openbsd-compat
+diff pkixssh-8.9/packet.c pkixssh-8.9-nonecipher/packet.c
+1044a1045,1052
+> /* this supports the forced rekeying required for the NONE cipher */
+> int rekey_requested = 0;
+> void
+> packet_request_rekeying(void)
+> {
+> 	rekey_requested = 1;
+> }
+> 
+1062a1071,1076
+> 	
+> 	if (rekey_requested == 1)
+> 	{
+>        rekey_requested = 0;
+>        return 1;
+> 	}
+diff pkixssh-8.9/packet.h pkixssh-8.9-nonecipher/packet.h
+142a143,146
+> /* for forced packet rekeying post auth */
+> void	packet_request_rekeying(void);
+> int	packet_authentication_state(void);
+> 
+diff pkixssh-8.9/readconf.c pkixssh-8.9-nonecipher/readconf.c
+201c201,202
+< 	oIgnoredUnknownOption, oDeprecated, oUnsupported
+---
+> 	oIgnoredUnknownOption, oDeprecated, oUnsupported,
+> 	oNoneEnabled, oNoneSwitch
+344a346,347
+> 	{ "noneenabled", oNoneEnabled },
+> 	{ "noneswitch", oNoneSwitch },
+1157a1161,1178
+>     case oNoneEnabled:
+>            	intptr = &options->none_enabled;
+>            	goto parse_flag;
+> 
+>    	/* we check to see if the command comes from the */
+>    	/* command line or not. If it does then enable it */
+>    	/* otherwise fail. NONE should never be a default configuration */
+>    	case oNoneSwitch:
+>            	if(strcmp(filename,"command-line") == 0) {
+>                    	intptr = &options->none_switch;
+>                    	goto parse_flag;
+>            	} else {
+>                    	error("NoneSwitch is found in %.200s.\nYou may only use this configuration option from the command line", filename);
+>                    	error("Continuing...");
+>                    	debug("NoneSwitch directive found in %.200s.", filename);
+>                    	return 0;
+>            	}
+> 
+1986a2008,2009
+> 	options->none_switch = -1;
+> 	options->none_enabled = -1;
+2149a2173,2176
+> 	if (options->none_switch == -1)
+>         options->none_switch = 0;
+> 	if (options->none_enabled == -1)
+>         options->none_enabled = 0;
+diff pkixssh-8.9/readconf.h pkixssh-8.9-nonecipher/readconf.h
+140a141,142
+> 	int     none_switch; /* Use none cipher */
+> 	int     none_enabled; /* Allow none to be used */
+Common subdirectories: pkixssh-8.9/regress and pkixssh-8.9-nonecipher/regress
+Common subdirectories: pkixssh-8.9/scard and pkixssh-8.9-nonecipher/scard
+diff pkixssh-8.9/servconf.c pkixssh-8.9-nonecipher/servconf.c
+202a203
+> 	options->none_enabled = -1;	
+392a394,395
+> 	if (options->none_enabled == -1) 
+> 		options->none_enabled = 0;	
+510a514
+> 	sNoneEnabled,
+656a661
+> 	{ "noneenabled", sNoneEnabled, SSHCFG_ALL },
+1405a1411,1414
+> 		goto parse_flag;
+> 
+> 	case sNoneEnabled:
+> 		intptr = &options->none_enabled;
+diff pkixssh-8.9/servconf.h pkixssh-8.9-nonecipher/servconf.h
+200a201,202
+> 	int	none_enabled;		/* enable NONE cipher switch */	
+> 
+diff pkixssh-8.9/ssh.c pkixssh-8.9-nonecipher/ssh.c
+940a941,944
+> 			/* ensure that the user doesn't try to backdoor a */
+>             /* null cipher switch on an interactive session */
+>             /* so explicitly disable it no matter what */
+> 			options.none_switch=0;
+diff pkixssh-8.9/sshconnect2.c pkixssh-8.9-nonecipher/sshconnect2.c
+86a87,91
+> /* tty_flag is set in ssh.c. use this in ssh_userauth2 */
+> /* if it is set then prevent the switch to the null cipher */
+> 
+> extern int tty_flag;
+> 
+diff pkixssh-8.9/sshd.c pkixssh-8.9-nonecipher/sshd.c
+2657,2660c2657,2666
+< 	myproposal[PROPOSAL_ENC_ALGS_CTOS] = compat_cipher_proposal(
+< 	    options.ciphers);
+< 	myproposal[PROPOSAL_ENC_ALGS_STOC] = compat_cipher_proposal(
+< 	    options.ciphers);
+---
+> 	if (options.none_enabled == 1) {
+> 		debug ("WARNING: None cipher enabled");
+>         myproposal[PROPOSAL_ENC_ALGS_CTOS] =
+>         myproposal[PROPOSAL_ENC_ALGS_STOC] = KEX_ENCRYPT_INCLUDE_NONE;
+> 	} else {
+> 		myproposal[PROPOSAL_ENC_ALGS_CTOS] = compat_cipher_proposal(
+> 		    options.ciphers);
+> 		myproposal[PROPOSAL_ENC_ALGS_STOC] = compat_cipher_proposal(
+> 		    options.ciphers);
+> 	}
+Common subdirectories: pkixssh-8.9/tests and pkixssh-8.9-nonecipher/tests
