@@ -1,0 +1,15 @@
+cd kitchen. Then:
+
+0. Generate CA certificate and key:
+    
+    openssl req -config openssl.cnf -new -x509 -keyout private/ca.key.pem -out certs/ca.crt.pem -days 365 -nodes
+
+1. Generate signee cert/key:
+
+    openssl req -config openssl.cnf -new -keyout new.key.pem -out new.csr.pem -days 365 -nodes
+
+2. Sign signee with CA:
+
+    openssl ca -config openssl.cnf -policy policy_anything -out new.crt.pem -infiles new.csr.pem
+
+3. Strip certificate details from new.crt.pem.
