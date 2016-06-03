@@ -1,0 +1,9 @@
+DEBUGGING PRIVILEGED PROCESSES WITH NON-PRIVILEGED QTCREATOR
+
+1. Make a copy of gdb with SETUID bit.
+2. Configure QtCreator to use this new gdb.
+3. Set capabilities to make QtCreator able to talk to privileged gdb process:
+
+    sudo setcap cap_setuid,cap_setpcap,cap_kill+ep `which qtcreator`
+
+I'm not sure if all of the listed capabilities are strictly necessary.
