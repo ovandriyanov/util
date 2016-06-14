@@ -1,0 +1,23 @@
+#!/bin/bash
+
+substitute_error_line() {
+    echo "$@" | sed -r 's|(([/a-zA-Z0-9\._]*)+)\(([0-9]+)\)|\1:\3|'
+}
+
+bjam $@ |
+while read line; do
+    if echo "$line" | grep -q \
+        -e 'error: ' \
+        -e 'warning: ' \
+        -e 'undefined reference to' \
+        -e 'note: ' \
+        -e 'fatal error in ' \
+        -e 'multiple definition of' \
+        -e 'error in ' \
+        -e '.*\..*:[0-9]*:[0-9]*:'; then
+        substitute_error_line "$line" 1>&2
+    else
+        echo "$line"
+    fi
+done
+exit ${PIPESTATUS[0]}
