@@ -1,0 +1,3 @@
+CONVERTING RSA PKCS8 PEM PUBLIC KEY TO OPENSSH FORMAT
+
+    ssh-keygen -f rsa.pub.pem -i -m PKCS8
