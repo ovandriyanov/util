@@ -1,3 +1,6 @@
 #!/bin/bash
 
-hexdump -v -e '/1 "%02X"'; echo
+if [ "$1" = '-x' ]; then
+    PREFIX='"\\\x"'
+fi
+hexdump -v -e "$PREFIX"'/1 "%02X"'; echo
