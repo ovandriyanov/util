@@ -39,6 +39,16 @@ get_relpath() {
     return 1
 }
 
+concat_paths() {
+    local DIR="$1"
+    local FILE="$2"
+    if [ -z "$DIR" ] || [ "$DIR" == '.' ]; then
+        echo -n "$FILE"
+    else
+        echo -n "$DIR/$FILE"
+    fi
+}
+
 get_extension() {
     local FILE="$1"
     basename "$FILE" | sed -r 's,.*\.(.*)$,\1,'
@@ -76,8 +86,8 @@ c_header() {
     local DATE="`date +%d/%m/%Y`"
     local YEAR="`date +%Y`"
     local RELPATH="`get_relpath $(dirname \"$PRO_FILE\")`"
-    local INCLUDE_MACRO="`echo $RELPATH/$FILE | tr [:lower:] [:upper:] | sed s,[^a-zA-Z0-9_],_,g`"
-    local FILE_NAME="$RELPATH/$FILE"
+    local FILE_NAME="`concat_paths \"$RELPATH\" \"$FILE\"`"
+    local INCLUDE_MACRO="`echo \"$FILE_NAME\" | tr [:lower:] [:upper:] | sed s,[^a-zA-Z0-9_],_,g`"
     local PROJECT_NAME="`basename \"$PRO_FILE\"| cut -d . -f 1`"
     
     [ -f "$FILE" ] || instantiate_template       \
@@ -89,7 +99,7 @@ c_header() {
        "YEAR=$YEAR"                              \
        <"$TEMPLATE" >"$FILE"
 
-    grep -q "$RELPATH/$FILE" "$PRO_FILE" || echo "HEADERS += $RELPATH/$FILE" >>"$PRO_FILE"
+    grep -q "$FILE_NAME" "$PRO_FILE" || echo "HEADERS += $FILE_NAME" >>"$PRO_FILE"
 }
 
 c_source() {
@@ -104,9 +114,8 @@ c_source() {
     local DATE="`date +%d/%m/%Y`"
     local YEAR="`date +%Y`"
     local RELPATH="`get_relpath $(dirname \"$PRO_FILE\")`"
-    local INCLUDE_MACRO="`echo $RELPATH/$FILE | tr [:lower:] [:upper:] | sed s,[^a-zA-Z0-9_],_,g`"
-    local FILE_NAME="$RELPATH/$FILE"
-    [ -f "$HEADER" ] && local INCLUDE_FILE_NAME="$RELPATH/$HEADER"
+    local FILE_NAME="`concat_paths \"$RELPATH\" \"$FILE\"`"
+    [ -f "$HEADER" ] && local INCLUDE_FILE_NAME="`concat_paths \"$RELPATH\" \"$HEADER\"`"
     
     [ -f "$FILE" ] || instantiate_template       \
        "DATE=$DATE"                              \
@@ -117,7 +126,7 @@ c_source() {
        "YEAR=$YEAR"                              \
        <"$TEMPLATE" >"$FILE"
 
-    grep -q "$RELPATH/$FILE" "$PRO_FILE" || echo "SOURCES += $RELPATH/$FILE" >>"$PRO_FILE"
+    grep -q "$FILE_NAME" "$PRO_FILE" || echo "SOURCES += $FILE_NAME" >>"$PRO_FILE"
 }
 
 ################################# main utils ###################################
