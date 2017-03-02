@@ -1,0 +1,10 @@
+#!/bin/bash
+
+if [ $# -lt 1 ]; then
+    echo "Usage: $0 FILE" 1>&2
+fi
+
+TMP_MBOX='/tmp/vmutt.mbox'
+formail -b <"$1" >"$TMP_MBOX"
+mutt -Rf "$TMP_MBOX"
+rm -f "$TMP_MBOX"
