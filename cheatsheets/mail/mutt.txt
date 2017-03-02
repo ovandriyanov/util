@@ -1,0 +1,4 @@
+Open email file with mutt:
+    
+formail -b < message.eml > message.mbox
+mutt -R -f message.mbox
