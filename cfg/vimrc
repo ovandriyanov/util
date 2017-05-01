@@ -1,0 +1,54 @@
+set nocompatible                    " be iMproved
+set clipboard=unnamedplus           " Use X clipboard by default
+set showcmd                         " Show me what I'm doing
+set ic                              " Ignore case when searching with "/"
+syntax enable
+set number
+set relativenumber
+
+" Do not clear clipboard on exit
+autocmd VimLeave * call system("xsel -ib", getreg('+'))
+" Delete trailing whitespace
+autocmd FileType c,cpp,proto,rl autocmd BufWritePre <buffer> %s/\s\+$//e
+" Try the following if your GUI uses a dark background.
+highlight ExtraWhitespace ctermbg=darkgreen
+autocmd ColorScheme * highlight ExtraWhitespace ctermbg=darkgreen
+match ExtraWhitespace /\s\+$/
+
+set exrc
+set secure
+
+set tabstop=4
+set softtabstop=4
+set shiftwidth=4
+set expandtab
+
+let &path.="src/include,/usr/include/c++/5,"
+" let g:ycm_global_ycm_extra_conf = '/home/olan/.vim/bundle/YouCompleteMe/third_party/ycmd/examples/.ycm_extra_conf.py'
+let g:AutoPairsShortcutToggle = '<C-p>'
+let g:AutoPairsShortcutJump = '<C-n>'
+let g:AutoPairsShortcutFastWrap = '<C-e>'
+
+" Vundle stuff
+filetype off
+set rtp+=~/.vim/bundle/Vundle.vim/
+call vundle#begin()
+
+Plugin 'VundleVim/Vundle.vim'
+Plugin 'davits/YouCompleteMe'
+Plugin 'jeaye/color_coded'
+Plugin 'jiangmiao/auto-pairs'
+Plugin 'ajh17/Spacegray.vim'
+Plugin 'wincent/command-t'
+
+call vundle#end()
+filetype plugin indent on
+
+source ~/.vim/bundle/alternate/plugin/a.vim
+colorscheme spacegray
+
+nnoremap <F2> :YcmCompleter GoTo <CR>
+map <F4> :A <CR>
+map <F3> :set relativenumber! <CR>
+nnoremap <C-k> :CommandT <CR>
+let g:ycm_autoclose_preview_window_after_insertion = 1
