@@ -22,9 +22,17 @@ set tabstop=4
 set softtabstop=4
 set shiftwidth=4
 set expandtab
+set scrolloff=10
 
-let &path.="src/include,/usr/include/c++/5,"
-" let g:ycm_global_ycm_extra_conf = '/home/olan/.vim/bundle/YouCompleteMe/third_party/ycmd/examples/.ycm_extra_conf.py'
+let &path.="src/include,/usr/include/c++/5,/usr/include/x86_64-linux-gnu/c++/5"
+
+autocmd BufRead,BufNewFile /usr/include/c++/*,/usr/include/x86_64-linux-gnu/c++/* call SetLibStdCppOptions()
+function SetLibStdCppOptions()
+    set ft=cpp
+    set tabstop=8
+endfunction
+
+let g:ycm_global_ycm_extra_conf = '/home/olan/.vim/bundle/YouCompleteMe/third_party/ycmd/examples/.ycm_extra_conf.py'
 let g:AutoPairsShortcutToggle = '<C-p>'
 let g:AutoPairsShortcutJump = '<C-n>'
 let g:AutoPairsShortcutFastWrap = '<C-e>'
@@ -52,3 +60,4 @@ map <F4> :A <CR>
 map <F3> :set relativenumber! <CR>
 nnoremap <C-k> :CommandT <CR>
 let g:ycm_autoclose_preview_window_after_insertion = 1
+let g:ycm_confirm_extra_conf = 0
