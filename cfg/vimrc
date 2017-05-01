@@ -22,7 +22,7 @@ set tabstop=4
 set softtabstop=4
 set shiftwidth=4
 set expandtab
-set scrolloff=10
+set scrolloff=9
 
 let &path.="src/include,/usr/include/c++/5,/usr/include/x86_64-linux-gnu/c++/5"
 
