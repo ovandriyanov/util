@@ -48,18 +48,18 @@ set rtp+=~/.vim/bundle/Vundle.vim/
 call vundle#begin()
 
 Plugin 'VundleVim/Vundle.vim'
-Plugin 'davits/YouCompleteMe'
+Plugin 'Valloric/YouCompleteMe'
 Plugin 'jeaye/color_coded'
 Plugin 'jiangmiao/auto-pairs'
 Plugin 'ajh17/Spacegray.vim'
 Plugin 'wincent/command-t'
 Plugin 'henrik/vim-indexed-search'
 Plugin 'vim-scripts/Conque-GDB'
+Plugin 'vim-scripts/a.vim'
 
 call vundle#end()
 filetype plugin indent on
 
-source ~/.vim/bundle/alternate/plugin/a.vim
 colorscheme spacegray
 
 nnoremap <F2> :YcmCompleter GoTo <CR>
