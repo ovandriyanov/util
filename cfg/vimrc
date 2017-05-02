@@ -5,6 +5,7 @@ set ic                              " Ignore case when searching with "/"
 syntax enable
 set number
 set relativenumber
+set ruler
 
 " Do not clear clipboard on exit
 autocmd VimLeave * call system("xsel -ib", getreg('+'))
@@ -22,7 +23,9 @@ set tabstop=4
 set softtabstop=4
 set shiftwidth=4
 set expandtab
-set scrolloff=9
+set scrolloff=8
+set scroll=4
+autocmd BufRead,BufNewFile * set scroll=4
 
 let &path.="src/include,/usr/include/c++/5,/usr/include/x86_64-linux-gnu/c++/5"
 
@@ -48,6 +51,8 @@ Plugin 'jeaye/color_coded'
 Plugin 'jiangmiao/auto-pairs'
 Plugin 'ajh17/Spacegray.vim'
 Plugin 'wincent/command-t'
+Plugin 'henrik/vim-indexed-search'
+Plugin 'vim-scripts/Conque-GDB'
 
 call vundle#end()
 filetype plugin indent on
