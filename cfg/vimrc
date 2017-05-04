@@ -9,6 +9,7 @@ set ruler
 set autoindent
 set smartindent
 set hidden
+set backspace=indent,eol,start
 
 " Do not clear clipboard on exit
 autocmd VimLeave * call system("xsel -ib", getreg('+'))
