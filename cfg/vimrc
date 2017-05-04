@@ -10,6 +10,8 @@ set smartindent
 set hidden
 set backspace=indent,eol,start
 
+command Vrc edit ~/.vimrc
+
 " Do not clear clipboard on exit
 autocmd VimLeave * call system("xsel -ib", getreg('+'))
 " Delete trailing whitespace
@@ -79,6 +81,9 @@ colorscheme github
 nnoremap <C-S-r> gd[{V%::s/<C-R>///gc<left><left><left>
 nnoremap <F2> :YcmCompleter GoTo <CR>
 nnoremap <F5> :YcmCompleter GoToImprecise <CR>
+nnoremap <F12> :vsplit +vertical\ resize\ 35\|e. <CR>
+nnoremap <S-F12> :close 1 <CR> 
+let g:netrw_chgwin=2
 map <F4> :A <CR>
 map <F3> :set relativenumber! <CR>
 nnoremap <C-k> :CommandT <CR>
