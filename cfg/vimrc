@@ -1,5 +1,4 @@
 set nocompatible                    " be iMproved
-set clipboard=unnamedplus           " Use X clipboard by default
 set showcmd                         " Show me what I'm doing
 set ic                              " Ignore case when searching with "/"
 syntax enable
@@ -48,6 +47,7 @@ let g:ycm_global_ycm_extra_conf = '/home/olan/.vim/bundle/YouCompleteMe/third_pa
 let g:AutoPairsShortcutToggle = '<C-p>'
 let g:AutoPairsShortcutJump = '<C-n>'
 let g:AutoPairsShortcutFastWrap = '<C-e>'
+let g:AutoPairsMultilineClose = 0
 
 " Vundle stuff
 filetype off
@@ -70,10 +70,22 @@ filetype plugin indent on
 
 colorscheme spacegray
 
+nnoremap <C-S-r> gd[{V%::s/<C-R>///gc<left><left><left>
 nnoremap <F2> :YcmCompleter GoTo <CR>
 nnoremap <F5> :YcmCompleter GoToImprecise <CR>
 map <F4> :A <CR>
 map <F3> :set relativenumber! <CR>
 nnoremap <C-k> :CommandT <CR>
+noremap  y  "+y
+noremap  yy "+yy
+noremap  Y  "+Y
+noremap  p  "+p
+noremap  P  "+P
+vnoremap y  "+y
+vnoremap yy "+yy
+vnoremap Y  "+Y
+vnoremap p  "+p
+vnoremap P  "+P
+
 let g:ycm_autoclose_preview_window_after_insertion = 1
 let g:ycm_confirm_extra_conf = 0
