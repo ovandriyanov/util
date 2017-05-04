@@ -8,11 +8,17 @@ set relativenumber
 set ruler
 set autoindent
 set smartindent
+set hidden
 
 " Do not clear clipboard on exit
 autocmd VimLeave * call system("xsel -ib", getreg('+'))
 " Delete trailing whitespace
-autocmd FileType c,cpp,proto,rl autocmd BufWritePre <buffer> %s/\s\+$//e
+autocmd FileType c,cpp,proto,rl call SetCodeOptions()
+function SetCodeOptions()
+    autocmd BufWritePre <buffer> %s/\s\+$//e
+    set nowrap
+endfunction
+
 " Try the following if your GUI uses a dark background.
 highlight ExtraWhitespace ctermbg=darkgreen
 autocmd ColorScheme * highlight ExtraWhitespace ctermbg=darkgreen
@@ -31,7 +37,7 @@ autocmd BufRead,BufNewFile * set scroll=4
 
 let &path.="src/include,/usr/include/c++/5,/usr/include/x86_64-linux-gnu/c++/5"
 
-autocmd BufRead,BufNewFile /usr/include/c++/*,/usr/include/x86_64-linux-gnu/c++/* call SetLibStdCppOptions()
+autocmd BufRead,BufNewFile /usr/include/c++/*,/usr/include/x86_64-linux-gnu/c++/*,/usr/include/linux/* call SetLibStdCppOptions()
 function SetLibStdCppOptions()
     set ft=cpp
     set tabstop=8
@@ -49,13 +55,14 @@ call vundle#begin()
 
 Plugin 'VundleVim/Vundle.vim'
 Plugin 'Valloric/YouCompleteMe'
-Plugin 'jeaye/color_coded'
+" Plugin 'jeaye/color_coded'
 Plugin 'jiangmiao/auto-pairs'
 Plugin 'ajh17/Spacegray.vim'
 Plugin 'wincent/command-t'
 Plugin 'henrik/vim-indexed-search'
 Plugin 'vim-scripts/Conque-GDB'
 Plugin 'vim-scripts/a.vim'
+Plugin 'vim-scripts/BufOnly.vim'
 
 call vundle#end()
 filetype plugin indent on
@@ -63,6 +70,7 @@ filetype plugin indent on
 colorscheme spacegray
 
 nnoremap <F2> :YcmCompleter GoTo <CR>
+nnoremap <F5> :YcmCompleter GoToImprecise <CR>
 map <F4> :A <CR>
 map <F3> :set relativenumber! <CR>
 nnoremap <C-k> :CommandT <CR>
