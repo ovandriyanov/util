@@ -68,11 +68,13 @@ Plugin 'tomasiser/vim-code-dark'
 Plugin 'AlessandroYorba/Arcadia.git'
 Plugin 'bruth/vim-newsprint-theme'
 Plugin 'AlessandroYorba/Despacio'
+Plugin 'mtglsk/wikipedia.vim'
+Plugin 'endel/vim-github-colorscheme'
 
 call vundle#end()
 filetype plugin indent on
 
-colorscheme despacio
+colorscheme github
 
 nnoremap <C-S-r> gd[{V%::s/<C-R>///gc<left><left><left>
 nnoremap <F2> :YcmCompleter GoTo <CR>
