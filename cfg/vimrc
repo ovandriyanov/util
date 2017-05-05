@@ -5,8 +5,8 @@ syntax enable
 set number
 set relativenumber
 set ruler
-set autoindent
-set smartindent
+set noautoindent
+set nosmartindent
 set hidden
 set backspace=indent,eol,start
 
@@ -34,7 +34,7 @@ set shiftwidth=4
 set expandtab
 set scrolloff=8
 set scroll=4
-autocmd BufRead,BufNewFile * set scroll=4
+autocmd BufWinEnter * set scroll=4
 
 let &path.="src/include,/usr/include/c++/5,/usr/include/x86_64-linux-gnu/c++/5"
 
@@ -49,6 +49,7 @@ let g:AutoPairsShortcutToggle = '<C-p>'
 let g:AutoPairsShortcutJump = '<C-n>'
 let g:AutoPairsShortcutFastWrap = '<C-e>'
 let g:AutoPairsMultilineClose = 0
+let g:AutoPairsMapCR = 0
 
 " Vundle stuff
 filetype off
