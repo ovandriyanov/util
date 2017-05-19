@@ -1,4 +1,5 @@
 set nocompatible                    " be iMproved
+set noesckeys
 set showcmd                         " Show me what I'm doing
 set ic                              " Ignore case when searching with "/"
 syntax enable
