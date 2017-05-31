@@ -102,6 +102,9 @@ vnoremap Y  "+Y
 vnoremap p  "+p
 vnoremap P  "+P
 vnoremap <C-_> c/*<C-R>"*/<Esc>
+nmap ,cs :let @+=expand("%")<CR>
+nmap ,cl :let @+=expand("%:p")<CR>
 
 " let g:ycm_autoclose_preview_window_after_insertion = 1
 let g:ycm_confirm_extra_conf = 0
+
