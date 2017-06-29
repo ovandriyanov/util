@@ -1,5 +1,6 @@
 set nocompatible                    " be iMproved
-set noesckeys
+set ttimeoutlen=50
+" set noesckeys
 set showcmd                         " Show me what I'm doing
 set ic                              " Ignore case when searching with "/"
 syntax enable
@@ -10,6 +11,7 @@ set noautoindent
 set nosmartindent
 set hidden
 set backspace=indent,eol,start
+set hls
 
 command Vrc edit ~/.vimrc
 
