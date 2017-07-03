@@ -20,9 +20,11 @@ autocmd VimLeave * call system("xsel -ib", getreg('+'))
 " Delete trailing whitespace
 autocmd FileType c,cpp,proto,rl call SetCodeOptions()
 function SetCodeOptions()
-    autocmd BufWritePre <buffer> %s/\s\+$//e
+    " autocmd BufWritePre <buffer> %s/\s\+$//e
     set nowrap
 endfunction
+
+command StripTrailingWhitespace %s/\s\+$//e
 
 highlight ExtraWhitespace ctermbg=darkgreen
 autocmd ColorScheme * highlight ExtraWhitespace ctermbg=darkgreen
@@ -85,7 +87,8 @@ colorscheme github
 
 " nnoremap <C-S-r> gd[{V%::s/<C-R>///gc<left><left><left>
 nnoremap <F2> :YcmCompleter GoTo <CR>
-nnoremap <F5> :YcmCompleter GoToImprecise <CR>
+nnoremap <F5> :highlight ExtraWhitespace ctermbg=darkgreen <CR>
+nnoremap <S-F5> :highlight ExtraWhitespace NONE <CR>
 nnoremap <F12> :vsplit +vertical\ resize\ 35\|e. <CR>
 nnoremap <S-F12> :close 1 <CR> :set scroll=4 <CR>
 let g:netrw_chgwin=2
