@@ -76,6 +76,7 @@ Plugin 'bruth/vim-newsprint-theme'
 Plugin 'AlessandroYorba/Despacio'
 Plugin 'mtglsk/wikipedia.vim'
 Plugin 'endel/vim-github-colorscheme'
+Plugin 'vim-scripts/git-time-lapse'
 
 call vundle#end()
 filetype plugin indent on
