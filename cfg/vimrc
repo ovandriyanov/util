@@ -89,6 +89,7 @@ colorscheme github
 nnoremap <F2> :YcmCompleter GoTo <CR>
 nnoremap <F5> :highlight ExtraWhitespace ctermbg=darkgreen <CR>
 nnoremap <S-F5> :highlight ExtraWhitespace NONE <CR>
+nnoremap <F6> :%s/\s\+$//e <CR>
 nnoremap <F12> :vsplit +vertical\ resize\ 35\|e. <CR>
 nnoremap <S-F12> :close 1 <CR> :set scroll=4 <CR>
 let g:netrw_chgwin=2
@@ -114,3 +115,29 @@ nmap ,cl :let @+=expand("%:p")<CR>
 " let g:ycm_autoclose_preview_window_after_insertion = 1
 let g:ycm_confirm_extra_conf = 0
 
+
+set efm=
+set efm+=%*[^\"]\"%f\"%*\\D%l:\ %m
+set efm+=,\"%f\"%*\\D%l:\ %m
+set efm+=,%-G%f:%l:\ (Each\ undeclared\ identifier\ is\ reported\ only\ once
+set efm+=,%-G%f:%l:\ for\ each\ function\ it\ appears\ in.)
+
+" To disable tagging of these lines, change '+' to '-'
+set efm+=,%+GIn\ file\ included\ from\ %f:%l:%c:
+set efm+=,%+GIn\ file\ included\ from\ %f:%l:%c\\,
+set efm+=,%+GIn\ file\ included\ from\ %f:%l:%c
+set efm+=,%+GIn\ file\ included\ from\ %f:%l
+set efm+=,%+Gfrom\ %f:%l:%c
+set efm+=,%+Gfrom\ %f:%l:
+set efm+=,%+Gfrom\ %f:%l\\,
+set efm+=,%+Gfrom\ %f:%l
+
+set efm+=,%f:%l:%c:%m
+set efm+=,%f(%l):%m
+set efm+=,%f:%l:%m
+set efm+=,\"%f\"\\,\ line\ %l%*\\D%c%*[^\ ]\ %m
+set efm+=,%D%*\\a[%*\\d]:\ Entering\ directory\ %*[`]%f
+set efm+=,%X%*\\a[%*\\d]:\ Leaving\ directory\ %*[`]%f
+set efm+=,%D%*\\a:\ Entering\ directory\ %*[`]%f
+set efm+=,%X%*\\a:\ Leaving\ directory\ %*[`]%f
+set efm+=,%DMaking\ %*\\a\ in\ %f
