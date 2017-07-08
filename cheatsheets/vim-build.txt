@@ -1,0 +1,7 @@
+Configuring vim with necessary features:
+
+    ./configure --prefix=/home/olan/code/vim/build --enable-pythoninterp=yes --enable-python3interp=yes --with-features=huge --with-x --enable-gui --enable-luainterp=yes --enable-rubyinterp=yes --with-x
+
+Ubuntu packages needed to build vim:
+
+    apt install xsel ruby-dev python3-dev python-dev liblua5.2 libncurses5-dev gawk libx11-dev libice-dev libsm-dev libxt-dev libxpm-dev
