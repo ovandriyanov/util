@@ -12,6 +12,7 @@ set nosmartindent
 set hidden
 set backspace=indent,eol,start
 set hls
+set t_ut=
 
 command Vrc edit ~/.vimrc
 
