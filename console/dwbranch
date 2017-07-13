@@ -28,7 +28,12 @@ relink() {
     target="${1}-${BRANCH}"
     link="${1}"
     [ ! -d "${target}" ] && error "${0}: ${target} does not exist"
-    ln -f -s "${target}" "${link}"
+    mv -f "${link}" "${link}-backup"
+    if ln -f -s "${target}" "${link}"; then
+        rm -f "${link}-backup"
+    else
+        mv -f "${link}-backup" "${link}"
+    fi
     [ -n "${VERBOSE}" ] && echo "${link} -> ${target}"
 }
 
@@ -39,7 +44,7 @@ if [ ${#COMPONENTS} -gt 1 ]; then
     done
 else
     find -P "$PROJECTS_DIR" -maxdepth 1 -type l | while read file; do
-        relink "$file"
+        echo "${file}" | grep -q backup || relink "$file"
     done
 fi
 
