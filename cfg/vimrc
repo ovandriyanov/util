@@ -3,7 +3,11 @@ set ttimeoutlen=50
 " set noesckeys
 set showcmd                         " Show me what I'm doing
 set ic                              " Ignore case when searching with "/"
+
+" C++11 syntax workaround
+let c_no_curly_error=1
 syntax enable
+
 set number
 set relativenumber
 set ruler
@@ -80,6 +84,7 @@ Plugin 'AlessandroYorba/Despacio'
 Plugin 'mtglsk/wikipedia.vim'
 Plugin 'endel/vim-github-colorscheme'
 Plugin 'vim-scripts/git-time-lapse'
+Plugin 'vim-scripts/Cpp11-Syntax-Support'
 
 call vundle#end()
 filetype plugin indent on
@@ -116,29 +121,28 @@ nmap ,cl :let @+=expand("%:p")<CR>
 " let g:ycm_autoclose_preview_window_after_insertion = 1
 let g:ycm_confirm_extra_conf = 0
 
-
-set efm=
-set efm+=%*[^\"]\"%f\"%*\\D%l:\ %m
-set efm+=,\"%f\"%*\\D%l:\ %m
-set efm+=,%-G%f:%l:\ (Each\ undeclared\ identifier\ is\ reported\ only\ once
-set efm+=,%-G%f:%l:\ for\ each\ function\ it\ appears\ in.)
-
-" To disable tagging of these lines, change '+' to '-'
-set efm+=,%+GIn\ file\ included\ from\ %f:%l:%c:
-set efm+=,%+GIn\ file\ included\ from\ %f:%l:%c\\,
-set efm+=,%+GIn\ file\ included\ from\ %f:%l:%c
-set efm+=,%+GIn\ file\ included\ from\ %f:%l
-set efm+=,%+Gfrom\ %f:%l:%c
-set efm+=,%+Gfrom\ %f:%l:
-set efm+=,%+Gfrom\ %f:%l\\,
-set efm+=,%+Gfrom\ %f:%l
-
-set efm+=,%f:%l:%c:%m
-set efm+=,%f(%l):%m
-set efm+=,%f:%l:%m
-set efm+=,\"%f\"\\,\ line\ %l%*\\D%c%*[^\ ]\ %m
-set efm+=,%D%*\\a[%*\\d]:\ Entering\ directory\ %*[`]%f
-set efm+=,%X%*\\a[%*\\d]:\ Leaving\ directory\ %*[`]%f
-set efm+=,%D%*\\a:\ Entering\ directory\ %*[`]%f
-set efm+=,%X%*\\a:\ Leaving\ directory\ %*[`]%f
-set efm+=,%DMaking\ %*\\a\ in\ %f
+" set efm=
+" set efm+=%*[^\"]\"%f\"%*\\D%l:\ %m
+" set efm+=,\"%f\"%*\\D%l:\ %m
+" set efm+=,%-G%f:%l:\ (Each\ undeclared\ identifier\ is\ reported\ only\ once
+" set efm+=,%-G%f:%l:\ for\ each\ function\ it\ appears\ in.)
+" 
+" " To disable tagging of these lines, change '+' to '-'
+" set efm+=,%+GIn\ file\ included\ from\ %f:%l:%c:
+" set efm+=,%+GIn\ file\ included\ from\ %f:%l:%c\\,
+" set efm+=,%+GIn\ file\ included\ from\ %f:%l:%c
+" set efm+=,%+GIn\ file\ included\ from\ %f:%l
+" set efm+=,%+Gfrom\ %f:%l:%c
+" set efm+=,%+Gfrom\ %f:%l:
+" set efm+=,%+Gfrom\ %f:%l\\,
+" set efm+=,%+Gfrom\ %f:%l
+" 
+" set efm+=,%f:%l:%c:%m
+" set efm+=,%f(%l):%m
+" set efm+=,%f:%l:%m
+" set efm+=,\"%f\"\\,\ line\ %l%*\\D%c%*[^\ ]\ %m
+" set efm+=,%D%*\\a[%*\\d]:\ Entering\ directory\ %*[`]%f
+" set efm+=,%X%*\\a[%*\\d]:\ Leaving\ directory\ %*[`]%f
+" set efm+=,%D%*\\a:\ Entering\ directory\ %*[`]%f
+" set efm+=,%X%*\\a:\ Leaving\ directory\ %*[`]%f
+" set efm+=,%DMaking\ %*\\a\ in\ %f
