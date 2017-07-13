@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -e
-
 for arg; do
     case "${arg}" in
         -v)
@@ -29,7 +27,7 @@ PROJECTS_DIR='/home/olan/projects'
 relink() {
     target="${1}-${BRANCH}"
     link="${1}"
-    [ ! -d "${target}" ] && error "${target} does not exist"
+    [ ! -d "${target}" ] && error "${0}: ${target} does not exist"
     ln -f -s "${target}" "${link}"
     [ -n "${VERBOSE}" ] && echo "${link} -> ${target}"
 }
@@ -44,3 +42,5 @@ else
         relink "$file"
     done
 fi
+
+exit 0
