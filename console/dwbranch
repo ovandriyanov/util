@@ -1,0 +1,46 @@
+#!/bin/bash
+
+set -e
+
+for arg; do
+    case "${arg}" in
+        -v)
+            VERBOSE='1'
+            ;;
+        *)
+            if [ -z "${BRANCH}" ]; then
+                BRANCH="${arg}"
+            else
+                COMPONENTS[${#COMPONENTS}]="${arg}"
+            fi
+            ;;
+    esac
+done
+
+error() {
+    echo "${1}" 1>&2
+    exit 1
+}
+
+[ -z "${BRANCH}" ] && error "Usage: ${0} BRANCH [COMPONENTS...]"
+
+PROJECTS_DIR='/home/olan/projects'
+
+relink() {
+    target="${1}-${BRANCH}"
+    link="${1}"
+    [ ! -d "${target}" ] && error "${target} does not exist"
+    ln -f -s "${target}" "${link}"
+    [ -n "${VERBOSE}" ] && echo "${link} -> ${target}"
+}
+
+if [ ${#COMPONENTS} -gt 1 ]; then
+    shift
+    for component in "${COMPONENTS[@]}"; do
+        relink "drweb-unix-${component}"
+    done
+else
+    find -P "$PROJECTS_DIR" -maxdepth 1 -type l | while read file; do
+        relink "$file"
+    done
+fi
