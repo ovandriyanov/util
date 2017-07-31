@@ -70,18 +70,18 @@ Plugin 'VundleVim/Vundle.vim'
 Plugin 'Valloric/YouCompleteMe'
 " Plugin 'jeaye/color_coded'
 Plugin 'jiangmiao/auto-pairs'
-Plugin 'ajh17/Spacegray.vim'
+" Plugin 'ajh17/Spacegray.vim'
 Plugin 'mom0tomo/dotfiles'
 Plugin 'wincent/command-t'
 Plugin 'henrik/vim-indexed-search'
 Plugin 'vim-scripts/Conque-GDB'
 Plugin 'vim-scripts/a.vim'
 Plugin 'vim-scripts/BufOnly.vim'
-Plugin 'tomasiser/vim-code-dark'
-Plugin 'AlessandroYorba/Arcadia.git'
-Plugin 'bruth/vim-newsprint-theme'
-Plugin 'AlessandroYorba/Despacio'
-Plugin 'mtglsk/wikipedia.vim'
+" Plugin 'tomasiser/vim-code-dark'
+" Plugin 'AlessandroYorba/Arcadia.git'
+" Plugin 'bruth/vim-newsprint-theme'
+" Plugin 'AlessandroYorba/Despacio'
+" Plugin 'mtglsk/wikipedia.vim'
 Plugin 'endel/vim-github-colorscheme'
 Plugin 'vim-scripts/git-time-lapse'
 Plugin 'vim-scripts/Cpp11-Syntax-Support'
@@ -103,15 +103,12 @@ map <F4> :silent! A <CR>
 map <F3> :set relativenumber! <CR>
 nnoremap <C-k> :CommandT <CR>
 noremap  y  "+y
-noremap  yd "+d
-noremap  yy "+yy
 noremap  Y  "+Y
 noremap  p  "+p
 noremap  P  "+P
 vnoremap y  "+y
-vnoremap yd "+d
-vnoremap yy "+yy
-vnoremap Y  "+Y
+vnoremap D  "+d
+vnoremap y  "+y
 vnoremap p  "+p
 vnoremap P  "+P
 vnoremap <C-_> c/*<C-R>"*/<Esc>
