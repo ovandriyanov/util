@@ -23,11 +23,12 @@ error() {
 [ -z "${BRANCH}" ] && error "Usage: ${0} BRANCH [COMPONENTS...]"
 
 PROJECTS_DIR='/home/olan/projects'
+ENV_DIR='/home/olan/job'
 
 relink() {
     target="${1}-${BRANCH}"
     link="${1}"
-    [ ! -d "${target}" ] && error "${0}: ${target} does not exist"
+    [ ! -d "${target}" ] && return 0
     mv -f "${link}" "${link}-backup"
     if ln -f -s "${target}" "${link}"; then
         rm -f "${link}-backup"
@@ -46,6 +47,7 @@ else
     find -P "$PROJECTS_DIR" -maxdepth 1 -type l | while read file; do
         echo "${file}" | grep -q backup || relink "$file"
     done
+    relink "${ENV_DIR}/dw-user-env"
 fi
 
 exit 0
