@@ -28,7 +28,12 @@ ENV_DIR='/home/olan/job'
 relink() {
     target="${1}-${BRANCH}"
     link="${1}"
-    [ ! -d "${target}" ] && return 0
+
+    if [ ! -e "${target}" ]; then
+       [ -n "${VERBOSE}" ] && echo "No such file or directory: ${target}"
+       return 0
+    fi
+
     mv -f "${link}" "${link}-backup"
     if ln -f -s "${target}" "${link}"; then
         rm -f "${link}-backup"
@@ -47,7 +52,9 @@ else
     find -P "$PROJECTS_DIR" -maxdepth 1 -type l | while read file; do
         echo "${file}" | grep -q backup || relink "$file"
     done
-    relink "${ENV_DIR}/dw-user-env"
+    for i in "${ENV_DIR}/dw-user-env"[0123456789] "${HOME}/bin/"{cfd,ctl}[0123456789]; do
+        relink "$i"
+    done
 fi
 
 exit 0
