@@ -1,0 +1,23 @@
+#!/bin/sh
+
+for arg; do
+    case "${arg}" in
+        -q|--quiet)
+            QUIET=1;;
+        *)
+            PATTERN="${arg}"
+    esac
+done
+
+if [ -z "${PATTERN}" ]; then
+    echo "Usage: ${0} [-q | --quiet] PROCESS_PATTERN" 1>&2
+    exit 1
+fi
+
+while true; do
+    if pkill -STOP "${PATTERN}"; then
+        [ -z "${QUIET}" ] && pgrep "${PATTERN}"
+        exit 0
+    fi
+done
+exit 1
