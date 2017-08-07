@@ -53,7 +53,7 @@ function SetLibStdCppOptions()
     set tabstop=8
 endfunction
 
-let g:ycm_global_ycm_extra_conf = '/home/olan/.vim/bundle/YouCompleteMe/third_party/ycmd/examples/.ycm_extra_conf.py'
+" let g:ycm_global_ycm_extra_conf = '/home/olan/.vim/bundle/YouCompleteMe/third_party/ycmd/examples/.ycm_extra_conf.py'
 let g:AutoPairsShortcutToggle = '<C-p>'
 let g:AutoPairsShortcutJump = '<C-n>'
 let g:AutoPairsShortcutFastWrap = '<C-e>'
@@ -121,11 +121,11 @@ map <F8> :silent! AV <CR>
 map <F3> :set relativenumber! <CR>
 nnoremap <C-k> :CommandT <CR>
 
-nnoremap  y  "+y
-nnoremap  yy "+yy
-nnoremap  Y  "+Y
-nnoremap  p  "+p
-nnoremap  P  "+P
+nnoremap y  "+y
+nnoremap yy "+yy
+nnoremap Y  "+Y
+nnoremap p  "+p
+nnoremap P  "+P
 vnoremap y  "+y
 vnoremap D  "+d
 vnoremap y  "+y
