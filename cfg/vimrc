@@ -114,7 +114,7 @@ nnoremap <F5> :highlight ExtraWhitespace ctermbg=darkgreen <CR>
 nnoremap <S-F5> :highlight ExtraWhitespace NONE <CR>
 nnoremap <F6> :%s/\s\+$//e <CR>
 nnoremap <F12> :vsplit +vertical\ resize\ 35\|e. <CR>
-nnoremap <S-F12> :close 1
+nnoremap <S-F12> :close 1 <CR>
 let g:netrw_chgwin=2
 map <F4> :silent! A <CR>
 map <F8> :silent! AV <CR>
