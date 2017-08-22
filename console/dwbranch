@@ -20,10 +20,18 @@ error() {
     exit 1
 }
 
-[ -z "${BRANCH}" ] && error "Usage: ${0} BRANCH [COMPONENTS...]"
-
 PROJECTS_DIR='/home/olan/projects'
 ENV_DIR='/home/olan/job'
+
+if [ -z "${BRANCH}" ]; then
+    link=`readlink "${PROJECTS_DIR}/drweb-unix-configd"`
+    if [ ! $? -eq 0 ]; then
+        echo 'Cannot figure out branch of drweb-unix-configd: realink failed' 1>&2
+        exit 1
+    fi
+    echo "${link}" | cut -d '-' -f 4
+    exit 0
+fi
 
 relink() {
     target="${1}-${BRANCH}"
