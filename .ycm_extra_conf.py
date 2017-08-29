@@ -22,17 +22,14 @@ import sys
 import ycm_core
 
 flags = [
-'-I', '.'
-'-I', 'include',
-'-I', 'include/uapi',
-'-D', 'MODULE',
-
+'-x',
+'c++',
 '-Wall',
 '-Wextra',
 '-Werror',
 '-fexceptions',
 '-DNDEBUG',
-'-std=gnu89'
+'-std=c++14'
 ]
 
 def DirectoryOfThisScript():
