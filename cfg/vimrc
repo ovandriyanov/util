@@ -53,7 +53,7 @@ function SetLibStdCppOptions()
     set tabstop=8
 endfunction
 
-" let g:ycm_global_ycm_extra_conf = '/home/olan/.vim/bundle/YouCompleteMe/third_party/ycmd/examples/.ycm_extra_conf.py'
+let g:ycm_global_ycm_extra_conf = '/home/olan/.config/vim/.ycm_extra_conf.py'
 let g:AutoPairsShortcutToggle = '<C-p>'
 let g:AutoPairsShortcutJump = '<C-n>'
 let g:AutoPairsShortcutFastWrap = '<C-e>'
@@ -131,7 +131,7 @@ vnoremap D  "+d
 vnoremap y  "+y
 vnoremap p  "+p
 vnoremap P  "+P
-vnoremap <C-_> c/*<C-R>"*/<Esc>
+vnoremap <C-_> c/* <C-R>" */<Esc>
 nmap ,cs :let @+=expand("%")<CR>
 nmap ,cl :let @+=expand("%:p")<CR>
 
