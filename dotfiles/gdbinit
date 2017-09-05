@@ -1,0 +1,2 @@
+# Load .gdbinit from current directory
+set auto-load safe-path /
