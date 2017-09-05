@@ -103,6 +103,8 @@ function CppEnable()
     Enable Conque-GDB
     Enable git-time-lapse
     Enable a.vim                  " Quick switching betwean .h/.cpp
+    command! -nargs=* -complete=file Gdb call conque_gdb#open(<q-args>, [
+        \ 'rightbelow 10split'])
 endfunction
 command CppEnable :call CppEnable()
 
