@@ -1,2 +1,3 @@
 alias mc='EDITOR=vim VIEWER=less /usr/bin/mc'
 PATH="/home/olan/bin:$PATH"
+[ -f ~/.c.sh ] && . ~/.c.sh
