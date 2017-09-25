@@ -20,7 +20,7 @@ error() {
     exit 1
 }
 
-PROJECTS_DIR='/home/olan/projects'
+PROJECTS_DIR='/home/olan/git/drweb'
 ENV_DIR='/home/olan/job'
 
 if [ -z "${BRANCH}" ]; then
