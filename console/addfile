@@ -12,7 +12,7 @@ find_root_file() {
 
     local DIR="$PWD"
     while true; do
-        local ROOT_FILE="`ls $DIR | grep "$FILE_REGEX" | head -1`"
+        local ROOT_FILE="`ls -a $DIR | grep "$FILE_REGEX" | head -1`"
         if [ -n "$ROOT_FILE" ]; then
             echo "${DIR}/${ROOT_FILE}"
             return 0
@@ -88,7 +88,7 @@ c_header() {
     local RELPATH="`get_relpath $(dirname \"$PRO_FILE\")`"
     local FILE_NAME="`concat_paths \"$RELPATH\" \"$FILE\"`"
     local INCLUDE_MACRO="`echo \"$FILE_NAME\" | tr [:lower:] [:upper:] | sed s,[^a-zA-Z0-9_],_,g`"
-    local PROJECT_NAME="`basename \"$PRO_FILE\"| cut -d . -f 1`"
+    local PROJECT_NAME="`basename \"$PRO_FILE\" | tr '.' '\n' | tail -2 | head -1`"
     
     [ -f "$FILE" ] || instantiate_template       \
        "DATE=$DATE"                              \
@@ -109,7 +109,7 @@ c_source() {
     local TEMPLATE="$TEMPLATES_DIR/c_source.txt"
     local EXT="`get_extension \"$FILE\"`"
     local HEADER="`get_unextended \"$FILE\"`"'.h'
-    local PROJECT_NAME="`basename \"$PRO_FILE\"| cut -d . -f 1`"
+    local PROJECT_NAME="`basename \"$PRO_FILE\" | tr '.' '\n' | tail -2 | head -1`"
 
     local DATE="`date +%d/%m/%Y`"
     local YEAR="`date +%Y`"
