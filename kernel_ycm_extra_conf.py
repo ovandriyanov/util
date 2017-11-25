@@ -25,8 +25,9 @@ import json
 include_paths = set()
 compile_commands_json = json.load(open('compile_commands.json'))
 for item in compile_commands_json:
-    include_paths.add()
-flags = [0]['command'].split()
+    for arg in filter(lambda x: x.startswith('-I'), item['command'].split()):
+        include_paths.add(arg)
+flags = compile_commands_json[0]['command'].split() + list(include_paths)
 
 def DirectoryOfThisScript():
   return os.path.dirname( os.path.abspath( __file__ ) )
