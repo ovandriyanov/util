@@ -1,0 +1,8 @@
+How to make gif from OGV:
+
+https://ctors.net/2015/07/25/ogv_to_gif
+
+mplayer -ao null out.ogv -vo jpeg:outdir=output
+
+convert output/* output.gif
+convert output.gif -fuzz 10% -layers Optimize optimised.gif
