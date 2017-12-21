@@ -1,0 +1,3 @@
+Emulate slow network (1 second delay for all packets):
+
+tc qdisc add dev lo root netem delay 1000000
