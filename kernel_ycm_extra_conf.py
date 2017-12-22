@@ -16,18 +16,39 @@
 # along with ycmd.  If not, see <http://www.gnu.org/licenses/>.
 
 import difflib
-import inspect
+import json
 import os
+import re
 import sys
 import ycm_core
-import json
+
+def escape_aware_split(s):
+    start = 0
+    for i in range(len(s) - 1):
+        a, b = s[i:i+2]
+        if b.isspace() and a != '\\':
+            end = i + 1
+            while start < end and s[start].isspace():
+                start += 1
+            yld = s[start:end]
+            start = end
+            if len(yld) != 0:
+                yield yld
+    while start < len(s) and s[start].isspace():
+        start += 1
+    yld = s[start:len(s)]
+    if len(yld) != 0:
+        yield yld
+
+def unescape(s):
+    return bytes(s).decode('unicode-escape')
 
 include_paths = set()
 compile_commands_json = json.load(open('compile_commands.json'))
 for item in compile_commands_json:
-    for arg in filter(lambda x: x.startswith('-I'), item['command'].split()):
-        include_paths.add(arg)
-flags = compile_commands_json[0]['command'].split() + list(include_paths)
+    for arg in filter(lambda x: x.startswith('-I'), escape_aware_split(item['command'])):
+        include_paths.add(unescape(arg))
+flags = [ unescape(arg) for arg in escape_aware_split(compile_commands_json[0]['command'])] + list(include_paths)
 
 def DirectoryOfThisScript():
   return os.path.dirname( os.path.abspath( __file__ ) )
@@ -75,8 +96,15 @@ def IsHeaderFile( filename ):
   return extension in [ '.h', '.hxx', '.hpp', '.hh' ]
 
 def GetSourceFileScore( header, source ):
-  diff = difflib.ndiff(header.split('/'), source.split('/'))
-  return sum(1 if line[:2] == '  ' else 0 for line in diff)
+  hpath = header.split('/')
+  cpath = source.split('/')
+  diff = difflib.ndiff(hpath[:len(hpath) - 1], cpath[:len(cpath) - 1])
+  score = sum(1 if line[:2] == '  ' else 0 for line in diff)
+  if os.path.splitext(hpath[len(hpath) - 1])[0] == os.path.splitext(cpath[len(cpath) - 1])[0]:
+    score += 2
+  else:
+    score += 1
+  return score
 
 def GetSourceFileForHeader( filename ):
   basename = os.path.basename( filename )
@@ -84,14 +112,13 @@ def GetSourceFileForHeader( filename ):
   max_score = 0
   result = None
   for (dirname, dirs, files) in os.walk(rootdir):
-    for extension in SOURCE_EXTENSIONS:
-      replacement_file = unextended_basename + extension
-      if replacement_file in files:
-        candidate = os.path.join(dirname, replacement_file)
-        score = GetSourceFileScore(filename, candidate)
-        if score > max_score:
-          max_score = score
-          result = candidate
+    for candidate in files:
+      if os.path.splitext(candidate)[1] not in SOURCE_EXTENSIONS:
+        continue
+      score = GetSourceFileScore(filename, candidate)
+      if score > max_score:
+        max_score = score
+        result = candidate
   if result:
     return result
   else:
@@ -104,8 +131,8 @@ def GetCompilationInfoForFile( filename ):
   # should be good enough.
   if IsHeaderFile( filename ):
     try:
-      compilation_info = database.GetCompilationInfoForFile(
-        GetSourceFileForHeader( filename ) )
+      source_file_name = GetSourceFileForHeader(filename)
+      compilation_info = database.GetCompilationInfoForFile(source_file_name)
       if compilation_info.compiler_flags_:
         return compilation_info
     except:
