@@ -46,7 +46,6 @@ set expandtab
 set scrolloff=8
 
 let &path.="src/include,/usr/include/c++/5,/usr/include/x86_64-linux-gnu/c++/5"
-
 autocmd BufRead,BufNewFile /usr/include/c++/*,/usr/include/x86_64-linux-gnu/c++/*,/usr/include/linux/* call SetLibStdCppOptions()
 function SetLibStdCppOptions()
     set ft=cpp
@@ -55,7 +54,6 @@ endfunction
 
 function Pad(count)
     let a:x = a:count
-    echo 'COUNT: ' . a:x
     " sleep 1
     let a:pad_to = col('.')
     while a:x != 0
@@ -75,6 +73,26 @@ function Pad(count)
             exe 'normal ' . a:diff . 'X'
         endif
         call cursor(line('.'), a:pad_to)
+    endwhile
+endfunction
+
+function GetCurrentChar()
+    return matchstr(getline('.'), '\%' . col('.') . 'c.')
+endfunction
+
+function BreakAndPad(char, count)
+    let a:i = 0
+    while a:i < a:count
+        let a:line = line('.')
+        let a:col = col('.')
+        exe 'normal f' . a:char
+        if GetCurrentChar() != a:char
+            return
+        endif
+        exe "normal a\n"
+        call cursor(a:line, a:col)
+        call Pad(1)
+        let a:i = a:i + 1
     endwhile
 endfunction
 
@@ -147,8 +165,10 @@ nnoremap <F6> :%s/\s\+$//e <CR>
 nnoremap <S-F12> :close 1 <CR>
 nnoremap <silent> <Plug>PadDown :<c-U>call Pad(v:count1)<CR>:call repeat#set("\<Plug>PadDown")<CR>
 nnoremap <silent> <Plug>PadUp :<c-U>call Pad(-v:count1)<CR>:call repeat#set("\<Plug>PadUp")<CR>
-nmap <C-p><C-j> <Plug>PadDown
-nmap <C-p><C-k> <Plug>PadUp
+nmap <C-p>j <Plug>PadDown
+nmap <C-p>k <Plug>PadUp
+nnoremap <silent> <Plug>BreakAndPadComma :<c-U>call BreakAndPad(',', v:count1)<CR>:call repeat#set("\<Plug>BreakAndPadComma")<CR>
+nmap <C-p>, <Plug>BreakAndPadComma
 let g:netrw_chgwin=2
 map <F4> :silent! A <CR>
 map <F8> :silent! AV <CR>
