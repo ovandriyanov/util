@@ -1,7 +1,7 @@
 set nocompatible                    " be iMproved
 set ttimeoutlen=50
 " set noesckeys
-set showcmd                         " Show me what I'm doing
+" set showcmd                         " Show me what I'm doing
 set ic                              " Ignore case when searching with "/"
 set splitright
 
@@ -53,8 +53,36 @@ function SetLibStdCppOptions()
     set tabstop=8
 endfunction
 
+function Pad(count)
+    let a:x = a:count
+    echo 'COUNT: ' . a:x
+    " sleep 1
+    let a:pad_to = col('.')
+    while a:x != 0
+        if a:x > 0
+            exe 'normal j^'
+            let a:x = a:x - 1
+        elseif a:x < 0
+            exe 'normal k^'
+            let a:x = a:x + 1
+        endif
+
+        let a:pad_from = col('.')
+        let a:diff = abs(a:pad_to - a:pad_from)
+        if a:pad_from < a:pad_to
+            exe 'normal ' . a:diff . 'i '
+        elseif a:diff > 0
+            exe 'normal ' . a:diff . 'X'
+        endif
+        call cursor(line('.'), a:pad_to)
+    endwhile
+endfunction
+
+command -count=1 PadDown call Pad(<count>)
+command -count=1 PadUp call Pad(-<count>)
+
 let g:ycm_global_ycm_extra_conf = '/home/olan/.config/vim/.ycm_extra_conf.py'
-let g:AutoPairsShortcutToggle = '<C-p>'
+" let g:AutoPairsShortcutToggle = '<C-p>'
 let g:AutoPairsShortcutJump = '<C-n>'
 let g:AutoPairsShortcutFastWrap = '<C-e>'
 let g:AutoPairsMultilineClose = 0
@@ -72,6 +100,7 @@ Plugin 'henrik/vim-indexed-search'          " Show how many matches were found w
 Plugin 'jiangmiao/auto-pairs'               " Pair quotes, brackets, etc.
 Plugin 'vim-scripts/BufOnly.vim'
 Plugin 'tomtom/enabler_vim'
+Plugin 'tpope/vim-repeat'
 
 " C/C++ stuff
 " Plugin 'vim-scripts/Cpp11-Syntax-Support'   " Proper C++11 syntax highlighting
@@ -115,8 +144,11 @@ nnoremap <F2> :YcmCompleter GoTo <CR>
 nnoremap <F5> :highlight ExtraWhitespace ctermbg=darkgreen <CR>
 nnoremap <S-F5> :highlight ExtraWhitespace NONE <CR>
 nnoremap <F6> :%s/\s\+$//e <CR>
-nnoremap <F12> :vsplit +vertical\ resize\ 35\|e. <CR>
 nnoremap <S-F12> :close 1 <CR>
+nnoremap <silent> <Plug>PadDown :<c-U>call Pad(v:count1)<CR>:call repeat#set("\<Plug>PadDown")<CR>
+nnoremap <silent> <Plug>PadUp :<c-U>call Pad(-v:count1)<CR>:call repeat#set("\<Plug>PadUp")<CR>
+nmap <C-p><C-j> <Plug>PadDown
+nmap <C-p><C-k> <Plug>PadUp
 let g:netrw_chgwin=2
 map <F4> :silent! A <CR>
 map <F8> :silent! AV <CR>
