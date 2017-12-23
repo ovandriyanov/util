@@ -128,6 +128,7 @@ Plugin 'tpope/vim-repeat'
 " Plugin 'vim-scripts/Conque-GDB'
 " Plugin 'vim-scripts/git-time-lapse'
 " Plugin 'vim-scripts/a.vim'                  " Quick switching betwean .h/.cpp
+Plugin 'tpope/vim-fugitive'
 " " Plugin 'jeaye/color_coded'
 
 " Color schemes
