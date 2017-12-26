@@ -193,6 +193,11 @@ nmap ,cl :let @+=expand("%:p")<CR>
 noremap <C-u> 4<C-u>
 noremap <C-d> 4<C-d>
 
+noremap <C-p>[ :cn<CR>
+noremap <C-p>] :cp<CR>
+noremap <C-p><C-[> :let line = line('.')<CR>:cn<CR>:exec ':' . line<CR>
+noremap <C-p><C-]> :let line = line('.')<CR>:cp<CR>:exec ':' . line<CR>
+
 " let g:ycm_autoclose_preview_window_after_insertion = 1
 let g:ycm_confirm_extra_conf = 0
 
