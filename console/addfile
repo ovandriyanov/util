@@ -137,7 +137,7 @@ handle_file() {
 
     local EXT="`get_extension $(basename $FILE)`"
     case "$EXT" in
-        h|hpp|hxx)
+        h|hh|hpp|hxx)
             c_header "$FILE" "$PRO_FILE";;
         c|cpp|cxx)
             c_source "$FILE" "$PRO_FILE";;
