@@ -1,0 +1,29 @@
+#!/bin/sh
+
+set -e
+set -x
+
+GIT_ROOT='.'
+while [ ! -e "${GIT_ROOT}/.git" ]; do
+    if [ "`realpath ${GIT_ROOT}`" = '/' ]; then
+        echo 'Cannot find file .git; searched up to the filesystem root' >&2
+        exit 1
+    fi
+    GIT_ROOT="${GIT_ROOT}/.."
+done
+GIT_ROOT="`realpath ${GIT_ROOT}`"
+
+# Check if this is a worktree, not a real repo
+if [ -f .git ]; then
+    GIT_ROOT="$(sed -nE s/gitdir:\ \(.*\)\/\\1/p ${GIT_ROOT}/.git)"
+fi
+
+EXCLUDE_FILE="${GIT_ROOT}/.git/info/exclude"
+
+for i; do
+    if echo "${i}" | grep -q '*'; then
+        echo "${i}" >>"${EXCLUDE_FILE}"
+    else
+        echo "`realpath --relative-to=${GIT_ROOT} ${i}`" >>"${EXCLUDE_FILE}"
+    fi
+done
