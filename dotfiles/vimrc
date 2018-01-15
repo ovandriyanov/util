@@ -24,6 +24,7 @@ command Vrc edit ~/.vimrc
 " Do not clear clipboard on exit
 autocmd VimLeave * call system("xsel -ib", getreg('+'))
 " Delete trailing whitespace
+let g:ft_ignore_pat='\.jam$'
 autocmd FileType c,cpp,proto,rl call SetCodeOptions()
 autocmd BufRead,BufNewFile *.jam set syntax=bbv2
 function SetCodeOptions()
