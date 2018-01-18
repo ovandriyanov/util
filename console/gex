@@ -1,7 +1,6 @@
 #!/bin/sh
 
 set -e
-set -x
 
 GIT_ROOT='.'
 while [ ! -e "${GIT_ROOT}/.git" ]; do
