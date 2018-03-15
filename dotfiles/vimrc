@@ -5,7 +5,6 @@ set ttimeoutlen=50
 set ic                              " Ignore case when searching with "/"
 set splitright
 set wildmenu
-set wildmode=longest:full,full
 
 " C++11 syntax workaround
 let c_no_curly_error=1
