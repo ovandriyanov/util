@@ -35,9 +35,8 @@ endfunction
 
 command StripTrailingWhitespace %s/\s\+$//e
 
-highlight ExtraWhitespace ctermbg=darkgreen
-autocmd ColorScheme * highlight ExtraWhitespace ctermbg=darkgreen
-match ExtraWhitespace /\s\+$/
+autocmd WinNew * highlight ExtraWhitespace ctermbg=darkgreen
+autocmd WinNew * match ExtraWhitespace /\s\+$/
 
 set exrc
 set secure
@@ -229,3 +228,6 @@ let g:ycm_confirm_extra_conf = 0
 " set efm+=,%D%*\\a:\ Entering\ directory\ %*[`]%f
 " set efm+=,%X%*\\a:\ Leaving\ directory\ %*[`]%f
 " set efm+=,%DMaking\ %*\\a\ in\ %f
+
+highlight ExtraWhitespace ctermbg=darkgreen
+match ExtraWhitespace /\s\+$/
