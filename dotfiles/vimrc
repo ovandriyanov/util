@@ -165,9 +165,9 @@ colorscheme github
 
 " nnoremap <C-S-r> gd[{V%::s/<C-R>///gc<left><left><left>
 nnoremap <F2> :YcmCompleter GoTo <CR>
+nnoremap <F6> :vsplit <CR>:YcmCompleter GoTo <CR>
 nnoremap <F5> :highlight ExtraWhitespace ctermbg=darkgreen <CR>
 nnoremap <S-F5> :highlight ExtraWhitespace NONE <CR>
-nnoremap <F6> :%s/\s\+$//e <CR>
 nnoremap <S-F12> :close 1 <CR>
 nnoremap <silent> <Plug>PadDown :<c-U>call Pad(v:count1)<CR>:call repeat#set("\<Plug>PadDown")<CR>
 nnoremap <silent> <Plug>PadUp :<c-U>call Pad(-v:count1)<CR>:call repeat#set("\<Plug>PadUp")<CR>
