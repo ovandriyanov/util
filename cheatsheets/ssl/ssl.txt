@@ -1,7 +1,7 @@
 cd kitchen. Then:
 
 0. Generate CA certificate and key:
-    
+
     openssl req -config openssl.cnf -new -x509 -keyout private/ca.key.pem -out certs/ca.crt.pem -days 365 -nodes
 
 1. Generate signee cert/key:
