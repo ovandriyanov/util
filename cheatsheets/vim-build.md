@@ -12,7 +12,7 @@ Configure vim with necessary features:
 
 Install packages needed to build vim:
 
-    dnf install xsel ruby-devel python3-devel lua-devel python-devel ncurses-devel gawk x11-devel libICE-devel libXpm-devel libXt-devel libX11-devel
+    dnf install xsel ruby-devel python3-devel lua-devel python-devel ncurses-devel gawk x11-devel libICE-devel libXpm-devel libXt-devel libX11-devel ncurses-compat-libs
 
 Configure vim with necessary features:
 
