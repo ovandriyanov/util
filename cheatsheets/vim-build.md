@@ -17,3 +17,13 @@ Install packages needed to build vim:
 Configure vim with necessary features:
 
     CFLAGS='-fPIC -O2' ./configure --prefix=`pwd`/build --enable-pythoninterp=yes --enable-python3interp=yes --with-features=huge --with-x --enable-gui --enable-luainterp=yes --enable-rubyinterp=yes --with-x
+
+# SUSE
+
+Install packages needet to build vim:
+
+    zypper in xsel ncurses-devel libnsl-devel libICE-devel libSM-devel libX11-devel libXpm-devel libXt-devel libXdmcp-devel
+
+Configure vim with necessary features:
+
+    ./configure --prefix=`pwd`/build --enable-pythoninterp=yes --enable-python3interp=yes --with-features=huge --enable-gui --enable-luainterp=yes --enable-rubyinterp=yes --with-x
