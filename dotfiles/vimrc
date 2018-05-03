@@ -4,6 +4,7 @@ set ttimeoutlen=50
 " set showcmd                         " Show me what I'm doing
 set ic                              " Ignore case when searching with "/"
 set splitright
+set diffopt+=vertical
 set wildmenu
 
 " C++11 syntax workaround
