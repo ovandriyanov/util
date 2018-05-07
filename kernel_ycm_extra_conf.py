@@ -46,9 +46,9 @@ def unescape(s):
 include_paths = set()
 compile_commands_json = json.load(open('compile_commands.json'))
 for item in compile_commands_json:
-    for arg in filter(lambda x: x.startswith('-I'), escape_aware_split(item['command'])):
+    for arg in filter(lambda x: x.startswith('-I'), item['arguments']):
         include_paths.add(unescape(arg))
-flags = [ unescape(arg) for arg in escape_aware_split(compile_commands_json[0]['command'])] + list(include_paths)
+flags = [ unescape(arg) for arg in compile_commands_json[0]['arguments'] ] + list(include_paths)
 
 def DirectoryOfThisScript():
   return os.path.dirname( os.path.abspath( __file__ ) )
@@ -118,7 +118,7 @@ def GetSourceFileForHeader( filename ):
       score = GetSourceFileScore(filename, candidate)
       if score > max_score:
         max_score = score
-        result = candidate
+        result = dirname + '/' + candidate
   if result:
     return result
   else:
