@@ -115,7 +115,7 @@ def GetSourceFileForHeader( filename ):
     for candidate in files:
       if os.path.splitext(candidate)[1] not in SOURCE_EXTENSIONS:
         continue
-      score = GetSourceFileScore(filename, candidate)
+      score = GetSourceFileScore(filename, dirname + '/' + candidate)
       if score > max_score:
         max_score = score
         result = dirname + '/' + candidate
