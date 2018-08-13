@@ -6,7 +6,7 @@ set ic                              " Ignore case when searching with "/"
 set splitright
 set diffopt+=vertical
 set wildmenu
-set foldmethod=indent
+set foldcolumn=1
 
 " C++11 syntax workaround
 let c_no_curly_error=1
@@ -32,6 +32,10 @@ autocmd VimLeave * call system("xsel -ib", getreg('+'))
 let g:ft_ignore_pat='\.jam$'
 autocmd FileType c,cpp,proto,rl call SetCodeOptions()
 autocmd BufRead,BufNewFile *.jam set syntax=bbv2
+
+autocmd BufWinLeave *.* mkview
+autocmd BufWinEnter *.* silent loadview
+
 function SetCodeOptions()
     " autocmd BufWritePre <buffer> %s/\s\+$//e
     set nowrap
