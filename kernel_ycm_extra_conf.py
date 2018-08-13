@@ -101,7 +101,7 @@ def GetSourceFileScore( header, source ):
   diff = difflib.ndiff(hpath[:len(hpath) - 1], cpath[:len(cpath) - 1])
   score = sum(1 if line[:2] == '  ' else 0 for line in diff)
   if os.path.splitext(hpath[len(hpath) - 1])[0] == os.path.splitext(cpath[len(cpath) - 1])[0]:
-    score += 2
+    score += 1
   else:
     score += 1
   return score
