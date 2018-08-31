@@ -1,2 +1,10 @@
 # Load .gdbinit from current directory
 # set auto-load safe-path /
+
+# Enable libstdc++ containers pretty printing
+python
+import sys
+sys.path.insert(0, '/usr/share/gcc-8/python')
+from libstdcxx.v6.printers import register_libstdcxx_printers
+register_libstdcxx_printers(None)
+end
