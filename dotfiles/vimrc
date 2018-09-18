@@ -134,7 +134,8 @@ call vundle#begin()
 Plugin 'VundleVim/Vundle.vim'
 
 " General
-Plugin 'henrik/vim-indexed-search'          " Show how many matches were found when searching with '/'
+" Plugin 'henrik/vim-indexed-search'          " Show how many matches were found when searching with '/'
+Plugin 'google/vim-searchindex'             " instead of 'henrik/vim-indexed-search'
 Plugin 'jiangmiao/auto-pairs'               " Pair quotes, brackets, etc.
 Plugin 'vim-scripts/BufOnly.vim'
 Plugin 'tomtom/enabler_vim'
