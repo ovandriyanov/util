@@ -101,7 +101,7 @@ def GetSourceFileScore( header, source ):
   diff = difflib.ndiff(hpath[:len(hpath) - 1], cpath[:len(cpath) - 1])
   score = sum(1 if line[:2] == '  ' else 0 for line in diff)
   if os.path.splitext(hpath[len(hpath) - 1])[0] == os.path.splitext(cpath[len(cpath) - 1])[0]:
-    score += 1
+    score += 2 if score > 0 else 1
   else:
     score += 1
   return score
@@ -120,6 +120,7 @@ def GetSourceFileForHeader( filename ):
         max_score = score
         result = dirname + '/' + candidate
   if result:
+    print("Source file for header {}: {}".format(filename, result))
     return result
   else:
     raise Exception( 'Cannot find source file for {}'.format( filename ) )
