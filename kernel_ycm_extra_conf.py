@@ -120,7 +120,6 @@ def GetSourceFileForHeader( filename ):
         max_score = score
         result = dirname + '/' + candidate
   if result:
-    print("Source file for header {}: {}".format(filename, result))
     return result
   else:
     raise Exception( 'Cannot find source file for {}'.format( filename ) )
