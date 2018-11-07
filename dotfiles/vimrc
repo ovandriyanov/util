@@ -6,7 +6,8 @@ set ic                              " Ignore case when searching with "/"
 set splitright
 set diffopt+=vertical
 set wildmenu
-"set foldcolumn=1
+set foldcolumn=1
+set foldmethod=manual
 
 " C++11 syntax workaround
 let c_no_curly_error=1
