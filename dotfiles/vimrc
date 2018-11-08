@@ -118,7 +118,7 @@ endfunction
 command -count=1 PadDown call Pad(<count>)
 command -count=1 PadUp call Pad(-<count>)
 
-let g:ycm_global_ycm_extra_conf = '/home/olan/.config/vim/.ycm_extra_conf.py'
+let g:ycm_global_ycm_extra_conf = '/home/olan/git/ovandriyanov/util/kernel_ycm_extra_conf.py'
 let g:ycm_always_populate_location_list = 1
 " let g:AutoPairsShortcutToggle = '<C-p>'
 let g:AutoPairsShortcutJump = '<C-n>'
