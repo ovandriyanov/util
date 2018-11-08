@@ -99,6 +99,8 @@ def GetSourceFileScore( header, source ):
   hpath = header.split('/')
   cpath = source.split('/')
   diff = difflib.ndiff(hpath[:len(hpath) - 1], cpath[:len(cpath) - 1])
+  if os.path.basename(source) == "version.cpp":
+      return -1
   score = sum(1 if line[:2] == '  ' else 0 for line in diff)
   if os.path.splitext(hpath[len(hpath) - 1])[0] == os.path.splitext(cpath[len(cpath) - 1])[0]:
     score += 2 if score > 0 else 1
