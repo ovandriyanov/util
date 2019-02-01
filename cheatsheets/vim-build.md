@@ -20,7 +20,7 @@ Configure vim with necessary features:
 
 # SUSE
 
-Install packages needet to build vim:
+Install packages needed to build vim:
 
     zypper in xsel ncurses-devel libnsl-devel libICE-devel libSM-devel libX11-devel libXpm-devel libXt-devel libXdmcp-devel
 
