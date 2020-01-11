@@ -1,264 +1,279 @@
-set nocompatible                    " be iMproved
-set ttimeoutlen=50
-" set noesckeys
-" set showcmd                         " Show me what I'm doing
-set ic                              " Ignore case when searching with "/"
-set splitright
+" ##############################################################################
+" ################################  Vim options  ###############################
+" ##############################################################################
+
+set backspace=indent,eol,start
 set diffopt+=vertical
-set wildmenu
+set expandtab
+set exrc
 set foldcolumn=1
 set foldmethod=manual
-
-" C++11 syntax workaround
-let c_no_curly_error=1
-syntax enable
-
+set formatoptions=cq
+set hidden
+set hlsearch
+set ignorecase
+set langmap=ЙQ,ЦW,УE,КR,ЕT,НY,ГU,ШI,ЩO,ЗP,Х[,Ъ],ФA,ЫS,ВD,АF,ПG,РH,ОJ,ЛK,ДL,Ж\\;,Э',ЯZ,ЧX,СC,МV,ИB,ТN,ЬM,Б\\,,Ю.,йq,цw,уe,кr,еt,нy,гu,шi,щo,зp,х[,ъ],фa,ыs,вd,аf,пg,рh,оj,лk,дl,ж\\;,э',яz,чx,сc,мv,иb,тn,ьm,б\\,,ю.,"@,№#,;$,:^,?&
+set lazyredraw
+set noautoindent
+set nocompatible
+set noesckeys
+set nosmartindent
 set number
 set relativenumber
 set ruler
-set noautoindent
-set nosmartindent
-set hidden
-set backspace=indent,eol,start
-set hls
-set t_ut=
-
-set langmap=ЙQ,ЦW,УE,КR,ЕT,НY,ГU,ШI,ЩO,ЗP,Х[,Ъ],ФA,ЫS,ВD,АF,ПG,РH,ОJ,ЛK,ДL,Ж\\;,Э',ЯZ,ЧX,СC,МV,ИB,ТN,ЬM,Б\\,,Ю.,йq,цw,уe,кr,еt,нy,гu,шi,щo,зp,х[,ъ],фa,ыs,вd,аf,пg,рh,оj,лk,дl,ж\\;,э',яz,чx,сc,мv,иb,тn,ьm,б\\,,ю.,"@,№#,;$,:^,?&
-
-command Vrc edit ~/.vimrc
-
-" Do not clear clipboard on exit
-autocmd VimLeave * call system("xsel -ib", getreg('+'))
-" Delete trailing whitespace
-let g:ft_ignore_pat='\.jam$'
-autocmd FileType c,cpp,proto,rl call SetCodeOptions()
-autocmd BufRead,BufNewFile *.jam set syntax=bbv2
-
-autocmd BufWinEnter *.* silent loadview
-
-function SetCodeOptions()
-    " autocmd BufWritePre <buffer> %s/\s\+$//e
-    set nowrap
-endfunction
-
-fu! s:getSelectedText()
-  let l:old_reg = getreg('"')
-  let l:old_regtype = getregtype('"')
-  norm gvy
-  let l:ret = getreg('"')
-  call setreg('"', l:old_reg, l:old_regtype)
-  exe "norm \<Esc>"
-  return l:ret
-endfu
-
-command StripTrailingWhitespace %s/\s\+$//e
-
-autocmd WinNew * highlight ExtraWhitespace ctermbg=darkgreen
-autocmd WinNew * match ExtraWhitespace /\s\+$/
-
-set exrc
-set secure
-
-set tabstop=4
-set softtabstop=4
-set shiftwidth=4
-set expandtab
+set runtimepath+=~/.vim/bundle/Vundle.vim/
 set scrolloff=8
+set secure
+set shiftwidth=4
+set showcmd
+set softtabstop=4
+set splitright
+set t_ut=
+set tabstop=4
+set ttimeoutlen=50
+set wildmenu
 
-let &path.="src/include,/usr/include/c++/5,/usr/include/x86_64-linux-gnu/c++/5"
-autocmd BufRead,BufNewFile /usr/include/c++/*,/usr/include/x86_64-linux-gnu/c++/*,/usr/include/linux/* call SetLibStdCppOptions()
-function SetLibStdCppOptions()
-    set ft=cpp
-    set tabstop=8
+highlight ExtraWhitespace ctermbg=darkgreen
+highlight Terminal guifg=#c0c0c0 guibg=#000040 ctermfg=gray ctermbg=black
+match ExtraWhitespace /\s\+$/
+syntax enable
+
+" ##############################################################################
+" ##############################  Plugin settings  #############################
+" ##############################################################################
+
+" C++11 syntax workaround
+let c_no_curly_error=1
+
+" Netrw settings
+let g:netrw_bufsettings = 'noma nomod rnu nobl nowrap ro'
+let g:netrw_keepdir = 0
+let g:netrw_list_hide = ".*.swp"
+
+" YouCompleteMe settings
+let g:ycm_always_populate_location_list = 1
+let g:ycm_confirm_extra_conf = 0
+let g:ycm_global_ycm_extra_conf = $HOME . '/git/ovandriyanov/util/kernel_ycm_extra_conf.py'
+" let g:ycm_autoclose_preview_window_after_insertion = 1
+
+" TODO: either uncomment or remove this
+" AutoPairs settings
+" let g:AutoPairsMapCR = 0
+" let g:AutoPairsMultilineClose = 0
+" let g:AutoPairsShortcutFastWrap = '<C-e>'
+" let g:AutoPairsShortcutJump = '<C-n>'
+" let g:AutoPairsShortcutToggle = '<C-p>'
+
+" ##############################################################################
+" ##############################  Custom commands  #############################
+" ##############################################################################
+
+command! Vrc edit ~/.vimrc
+command! Ve Vexplore!
+command! E Explore
+command! StripTrailingWhitespace %s/\s\+$//e
+command! -count=1 PadDown call Pad(<count>)
+command! -count=1 PadUp call Pad(-<count>)
+command! -bang DHidden :call DeleteHiddenBuffers('<bang>')
+command! -nargs=1 Yank :call Yank('<args>')
+
+" ##############################################################################
+" ##############################  Custom mappings  #############################
+" ##############################################################################
+
+" Screen escape sequences workaround
+noremap             <Esc>[1~        <Home>
+noremap             <Esc>[4~        <End>
+tnoremap            <Esc>[1~        <Home>
+tnoremap            <Esc>[4~        <End>
+
+" QtCreator-like bindings
+nnoremap            <F2>            :YcmCompleter GoTo <cr>
+nnoremap            <F4>            :silent! A <cr>
+nnoremap            <F6>            :vsplit <cr>:YcmCompleter GoTo <cr>
+nnoremap            <F8>            :silent! AV <cr>
+nnoremap            <C-k>           :CommandT <cr>
+
+" Visual mode search
+vnoremap            *               <esc>/\V<c-r>=escape(getreg('*'), '/')<cr><cr>
+vnoremap            #               <esc>?\V<c-r>=escape(getreg('*'), '/')<cr><cr>
+vnoremap            <Leader>*       <esc>/\V\<<c-r>=escape(getreg('*'), '/')<cr>\><cr>
+vnoremap            <leader>#       <esc>?\V\<<c-r>=escape(getreg('*'), '/')<cr>\><cr>
+
+" Command line register escaping
+cnoremap            <c-r>\"         <c-r>=escape(getreg('"'), '/')<cr>
+cnoremap            <c-r>\+         <c-r>=escape(getreg('+'), '/')<cr>
+
+" Padding
+nnoremap            <silent>        <Plug>PadDown :<c-U>call Pad(v:count1)<cr>:call repeat#set("\<Plug>PadDown")<cr>
+nnoremap            <silent>        <Plug>PadUp :<c-U>call Pad(-v:count1)<cr>:call repeat#set("\<Plug>PadUp")<cr>
+nnoremap            <C-p>j          <Plug>PadDown
+nnoremap            <C-p>k          <Plug>PadUp
+nnoremap            <silent>        <Plug>BreakAndPadComma :<c-U>call BreakAndPad(',', v:count1)<cr>:call repeat#set("\<Plug>BreakAndPadComma")<cr>
+nnoremap            <C-p>,          <Plug>BreakAndPadComma
+
+" Error navigation
+nnoremap            <down>          :cn<cr>
+nnoremap            <up>            :cp<cr>
+
+" Buffer switching
+nnoremap            <right>         :bn<cr>
+nnoremap            <left>          :bp<cr>
+tnoremap            <c-w><right>    <c-w>:bn<cr>
+tnoremap            <c-w><left>     <c-w>:bp<cr>
+
+" File navigation
+nnoremap            <c-w>f          :vertical wincmd f<cr>
+nnoremap            <c-w>F          :vertical wincmd F<cr>
+" TODO: implement
+" vnoremap <c-w>f :<c-u>vertical wincmd f<cr>
+" vnoremap <c-w>F :<c-u>vertical wincmd F<cr>
+
+" Should probably get rid of these...
+nnoremap <F5>       :highlight ExtraWhitespace ctermbg=darkgreen <CR>
+nnoremap <S-F5>     :highlight ExtraWhitespace NONE <CR>
+
+" ##############################################################################
+" ############################  Automatic commands  ############################
+" ##############################################################################
+
+augroup vimrc
+    " Clear all autocommands within augroup 'vimrc'
+    autocmd!
+
+    " Do not clear clipboard on exit
+    autocmd VimLeave *                  call system("xsel -ib", getreg('+'))
+
+    " Highlight extra whitespace
+    autocmd WinNew *                    highlight ExtraWhitespace ctermbg=darkgreen
+    autocmd WinNew *                    match ExtraWhitespace /\s\+$/
+
+    " Set libstdc++ source files options
+    autocmd BufRead,BufNewFile /usr/include/c++/*,/usr/include/x86_64-linux-gnu/c++/*,/usr/include/linux/* call SetLibStdCppOptions()
+augroup END
+
+" ##############################################################################
+" ##############################  Custom functions  ############################
+" ##############################################################################
+
+function! AddPath(path)
+    let l:paths = split(&path, ',', 0)
+    for l:path in l:paths
+        if l:path == a:path
+            return
+        endif
+    endfor
+    let &path .= ',' . a:path
 endfunction
 
-function Pad(count)
-    let a:x = a:count
+function! SetLibStdCppOptions()
+    setlocal ft=cpp
+    setlocal tabstop=8
+endfunction
+
+function! Pad(count)
+    let l:x = a:count
     " sleep 1
-    let a:pad_to = col('.')
-    while a:x != 0
-        if a:x > 0
+    let l:pad_to = col('.')
+    while l:x != 0
+        if l:x > 0
             exe 'normal j^'
-            let a:x = a:x - 1
-        elseif a:x < 0
+            let l:x = l:x - 1
+        elseif l:x < 0
             exe 'normal k^'
-            let a:x = a:x + 1
+            let l:x = l:x + 1
         endif
 
-        let a:pad_from = col('.')
-        let a:diff = abs(a:pad_to - a:pad_from)
-        if a:pad_from < a:pad_to
-            exe 'normal ' . a:diff . 'i '
-        elseif a:diff > 0
-            exe 'normal ' . a:diff . 'X'
+        let l:pad_from = col('.')
+        let l:diff = abs(l:pad_to - l:pad_from)
+        if l:pad_from < l:pad_to
+            exe 'normal ' . l:diff . 'i '
+        elseif l:diff > 0
+            exe 'normal ' . l:diff . 'X'
         endif
-        call cursor(line('.'), a:pad_to)
+        call cursor(line('.'), l:pad_to)
     endwhile
 endfunction
 
-function GetCurrentChar()
+function! GetCurrentChar()
     return matchstr(getline('.'), '\%' . col('.') . 'c.')
 endfunction
 
-function BreakAndPad(char, count)
-    let a:i = 0
-    while a:i < a:count
-        let a:line = line('.')
-        let a:col = col('.')
+function! BreakAndPad(char, count)
+    let l:i = 0
+    while l:i < a:count
+        let l:line = line('.')
+        let l:col = col('.')
         exe 'normal f' . a:char
         if GetCurrentChar() != a:char
             return
         endif
         exe "normal a\n"
-        call cursor(a:line, a:col)
+        call cursor(l:line, l:col)
         call Pad(1)
-        let a:i = a:i + 1
+        let l:i = l:i + 1
     endwhile
 endfunction
 
-command -count=1 PadDown call Pad(<count>)
-command -count=1 PadUp call Pad(-<count>)
+function! DeleteHiddenBuffers(bang)
+    let tpbl=[]
+    call map(range(1, tabpagenr('$')), 'extend(tpbl, tabpagebuflist(v:val))')
+    for buf in filter(range(1, bufnr('$')), 'bufexists(v:val) && index(tpbl, v:val)==-1')
+        silent execute 'bwipeout' . a:bang buf
+    endfor
+endfunction
 
-let g:ycm_global_ycm_extra_conf = '/home/olan/git/ovandriyanov/util/kernel_ycm_extra_conf.py'
-let g:ycm_always_populate_location_list = 1
-" let g:AutoPairsShortcutToggle = '<C-p>'
-let g:AutoPairsShortcutJump = '<C-n>'
-let g:AutoPairsShortcutFastWrap = '<C-e>'
-let g:AutoPairsMultilineClose = 0
-let g:AutoPairsMapCR = 0
+function! Yank(args)
+    if len(a:args) > 1 && a:args[1] == ' '
+        let l:reg = a:args[0]
+        let l:yanktext = a:args[2 + match(a:args[2:], '[^ ]'):]
+    else
+        let l:reg = '"'
+        let l:yanktext = a:args
+    endif
+    exe 'let @' . l:reg . ' = "' . escape(expand(l:yanktext), '"') . '"'
+endfunction
 
-" Vundle stuff
+" ##############################################################################
+" ################################  Vundle stuff  ##############################
+" ##############################################################################
+
 filetype off
-set rtp+=~/.vim/bundle/Vundle.vim/
 call vundle#begin()
-
 Plugin 'VundleVim/Vundle.vim'
 
-" General
-" Plugin 'henrik/vim-indexed-search'          " Show how many matches were found when searching with '/'
-Plugin 'google/vim-searchindex'             " instead of 'henrik/vim-indexed-search'
-Plugin 'jiangmiao/auto-pairs'               " Pair quotes, brackets, etc.
-Plugin 'vim-scripts/BufOnly.vim'
-Plugin 'tomtom/enabler_vim'
+" Plugin 'jiangmiao/auto-pairs'
+Plugin 'endel/vim-github-colorscheme'
+Plugin 'google/vim-searchindex'
 Plugin 'tpope/vim-repeat'
 Plugin 'tpope/vim-surround'
-Plugin 'vim-scripts/Boost-Build-v2-BBv2-syntax'
+Plugin 'vim-scripts/BufOnly.vim'
 
-" C/C++ stuff
-" Plugin 'vim-scripts/Cpp11-Syntax-Support'   " Proper C++11 syntax highlighting
-" Plugin 'Valloric/YouCompleteMe'
-" Plugin 'mom0tomo/dotfiles'
-" Plugin 'wincent/command-t'
-" Plugin 'vim-scripts/Conque-GDB'
-" Plugin 'vim-scripts/git-time-lapse'
-" Plugin 'vim-scripts/a.vim'                  " Quick switching betwean .h/.cpp
-Plugin 'tpope/vim-fugitive'
-" " Plugin 'jeaye/color_coded'
-
-" Color schemes
-Plugin 'endel/vim-github-colorscheme'
-" Plugin 'ajh17/Spacegray.vim'
-" Plugin 'tomasiser/vim-code-dark'
-" Plugin 'AlessandroYorba/Arcadia.git'
-" Plugin 'bruth/vim-newsprint-theme'
-" Plugin 'AlessandroYorba/Despacio'
-" Plugin 'mtglsk/wikipedia.vim'
+if v:version >= 802
+    " C/C++ stuff
+    Plugin 'vim-scripts/Cpp11-Syntax-Support'   " Proper C++11 syntax highlighting
+    Plugin 'Valloric/YouCompleteMe'
+    Plugin 'mom0tomo/dotfiles'
+    Plugin 'wincent/command-t'
+    Plugin 'vim-scripts/Conque-GDB'
+    Plugin 'vim-scripts/git-time-lapse'
+    Plugin 'vim-scripts/a.vim'                  " Quick switching between .h/.cpp
+    Plugin 'tpope/vim-fugitive'
+    Plugin 'vim-vcscommand', {'pinned': 1}
+    Plugin 'vim-signify', {'pinned': 1}
+    Plugin 'vim-quarc', {'pinned': 1}
+endif
 
 call vundle#end()
 filetype plugin indent on
 
-function CppEnable()
-    Enable Cpp11-Syntax-Support   " Proper C++11 syntax highlighting
-    Enable YouCompleteMe
-    Enable dotfiles
-    Enable command-t
-    Enable Conque-GDB
-    Enable git-time-lapse
-    Enable a.vim                  " Quick switching betwean .h/.cpp
-    command! -nargs=* -complete=file Gdb call conque_gdb#open(<q-args>, [
-        \ 'rightbelow 10split'])
-endfunction
-command CppEnable :call CppEnable()
-
 colorscheme github
 
-" nnoremap <C-S-r> gd[{V%::s/<C-R>///gc<left><left><left>
-nnoremap <F2> :YcmCompleter GoTo <CR>
-nnoremap <F6> :vsplit <CR>:YcmCompleter GoTo <CR>
-nnoremap <F5> :highlight ExtraWhitespace ctermbg=darkgreen <CR>
-nnoremap <S-F5> :highlight ExtraWhitespace NONE <CR>
-nnoremap <S-F12> :close 1 <CR>
-nnoremap <silent> <Plug>PadDown :<c-U>call Pad(v:count1)<CR>:call repeat#set("\<Plug>PadDown")<CR>
-nnoremap <silent> <Plug>PadUp :<c-U>call Pad(-v:count1)<CR>:call repeat#set("\<Plug>PadUp")<CR>
-nmap <C-p>j <Plug>PadDown
-nmap <C-p>k <Plug>PadUp
-nnoremap <silent> <Plug>BreakAndPadComma :<c-U>call BreakAndPad(',', v:count1)<CR>:call repeat#set("\<Plug>BreakAndPadComma")<CR>
-nmap <C-p>, <Plug>BreakAndPadComma
-let g:netrw_chgwin=2
-map <F4> :silent! A <CR>
-map <F8> :silent! AV <CR>
-map <F3> :set relativenumber! <CR>
-nnoremap <C-k> :CommandT <CR>
+" ##############################################################################
+" ############################  Extra configuration  ###########################
+" ##############################################################################
 
-" nnoremap y  "+y
-" nnoremap yy "+yy
-" nnoremap Y  "+Y
-" nnoremap p  "+p
-" nnoremap P  "+P
-" vnoremap y  "+y
-" vnoremap D  "+d
-" vnoremap y  "+y
-" vnoremap p  "+p
-" vnoremap P  "+P
-vnoremap <C-_> c/* <C-R>" */<Esc>
-nmap ,cs :let @+=expand("%")<CR>
-nmap ,cl :let @+=expand("%:p")<CR>
-
-noremap <C-p>] :cn<CR>
-noremap <C-p>[ :cp<CR>
-noremap <C-p><C-]> :let line = line('.')<CR>:cn<CR>:exec ':' . line<CR>
-noremap <C-p><C-[> :let line = line('.')<CR>:cp<CR>:exec ':' . line<CR>
-
-vnoremap <silent> * :call setreg("/",
-                    \ substitute( <SID>getSelectedText(),
-                    \ '\_s\+',
-                    \ '\\_s\\+', 'g')
-                    \ )<Cr>n
-
-vnoremap <silent> # :call setreg("?",
-                    \ substitute( <SID>getSelectedText(),
-                    \ '\_s\+',
-                    \ '\\_s\\+', 'g')
-                    \ )<Cr>n
-
-" let g:ycm_autoclose_preview_window_after_insertion = 1
-let g:ycm_confirm_extra_conf = 0
-
-" set efm=
-" set efm+=%*[^\"]\"%f\"%*\\D%l:\ %m
-" set efm+=,\"%f\"%*\\D%l:\ %m
-" set efm+=,%-G%f:%l:\ (Each\ undeclared\ identifier\ is\ reported\ only\ once
-" set efm+=,%-G%f:%l:\ for\ each\ function\ it\ appears\ in.)
-" 
-" " To disable tagging of these lines, change '+' to '-'
-" set efm+=,%+GIn\ file\ included\ from\ %f:%l:%c:
-" set efm+=,%+GIn\ file\ included\ from\ %f:%l:%c\\,
-" set efm+=,%+GIn\ file\ included\ from\ %f:%l:%c
-" set efm+=,%+GIn\ file\ included\ from\ %f:%l
-" set efm+=,%+Gfrom\ %f:%l:%c
-" set efm+=,%+Gfrom\ %f:%l:
-" set efm+=,%+Gfrom\ %f:%l\\,
-" set efm+=,%+Gfrom\ %f:%l
-" 
-" set efm+=,%f:%l:%c:%m
-" set efm+=,%f(%l):%m
-" set efm+=,%f:%l:%m
-" set efm+=,\"%f\"\\,\ line\ %l%*\\D%c%*[^\ ]\ %m
-" set efm+=,%D%*\\a[%*\\d]:\ Entering\ directory\ %*[`]%f
-" set efm+=,%X%*\\a[%*\\d]:\ Leaving\ directory\ %*[`]%f
-" set efm+=,%D%*\\a:\ Entering\ directory\ %*[`]%f
-" set efm+=,%X%*\\a:\ Leaving\ directory\ %*[`]%f
-" set efm+=,%DMaking\ %*\\a\ in\ %f
-
-highlight ExtraWhitespace ctermbg=darkgreen
-match ExtraWhitespace /\s\+$/
+let s:extra_conf_file = $HOME . '/.vim/extra.vim'
+if filereadable(s:extra_conf_file)
+    exe "source " . s:extra_conf_file
+endif
