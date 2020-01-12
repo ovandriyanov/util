@@ -239,7 +239,7 @@ Plugin 'tpope/vim-repeat'
 Plugin 'tpope/vim-surround'
 Plugin 'vim-scripts/BufOnly.vim'
 
-if v:version >= 802
+if exists('g:devmode') && g:devmode
     " C/C++ stuff
     Plugin 'vim-scripts/Cpp11-Syntax-Support'   " Proper C++11 syntax highlighting
     Plugin 'Valloric/YouCompleteMe'
