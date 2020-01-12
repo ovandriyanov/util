@@ -53,7 +53,7 @@ let g:netrw_list_hide = ".*.swp"
 " YouCompleteMe settings
 let g:ycm_always_populate_location_list = 1
 let g:ycm_confirm_extra_conf = 0
-let g:ycm_global_ycm_extra_conf = $HOME . '/git/ovandriyanov/util/kernel_ycm_extra_conf.py'
+let g:ycm_global_ycm_extra_conf = expand('~/git/ovandriyanov/util/kernel_ycm_extra_conf.py')
 " let g:ycm_autoclose_preview_window_after_insertion = 1
 
 " TODO: either uncomment or remove this
@@ -155,16 +155,6 @@ augroup END
 " ##############################################################################
 " ##############################  Custom functions  ############################
 " ##############################################################################
-
-function! AddPath(path)
-    let l:paths = split(&path, ',', 0)
-    for l:path in l:paths
-        if l:path == a:path
-            return
-        endif
-    endfor
-    let &path .= ',' . a:path
-endfunction
 
 function! SetLibStdCppOptions()
     setlocal ft=cpp
@@ -273,7 +263,7 @@ colorscheme github
 " ############################  Extra configuration  ###########################
 " ##############################################################################
 
-let s:extra_conf_file = $HOME . '/.vim/extra.vim'
+let s:extra_conf_file = expand('~/.vim/extra.vim')
 if filereadable(s:extra_conf_file)
     exe "source " . s:extra_conf_file
 endif
