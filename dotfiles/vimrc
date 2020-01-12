@@ -96,9 +96,9 @@ nnoremap            <C-k>           :CommandT <cr>
 
 " Visual mode search
 vnoremap            *               <esc>/\V<c-r>=escape(getreg('*'), '/')<cr><cr>
-vnoremap            #               <esc>?\V<c-r>=escape(getreg('*'), '/')<cr><cr>
+vnoremap            #               <esc>`<?\V<c-r>=escape(getreg('*'), '/')<cr><cr>
 vnoremap            <Leader>*       <esc>/\V\<<c-r>=escape(getreg('*'), '/')<cr>\><cr>
-vnoremap            <leader>#       <esc>?\V\<<c-r>=escape(getreg('*'), '/')<cr>\><cr>
+vnoremap            <leader>#       <esc>`<?\V\<<c-r>=escape(getreg('*'), '/')<cr>\><cr>
 
 " Command line register escaping
 cnoremap            <c-r>\"         <c-r>=escape(getreg('"'), '/')<cr>
