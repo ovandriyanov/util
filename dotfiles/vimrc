@@ -117,10 +117,12 @@ nnoremap            <down>          :cn<cr>
 nnoremap            <up>            :cp<cr>
 
 " Buffer switching
-nnoremap            <right>         :bn<cr>
-nnoremap            <left>          :bp<cr>
-tnoremap            <c-w><right>    <c-w>:bn<cr>
-tnoremap            <c-w><left>     <c-w>:bp<cr>
+nnoremap            <C-Right>       :bn<cr>
+nnoremap            <C-Left>        :bp<cr>
+nnoremap            <C-w><Right>    :bn<cr>
+nnoremap            <C-w><Left>     :bp<cr>
+tnoremap            <c-w><C-Right>  <c-w>:bn<cr>
+tnoremap            <c-w><C-Left>   <c-w>:bp<cr>
 
 " File navigation
 nnoremap            <c-w>f          :vertical wincmd f<cr>
