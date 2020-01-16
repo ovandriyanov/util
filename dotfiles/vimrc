@@ -131,6 +131,14 @@ nnoremap            <c-w>F          :vertical wincmd F<cr>
 " vnoremap <c-w>f :<c-u>vertical wincmd f<cr>
 " vnoremap <c-w>F :<c-u>vertical wincmd F<cr>
 
+" Tab navigation
+nnoremap            <Left>          gT
+nnoremap            <Right>         gt
+nnoremap            <C-w><Left>     gT
+nnoremap            <C-w><Right>    gt
+tnoremap            <C-w><Left>     <C-w>gT
+tnoremap            <C-w><Right>    <C-w>gt
+
 " Should probably get rid of these...
 nnoremap <F5>       :highlight ExtraWhitespace ctermbg=darkgreen <CR>
 nnoremap <S-F5>     :highlight ExtraWhitespace NONE <CR>
