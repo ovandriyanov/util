@@ -126,10 +126,12 @@ tnoremap            <c-w><C-Right>  <c-w>:bn<cr>
 tnoremap            <c-w><C-Left>   <c-w>:bp<cr>
 
 " File navigation
-nnoremap            <c-w>f          :vertical wincmd f<cr>
-nnoremap            <c-w>F          :vertical wincmd F<cr>
+nnoremap            <c-w>f          :call FindFileReuseWindow(0)<cr>
 " TODO: implement
-" vnoremap <c-w>f :<c-u>vertical wincmd f<cr>
+nnoremap            <c-w>F          :vertical wincmd F<cr>
+
+vnoremap            <c-w>f          :call FindFileReuseWindow(1)<cr>
+" TODO: implement
 " vnoremap <c-w>F :<c-u>vertical wincmd F<cr>
 
 " Tab navigation
@@ -233,6 +235,60 @@ function! Yank(args)
         let l:yanktext = a:args
     endif
     exe 'let @' . l:reg . ' = "' . escape(expand(l:yanktext), '"') . '"'
+endfunction
+
+function! OpenOrReuseWindow()
+    " TODO: netrw windows not handled very well
+    let l:curwin = winnr()
+    let l:curtab = tabpagenr()
+    let l:wincnt = tabpagewinnr(l:curtab, '$')
+
+    if l:wincnt == 1
+        exe 'vsplit'
+        let l:newwin = winnr()
+        call win_gotoid(win_getid(l:curwin))
+        return l:newwin
+    endif
+
+    for l:wnum in range(1, l:wincnt)
+        if l:wnum != l:curwin
+            return l:wnum
+        endif
+    endfor
+endfunction
+
+function! FindFileReuseWindow(visual)
+    " TODO: handle &l:includeexpr?
+    if a:visual
+        let l:cfile = getreg('*')
+    else
+        let l:cfile = expand('<cfile>')
+    endif
+
+    let l:searchpath = &l:path
+    if empty(l:searchpath)
+        let l:searchpath = &g:path
+    endif
+    let l:searchpath = '.,' . l:searchpath
+
+    let l:path = findfile(l:cfile, l:searchpath)
+    if empty(l:path)
+        let l:path = finddir(l:cfile, l:searchpath)
+        if empty(l:path)
+            echomsg "Can't find file " . l:cfile . " in path"
+            return
+        endif
+    endif
+    echom 'Found file or dir: ' . l:path
+
+    let l:oldwinnr = winnr()
+    let l:newwinnr = OpenOrReuseWindow()
+    if getcwd(l:oldwinnr) !=# getcwd(l:newwinnr)
+        let l:path = fnamemodify(l:path, ':p')
+    endif
+
+    call win_gotoid(win_getid(l:newwinnr))
+    exe 'edit' l:path
 endfunction
 
 " ##############################################################################
