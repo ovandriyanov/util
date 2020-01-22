@@ -57,13 +57,12 @@ let g:ycm_confirm_extra_conf = 0
 let g:ycm_global_ycm_extra_conf = expand('~/git/ovandriyanov/util/kernel_ycm_extra_conf.py')
 " let g:ycm_autoclose_preview_window_after_insertion = 1
 
-" TODO: either uncomment or remove this
 " AutoPairs settings
-" let g:AutoPairsMapCR = 0
-" let g:AutoPairsMultilineClose = 0
-" let g:AutoPairsShortcutFastWrap = '<C-e>'
-" let g:AutoPairsShortcutJump = '<C-n>'
-" let g:AutoPairsShortcutToggle = '<C-p>'
+let g:AutoPairsMapCR = 0
+let g:AutoPairsMultilineClose = 0
+let g:AutoPairsShortcutFastWrap = '<C-e>'
+let g:AutoPairsShortcutJump = '<C-n>'
+let g:AutoPairsShortcutToggle = '<C-p>'
 
 " ##############################################################################
 " ##############################  Custom commands  #############################
@@ -299,7 +298,7 @@ filetype off
 call vundle#begin()
 Plugin 'VundleVim/Vundle.vim'
 
-" Plugin 'jiangmiao/auto-pairs'
+Plugin 'jiangmiao/auto-pairs'
 Plugin 'endel/vim-github-colorscheme'
 Plugin 'google/vim-searchindex'
 Plugin 'tpope/vim-repeat'
