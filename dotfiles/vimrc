@@ -318,7 +318,7 @@ if exists('g:devmode') && g:devmode
     Plugin 'tpope/vim-fugitive'
     Plugin 'vim-vcscommand', {'pinned': 1}
     Plugin 'vim-signify', {'pinned': 1}
-    Plugin 'vim-quarc', {'pinned': 1}
+    " Plugin 'vim-quarc', {'pinned': 1}
 endif
 
 call vundle#end()
