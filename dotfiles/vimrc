@@ -86,6 +86,7 @@ noremap             <Esc>[1~        <Home>
 noremap             <Esc>[4~        <End>
 tnoremap            <Esc>[1~        <Home>
 tnoremap            <Esc>[4~        <End>
+inoremap            <Esc>OM         <Cr>
 
 " QtCreator-like bindings
 nnoremap            <F2>            :YcmCompleter GoTo <cr>
