@@ -142,6 +142,10 @@ nnoremap            <C-w><Right>    gt
 tnoremap            <C-w><Left>     <C-w>gT
 tnoremap            <C-w><Right>    <C-w>gt
 
+" Jumping around
+nnoremap            <C-F><C-O>      :call JumpToPrevFile()<Cr>
+nnoremap            <C-F><C-I>      :call JumpToNextFile()<Cr>
+
 " Should probably get rid of these...
 nnoremap <F5>       :highlight ExtraWhitespace ctermbg=darkgreen <CR>
 nnoremap <S-F5>     :highlight ExtraWhitespace NONE <CR>
@@ -289,6 +293,44 @@ function! FindFileReuseWindow(visual)
 
     call win_gotoid(win_getid(l:newwinnr))
     exe 'edit' l:path
+endfunction
+
+function! JumpToPrevFile()
+    let [l:jumps, l:curjump] = getjumplist()
+    let l:jumps = l:jumps[:l:curjump]
+    call reverse(l:jumps)
+
+    let l:i = l:curjump == len(l:jumps)
+    for l:j in l:jumps
+        if l:j['bufnr'] != bufnr()
+            execute 'normal' l:i . "\<C-O>"
+            return
+        endif
+        let l:i += 1
+    endfor
+    echo 'Already at oldest file'
+endfunction
+
+function! JumpToNextFile()
+    let [l:jumps, l:curjump] = getjumplist()
+    let l:jumps = l:jumps[l:curjump:]
+
+    let l:i = 0
+    for l:j in l:jumps
+        if l:j['bufnr'] != bufnr()
+            for l:jj in l:jumps[l:i + 1:]
+                if l:jj['bufnr'] != l:j['bufnr']
+                    break
+                endif
+                let l:i += 1
+            endfor
+
+            execute 'normal' l:i . "\<C-I>"
+            return
+        endif
+        let l:i += 1
+    endfor
+    echo 'Already at newest file'
 endfunction
 
 " ##############################################################################
