@@ -379,10 +379,10 @@ function! CompleteFileAliases(arglead, ...)
     endif
 
     let l:candidates = {}
-    let l:regex = '^' . a:arglead
+    let l:Chop = len(a:arglead) ? {str -> str[:len(a:arglead) - 1]} : {str -> ''}
 
     for [l:alias, l:value] in items(g:olan_path_aliases)
-        if l:alias =~? l:regex
+        if l:Chop(l:alias) ==? a:arglead
             let l:candidates[l:value['name']] = l:alias
         endif
     endfor
