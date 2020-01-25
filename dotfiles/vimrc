@@ -64,6 +64,9 @@ let g:AutoPairsShortcutFastWrap = '<C-e>'
 let g:AutoPairsShortcutJump = '<C-n>'
 let g:AutoPairsShortcutToggle = '<C-p>'
 
+" My settings
+let g:olan_path_aliases_file = expand('~/.vim/path_aliases')
+
 " ##############################################################################
 " ##############################  Custom commands  #############################
 " ##############################################################################
@@ -76,6 +79,7 @@ command! -count=1 PadDown call Pad(<count>)
 command! -count=1 PadUp call Pad(-<count>)
 command! -bang DHidden :call DeleteHiddenBuffers('<bang>')
 command! -nargs=1 Yank :call Yank('<args>')
+command! -nargs=1 C call OpenFileByAlias('<args>')
 
 " ##############################################################################
 " ##############################  Custom mappings  #############################
@@ -331,6 +335,42 @@ function! JumpToNextFile()
         let l:i += 1
     endfor
     echo 'Already at newest file'
+endfunction
+
+function! LoadPathAliases()
+    try
+        let l:aliases = {}
+        for l:line in readfile(g:olan_path_aliases_file)
+            let l:items = l:line->split()
+            for l:alias in l:items[2:] + l:items[1]
+                let l:aliases[l:alias] = {'path': l:items[0], 'name': l:items[1]}
+            endfor
+        endfor
+        return l:aliases
+    catch /Can't open file/
+        return {}
+    endtry
+endfunction
+
+function! OpenFileByAlias(alias)
+    if !exists('g:olan_path_aliases')
+        let g:olan_path_aliases = LoadPathAliases()
+    endif
+
+    let l:value = get(g:olan_path_aliases, a:alias)
+    if type(l:value) == type(0) && !l:value
+        echom 'Unknown alias: ' . a:alias
+        return
+    endif
+
+    let l:path = expand(l:value['path'])
+
+    if !isdirectory(l:path) && !filereadable(l:path)
+        echom 'Cannot open ' . l:path
+        return
+    end
+
+    execute 'edit' l:path
 endfunction
 
 " ##############################################################################
