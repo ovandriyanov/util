@@ -383,7 +383,11 @@ function! CompleteFileAliases(arglead, ...)
 
     for [l:alias, l:value] in items(g:olan_path_aliases)
         if l:Chop(l:alias) ==? a:arglead
-            let l:candidates[l:value['name']] = l:alias
+            let l:name = l:value['name']
+            let l:oldalias = get(l:candidates, l:name, 0)
+            if type(l:oldalias) == type(0) || l:alias < l:oldalias
+                let l:candidates[l:name] = l:alias
+            endif
         endif
     endfor
 
