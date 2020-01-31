@@ -347,7 +347,7 @@ function! LoadPathAliases()
         for l:line in readfile(g:olan_path_aliases_file)
             let l:items = l:line->split()
             for l:alias in l:items[2:] + [l:items[1]]
-                let l:aliases[l:alias] = {'path': l:items[0], 'name': l:items[1]}
+                let l:aliases[tolower(l:alias)] = {'path': l:items[0], 'name': l:items[1]}
             endfor
         endfor
         return l:aliases
@@ -361,7 +361,7 @@ function! OpenFileByAlias(alias)
         let g:olan_path_aliases = LoadPathAliases()
     endif
 
-    let l:value = get(g:olan_path_aliases, a:alias)
+    let l:value = get(g:olan_path_aliases, tolower(a:alias))
     if type(l:value) == type(0) && !l:value
         echom 'Unknown alias: ' . a:alias
         return
