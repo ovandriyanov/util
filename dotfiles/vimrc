@@ -425,7 +425,6 @@ if exists('g:devmode') && g:devmode
     Plugin 'Valloric/YouCompleteMe'
     Plugin 'mom0tomo/dotfiles'
     Plugin 'wincent/command-t'
-    Plugin 'vim-scripts/Conque-GDB'
     Plugin 'vim-scripts/git-time-lapse'
     Plugin 'vim-scripts/a.vim'                  " Quick switching between .h/.cpp
     Plugin 'tpope/vim-fugitive'
