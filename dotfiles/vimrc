@@ -266,11 +266,15 @@ function! OpenOrReuseWindow()
 endfunction
 
 function! FindFileReuseWindow(visual)
-    " TODO: handle &l:includeexpr?
     if a:visual
         let l:cfile = getreg('*')
     else
         let l:cfile = expand('<cfile>')
+    endif
+
+    let l:includeexpr = substitute(&l:includeexpr, 'v:fname', 'l:cfile', '')
+    if len(l:includeexpr)
+        execute 'let l:cfile = ' . l:includeexpr
     endif
 
     let l:searchpath = &l:path
