@@ -346,7 +346,7 @@ function! LoadPathAliases()
         let l:aliases = {}
         for l:line in readfile(g:olan_path_aliases_file)
             let l:items = l:line->split()
-            for l:alias in l:items[2:] + [l:items[1]]
+            for l:alias in l:items[1:]
                 let l:aliases[tolower(l:alias)] = {'path': l:items[0], 'name': l:items[1]}
             endfor
         endfor
