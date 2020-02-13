@@ -81,6 +81,11 @@ command! -count=1 PadUp call Pad(-<count>)
 command! -bang DHidden call DeleteHiddenBuffers('<bang>')
 command! -nargs=1 Yank call Yank('<args>')
 command! -nargs=1 -complete=customlist,CompleteFileAliases C call OpenFileByAlias('<args>')
+command! TTerminal tabnew | terminal ++curwin
+command! VTerminal vertical terminal
+command! STerminal terminal
+command! CTerminal terminal ++curwin
+command! MTerminal split | resize 10 | set winfixheight | terminal ++curwin
 
 " ##############################################################################
 " ##############################  Custom mappings  #############################
