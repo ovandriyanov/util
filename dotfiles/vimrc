@@ -73,6 +73,9 @@ let g:olan_path_aliases_file = expand('~/.vim/path_aliases')
 " ##############################################################################
 
 command! Vrc exe 'edit' resolve(expand('~/.vimrc'))
+command! TVrc tabnew | exe 'edit' resolve(expand('~/.vimrc'))
+command! VVrc vsplit | exe 'edit' resolve(expand('~/.vimrc'))
+command! SVrc split | exe 'edit' resolve(expand('~/.vimrc'))
 command! Ve Vexplore!
 command! E Explore
 command! StripTrailingWhitespace %s/\s\+$//e
