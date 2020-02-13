@@ -254,13 +254,20 @@ function! Yank(args)
     exe 'let @' . l:reg . ' = "' . escape(expand(l:yanktext), '"') . '"'
 endfunction
 
+function! IsTerminalWindow(winnr)
+    let l:bufnr = winbufnr(a:winnr)
+    let l:buftype = getbufvar(l:bufnr, '&buftype')
+    return l:buftype == 'terminal'
+endfunction
+
 function! OpenOrReuseWindow()
     " TODO: netrw windows not handled very well
     let l:curwin = winnr()
+    let l:otherwin = l:curwin == 1 ? 2 : 1
     let l:curtab = tabpagenr()
     let l:wincnt = tabpagewinnr(l:curtab, '$')
 
-    if l:wincnt == 1
+    if l:wincnt == 1 || l:wincnt == 2 && IsTerminalWindow(l:otherwin)
         exe 'vsplit'
         let l:newwin = winnr()
         call win_gotoid(win_getid(l:curwin))
@@ -268,7 +275,7 @@ function! OpenOrReuseWindow()
     endif
 
     for l:wnum in range(1, l:wincnt)
-        if l:wnum != l:curwin
+        if l:wnum != l:curwin && !IsTerminalWindow(l:wnum)
             return l:wnum
         endif
     endfor
