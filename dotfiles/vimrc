@@ -23,7 +23,6 @@ set number
 set relativenumber
 set ruler
 set runtimepath+=~/.vim/bundle/Vundle.vim/
-set scrolloff=8
 set secure
 set shiftwidth=4
 set showcmd
