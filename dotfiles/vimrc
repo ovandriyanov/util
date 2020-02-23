@@ -429,6 +429,10 @@ function! Xargs(args)
     endif
 endfunction
 
+function! Tapi_FillQuickfixWindow(buffer, logfile)
+    execute 'cgetfile' a:logfile
+    call system('rm -f ' . a:logfile)
+endfunction
 " ##############################################################################
 " ################################  Vundle stuff  ##############################
 " ##############################################################################
