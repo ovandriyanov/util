@@ -1,0 +1,32 @@
+#!/usr/bin/env python3
+
+import os
+import sys
+
+home = os.getenv('HOME')
+
+def expand(path):
+    if path.startswith('~/'):
+        return os.path.join(home, path[2:])
+    else:
+        return path
+
+def load_aliases(config_path):
+    aliases = {}
+    for line  in open(config_path, 'r'):
+        split = line.split()
+        path = split[0]
+        for alias in split[1:]:
+            aliases[alias] = expand(path)
+    return aliases
+
+alias = sys.argv[1]
+config_path = os.getenv('EP_CONFIG_PATH')
+aliases = load_aliases(config_path)
+
+path = aliases.get(alias)
+if not path:
+    print('No such alias: ' + alias, file=sys.stderr)
+    exit(1)
+
+print(path)
