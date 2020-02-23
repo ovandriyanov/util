@@ -433,6 +433,11 @@ function! Tapi_FillQuickfixWindow(buffer, logfile)
     execute 'cgetfile' a:logfile
     call system('rm -f ' . a:logfile)
 endfunction
+
+function! Tapi_Chdir(buffer, pwd)
+    execute 'lcd' a:pwd
+endfunction
+
 " ##############################################################################
 " ################################  Vundle stuff  ##############################
 " ##############################################################################
