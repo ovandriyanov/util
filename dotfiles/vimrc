@@ -180,6 +180,8 @@ augroup vimrc
 
     " Set libstdc++ source files options
     autocmd BufRead,BufNewFile /usr/include/c++/*,/usr/include/x86_64-linux-gnu/c++/*,/usr/include/linux/* call SetLibStdCppOptions()
+
+    autocmd BufReadPost /* lcd %:h
 augroup END
 
 " ##############################################################################
