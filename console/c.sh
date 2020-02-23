@@ -6,6 +6,6 @@ function c() {
         return
     fi
 
-    EXPANDED_PATH="`EP_CONFIG_PATH=${HOME}/.vim/path_aliases ${HOME}/bin/expand-path ${1}`"
+    EXPANDED_PATH="`${HOME}/bin/expand-path ${1}`"
     [ -n "${EXPANDED_PATH}" ] && cd ${EXPANDED_PATH}
 }
