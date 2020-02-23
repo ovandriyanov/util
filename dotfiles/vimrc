@@ -420,7 +420,7 @@ function! CompleteFileAliases(arglead, ...)
     \)
 endfunction
 
-function Xargs(args)
+function! Xargs(args)
     let l:result = system('xargs --delimiter "\n" ' . a:args, getreg('*'))
     let l:exit_code = v:shell_error
 
