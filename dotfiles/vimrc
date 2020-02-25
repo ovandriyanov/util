@@ -159,6 +159,9 @@ tnoremap            <C-w><Right>    <C-w>gt
 nnoremap            <C-F><C-O>      :call JumpToPrevFile()<Cr>
 nnoremap            <C-F><C-I>      :call JumpToNextFile()<Cr>
 
+" Inserting
+inoremap <expr> <CR> MapCarriageReturn()
+
 " Should probably get rid of these...
 nnoremap <F5>       :highlight ExtraWhitespace ctermbg=darkgreen <CR>
 nnoremap <S-F5>     :highlight ExtraWhitespace NONE <CR>
@@ -438,6 +441,18 @@ endfunction
 
 function! Tapi_Chdir(buffer, pwd)
     execute 'lcd' a:pwd
+endfunction
+
+function! MapCarriageReturn()
+    let l:line = getline('.')
+    let l:curcol = getpos('.')[2]
+    let l:prevchar = l:line[l:curcol - 2]
+    let l:curchar = l:line[l:curcol - 1]
+    if l:prevchar != '{'
+        return "\<CR>"
+    endif
+    let l:maybe_rbrace = l:curchar == '}' ? '' : '}'
+    return "\<CR>" . l:maybe_rbrace . "\<C-O>O"
 endfunction
 
 " ##############################################################################
