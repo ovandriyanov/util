@@ -451,7 +451,8 @@ function! Xargs(args, substitute)
     endif
 
     if a:substitute
-        execute 'normal' "gv\"=l:result\<CR>p"
+        let l:rbound = l:result[-1:] == "\n" ? -2 : -1
+        execute 'normal' "gv\"=l:result[:" . l:rbound . "]\<CR>p"
     endif
 endfunction
 
