@@ -1,0 +1,6 @@
+#!/bin/bash
+
+URL="`echo ${1} | sed 's/\(.*\)\#.*/\1/'`"
+MEMBER_NAME="`echo ${1} | sed 's/.*#\(.*\)/\1/'`"
+
+curl -s "${URL}" | tar -xf - "${MEMBER_NAME}" -O
