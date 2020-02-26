@@ -88,7 +88,7 @@ command! VTerminal vertical terminal
 command! STerminal terminal
 command! CTerminal terminal ++curwin
 command! MTerminal split | resize 10 | set winfixheight | terminal ++curwin
-command! -range -nargs=1 Xargs call Xargs('<args>')
+command! -bang -range -nargs=1 Xargs call Xargs('<args>', '<bang>' == '!')
 
 " ##############################################################################
 " ##############################  Custom mappings  #############################
@@ -435,12 +435,17 @@ function! CompleteFileAliases(arglead, ...)
     \)
 endfunction
 
-function! Xargs(args)
+function! Xargs(args, substitute)
     let l:result = system('xargs --delimiter "\n" ' . a:args, getreg('*'))
     let l:exit_code = v:shell_error
 
     if l:exit_code != 0
         echoerr l:result
+        return
+    endif
+
+    if a:substitute
+        execute 'normal' "gv\"=l:result\<CR>p"
     endif
 endfunction
 
