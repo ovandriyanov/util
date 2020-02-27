@@ -259,7 +259,7 @@ function! Yank(args)
         let l:reg = '"'
         let l:yanktext = a:args
     endif
-    exe 'let @' . l:reg . ' = "' . escape(expand(l:yanktext), '"') . '"'
+    exe 'let @' . l:reg . ' = "' . escape(expandcmd(l:yanktext), '"') . '"'
 endfunction
 
 function! IsTerminalWindow(winnr)
