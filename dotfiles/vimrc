@@ -264,6 +264,18 @@ function! Yank(args)
         let l:reg = '"'
         let l:yanktext = a:args
     endif
+
+    if l:yanktext[0] == '!'
+        let l:cmdline = l:yanktext[1:]
+        let l:result = system(l:cmdline)
+        if v:shell_error != 0
+            echoerr l:result
+            return
+        endif
+        let l:rbound = l:result[-1:] == "\n" ? -2 : -1
+        let l:yanktext = l:result[:l:rbound]
+    endif
+
     exe 'let @' . l:reg . ' = "' . escape(expandcmd(l:yanktext), '"') . '"'
 endfunction
 
