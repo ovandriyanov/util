@@ -165,6 +165,11 @@ nnoremap            <C-F><C-I>      :call JumpToNextFile()<Cr>
 " Inserting
 inoremap <expr> <CR> MapCarriageReturn()
 
+" Commenting
+nnoremap <C-_>iw "zciw/* <C-R>z */<Esc>bb
+nnoremap <C-_>iW "zciw/* <C-R>z */<Esc>bB
+vnoremap <C-_>   "zc/* <C-R>z */<Esc>gvo<Esc>W
+
 " Should probably get rid of these...
 nnoremap <F5>       :highlight ExtraWhitespace ctermbg=darkgreen <CR>
 nnoremap <S-F5>     :highlight ExtraWhitespace NONE <CR>
