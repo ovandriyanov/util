@@ -92,6 +92,7 @@ command! STerminal terminal
 command! CTerminal terminal ++curwin
 command! MTerminal split | resize 10 | set winfixheight | terminal ++curwin
 command! -bang -range -nargs=1 Xargs call Xargs('<args>', '<bang>' == '!')
+command! Aopen call Aopen()
 
 " ##############################################################################
 " ##############################  Custom mappings  #############################
@@ -478,6 +479,11 @@ function! JumpOffset(offset)
     let l:curpos = getcurpos()[1]
     let l:targetline = l:curpos + a:offset
     execute 'normal ' . l:targetline . 'G'
+endfunction
+
+function! Aopen()
+    let l:curline = getcurpos()[1]
+    execute '!aopen %' l:curline
 endfunction
 
 function! Tapi_FillQuickfixWindow(buffer, logfile)
