@@ -109,7 +109,6 @@ nnoremap            <F2>            :YcmCompleter GoTo <cr>
 nnoremap            <F4>            :silent! A <cr>
 nnoremap            <F6>            :vsplit <cr>:YcmCompleter GoTo <cr>
 nnoremap            <F8>            :silent! AV <cr>
-nnoremap            <C-k>           :CommandT <cr>
 
 " Visual mode search
 vnoremap            *               <esc>/\V<c-r>=escape(getreg('*'), '/')<cr><cr>
@@ -161,6 +160,8 @@ tnoremap            <C-w><Right>    <C-w>gt
 " Jumping around
 nnoremap            <C-F><C-O>      :call JumpToPrevFile()<Cr>
 nnoremap            <C-F><C-I>      :call JumpToNextFile()<Cr>
+nnoremap            <C-K>           :<C-U>call JumpOffset(-v:count1)<Cr>
+nnoremap            <C-J>           :<C-U>call JumpOffset(+v:count1)<Cr>
 
 " Inserting
 inoremap <expr> <CR> MapCarriageReturn()
@@ -471,6 +472,12 @@ function! Xargs(args, substitute)
         let l:rbound = l:result[-1:] == "\n" ? -2 : -1
         execute 'normal' "gv\"=l:result[:" . l:rbound . "]\<CR>p"
     endif
+endfunction
+
+function! JumpOffset(offset)
+    let l:curpos = getcurpos()[1]
+    let l:targetline = l:curpos + a:offset
+    execute 'normal ' . l:targetline . 'G'
 endfunction
 
 function! Tapi_FillQuickfixWindow(buffer, logfile)
