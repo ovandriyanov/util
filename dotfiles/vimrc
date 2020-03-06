@@ -462,9 +462,9 @@ endfunction
 
 function! Xargs(args, substitute)
     let l:result = system('xargs --delimiter "\n" ' . a:args, getreg('*'))
-    let l:exit_code = v:shell_error
+    let l:exit_status = v:shell_error
 
-    if l:exit_code != 0
+    if l:exit_status != 0
         echoerr l:result
         return
     endif
