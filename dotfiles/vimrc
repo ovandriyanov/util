@@ -486,6 +486,15 @@ function! Aopen()
     execute '!aopen %' l:curline
 endfunction
 
+function! Arel(filename) abort
+    let l:output = system('arel ' . shellescape(a:filename))
+    let l:exit_status = v:shell_error
+    if l:exit_status != 0
+        throw 'arel: ' . l:output
+    endif
+    return l:output[:-2]
+endfunction
+
 function! Tapi_FillQuickfixWindow(buffer, logfile)
     execute 'cgetfile' a:logfile
     call system('rm -f ' . a:logfile)
