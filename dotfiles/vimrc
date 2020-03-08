@@ -505,15 +505,63 @@ function! Tapi_Chdir(buffer, pwd)
 endfunction
 
 function! MapCarriageReturn()
+    let l:curcol = col('.')
+    let l:curoffset = l:curcol - 1
     let l:line = getline('.')
-    let l:curcol = getpos('.')[2]
-    let l:prevchar = l:line[l:curcol - 2]
-    let l:curchar = l:line[l:curcol - 1]
-    if l:prevchar != '{'
+    let l:prevchar = l:line[l:curoffset - 1]
+    let l:curchar = l:line[l:curoffset]
+    let l:eol = l:curcol - 1 == strlen(l:line)
+    let l:almosteol = l:curcol == strlen(l:line)
+    if l:prevchar != '{' || !(l:eol || l:almosteol && l:curchar == '}')
         return "\<CR>"
     endif
+
+    if match(l:line, '^\s*{}\?') >= 0
+        let l:prevline = getline(line('.') - 1)
+        let l:line = l:prevline . l:line
+    endif
+
+    let l:add_semicolon = 0
+    if &filetype == 'cpp'
+        let l:add_semicolon = CppShouldAddSemicolon(l:line)
+    elseif &filetype == 'sql'
+        let l:add_semicolon = SqlShouldAddSemicolon(l:line)
+    endif
+
+    let l:maybe_semicolon = ''
     let l:maybe_rbrace = l:curchar == '}' ? '' : '}'
-    return "\<CR>" . l:maybe_rbrace . "\<C-O>O"
+    if l:add_semicolon
+        let l:maybe_semicolon = '}' ? ';' : "\<C-O>a;"
+    endif
+
+    return "\<CR>" . l:maybe_rbrace . l:maybe_semicolon . "\<C-O>O"
+endfunction
+
+function! CppShouldAddSemicolon(line)
+    let l:opt_ws = '\s*'
+    let l:ws = '\s\+'
+    let l:ident = '[a-zA-Z_][a-zA-Z0-9_]*'
+    let l:opt_cv = '\(const\s\+\|volatile\s\+\)\?'
+
+    let l:class_definition =        '^' . l:opt_ws . 'class'  . l:ws
+    let l:struct_definition =       '^' . l:opt_ws . 'struct' . l:ws
+    let l:variable_initialization =
+        \ '^' . l:opt_ws . l:opt_cv . l:opt_cv
+        \ . l:ident . l:ws . l:ident . l:opt_ws . '[={]'
+
+    for l:pattern in [
+        \ l:class_definition,
+        \ l:struct_definition,
+        \ l:variable_initialization,
+        \ ]
+        if match(a:line, l:pattern) >= 0
+            return 1
+        endif
+    endfor
+endfunction
+
+function! SqlShouldAddSemicolon(line)
+    return match(a:line, '^\s*\$[a-zA-Z_][a-zA-Z0-9_]*\s*=') >= 0
 endfunction
 
 " ##############################################################################
