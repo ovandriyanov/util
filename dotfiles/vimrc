@@ -98,13 +98,6 @@ command! Aopen call Aopen()
 " ##############################  Custom mappings  #############################
 " ##############################################################################
 
-" Screen escape sequences workaround
-noremap             <Esc>[1~        <Home>
-noremap             <Esc>[4~        <End>
-tnoremap            <Esc>[1~        <Home>
-tnoremap            <Esc>[4~        <End>
-inoremap            <Esc>OM         <Cr>
-
 " QtCreator-like bindings
 nnoremap            <F2>            :YcmCompleter GoTo <cr>
 nnoremap            <F4>            :silent! A <cr>
