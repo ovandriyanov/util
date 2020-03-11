@@ -62,7 +62,7 @@ let g:AutoPairsMapCR = 0
 let g:AutoPairsMultilineClose = 0
 let g:AutoPairsShortcutFastWrap = '<C-e>'
 let g:AutoPairsShortcutJump = '<C-n>'
-let g:AutoPairsShortcutToggle = '<C-p>'
+let g:AutoPairsShortcutToggle = '<C-p><C-p>'
 
 " My settings
 let g:olan_path_aliases_file = expand('~/.vim/path_aliases')
@@ -123,7 +123,7 @@ nnoremap            <silent>        <Plug>PadUp :<c-U>call Pad(-v:count1)<cr>:ca
 nnoremap            <C-p>j          <Plug>PadDown
 nnoremap            <C-p>k          <Plug>PadUp
 nnoremap            <silent>        <Plug>BreakAndPadComma :<c-U>call BreakAndPad(',', v:count1)<cr>:call repeat#set("\<Plug>BreakAndPadComma")<cr>
-nnoremap            <C-p>,          <Plug>BreakAndPadComma
+nmap                <C-p>,          <Plug>BreakAndPadComma
 
 " Error navigation
 nnoremap            <down>          :cn<cr>
