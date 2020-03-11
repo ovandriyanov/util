@@ -93,6 +93,9 @@ command! CTerminal terminal ++curwin
 command! MTerminal split | resize 10 | set winfixheight | terminal ++curwin
 command! -bang -range -nargs=1 Xargs call Xargs('<args>', '<bang>' == '!')
 command! Aopen call Aopen()
+command! Scratch new | set bt=nofile
+command! VScratch vnew | set bt=nofile
+command! TScratch tabnew | set bt=nofile
 
 " ##############################################################################
 " ##############################  Custom mappings  #############################
@@ -164,6 +167,10 @@ inoremap <expr> <CR> MapCarriageReturn()
 nnoremap <C-_>iw "zciw/* <C-R>z */<Esc>bb
 nnoremap <C-_>iW "zciw/* <C-R>z */<Esc>bB
 vnoremap <C-_>   "zc/* <C-R>z */<Esc>gvo<Esc>W
+
+" Scratch window
+nnoremap <C-W>S :Scratch<Cr>
+tnoremap <C-W>S <C-W>:Scratch<Cr>
 
 " Should probably get rid of these...
 nnoremap <F5>       :highlight ExtraWhitespace ctermbg=darkgreen <CR>
