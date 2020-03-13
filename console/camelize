@@ -1,0 +1,7 @@
+#!/usr/bin/env python3
+
+import sys
+
+snake = sys.argv[1]
+
+print(''.join([a.capitalize() for a in snake.split('_') if a.isalnum()]))
