@@ -1,0 +1,5 @@
+#!/bin/bash
+
+TMPFILE=`mktemp --tmpdir cw-XXXXXX`
+cat >"${TMPFILE}"
+printf "\\e]51;[\"call\", \"Tapi_FillQuickfixWindow\", \"${TMPFILE}\"]\\x07"
