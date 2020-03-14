@@ -91,7 +91,7 @@ command! VTerminal vertical terminal
 command! STerminal terminal
 command! CTerminal terminal ++curwin
 command! MTerminal split | resize 10 | set winfixheight | terminal ++curwin
-command! -bang -range -nargs=1 Xargs call Xargs('<args>', '<bang>' == '!')
+command! -bang -range -nargs=1 -complete=shellcmd Xargs call Xargs('<args>', '<bang>' == '!')
 command! -range Aopen call Aopen(<line1>, <line2>)
 command! Scratch new | set bt=nofile
 command! VScratch vnew | set bt=nofile
