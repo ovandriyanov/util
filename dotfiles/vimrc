@@ -200,12 +200,24 @@ augroup vimrc
     " Set libstdc++ source files options
     autocmd BufRead,BufNewFile /usr/include/c++/*,/usr/include/x86_64-linux-gnu/c++/*,/usr/include/linux/* call SetLibStdCppOptions()
 
-    autocmd BufReadPost /* if &buftype == '' | lcd %:h | endif
+    autocmd BufWinEnter /* call ChdirToParentDir(expand('<amatch>'))
 augroup END
 
 " ##############################################################################
 " ##############################  Custom functions  ############################
 " ##############################################################################
+
+function! ChdirToParentDir(file)
+    let l:newbufnr = bufnr(a:file)
+    if getbufvar(l:newbufnr, '&buftype') != '' || bufnr() != l:newbufnr
+        return
+    endif
+
+    let l:parent = fnamemodify(a:file, ':p:h')
+    if len(l:parent) > 0
+        execute 'lcd' l:parent
+    endif
+endfunction
 
 function! SetLibStdCppOptions()
     setlocal ft=cpp
