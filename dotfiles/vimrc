@@ -579,7 +579,7 @@ function! CppShouldAddSemicolon(line)
 endfunction
 
 function! SqlShouldAddSemicolon(line)
-    return match(a:line, '^\s*\$[a-zA-Z_][a-zA-Z0-9_]*\s*=') >= 0
+    return match(a:line, '^\s*\%(\$[a-zA-Z_][a-zA-Z0-9_]*\s*=\|return\s\+\)') >= 0
 endfunction
 
 function! Cbuffer(cmd, line1, line2)
