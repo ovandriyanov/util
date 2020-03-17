@@ -30,7 +30,7 @@ set softtabstop=4
 set splitright
 set t_ut=
 set tabstop=4
-set ttimeoutlen=50
+set ttimeoutlen=0
 set wildmenu
 
 highlight ExtraWhitespace ctermbg=darkgreen
