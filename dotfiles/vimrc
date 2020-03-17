@@ -158,8 +158,8 @@ tnoremap            <C-w><Left>     <C-w>gT
 tnoremap            <C-w><Right>    <C-w>gt
 
 " Jumping around
-nnoremap            <C-F><C-O>      :call JumpToPrevFile()<Cr>
-nnoremap            <C-F><C-I>      :call JumpToNextFile()<Cr>
+nnoremap            <C-F><C-O>      :silent call JumpToPrevFile()<Cr><C-g>
+nnoremap            <C-F><C-I>      :silent call JumpToNextFile()<Cr><C-g>
 nnoremap            <C-K>           :<C-U>call JumpOffset(-v:count1)<Cr>
 nnoremap            <C-J>           :<C-U>call JumpOffset(+v:count1)<Cr>
 
