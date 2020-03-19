@@ -32,6 +32,7 @@ set t_ut=
 set tabstop=4
 set ttimeoutlen=0
 set wildmenu
+set shell=/bin/bash\ -O\ globstar
 
 highlight ExtraWhitespace ctermbg=darkgreen
 highlight Terminal guifg=#c0c0c0 guibg=#000040 ctermfg=gray ctermbg=black
