@@ -77,7 +77,6 @@ command! TVrc tabnew | exe 'edit' resolve(expand('~/.vimrc'))
 command! VVrc vsplit | exe 'edit' resolve(expand('~/.vimrc'))
 command! SVrc split | exe 'edit' resolve(expand('~/.vimrc'))
 command! Ve Vexplore!
-command! E Explore
 command! StripTrailingWhitespace %s/\s\+$//e
 command! -count=1 PadDown call Pad(<count>)
 command! -count=1 PadUp call Pad(-<count>)
