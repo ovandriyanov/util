@@ -180,6 +180,9 @@ tnoremap <C-W>S <C-W>:Scratch<Cr>
 nnoremap gb :silent !xopen <cfile><Cr>
 vnoremap gb :<C-U>silent execute '!xopen' shellescape(getreg('*'))<Cr>
 
+" Opening man pages all of a sudden drives me crazy
+nnoremap K k
+
 " Should probably get rid of these...
 nnoremap <F5>       :highlight ExtraWhitespace ctermbg=darkgreen <CR>
 nnoremap <S-F5>     :highlight ExtraWhitespace NONE <CR>
