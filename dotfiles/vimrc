@@ -99,7 +99,7 @@ command! TScratch tabnew | set bt=nofile
 command! -range=% Cgetbuffer call Cbuffer('cgetbuffer', <line1>, <line2>)
 command! -range=% Cbuffer call Cbuffer('cbuffer', <line1>, <line2>)
 command! Arel Yank !arel %
-command! Include call Yank("!printf '\\#include <\\%s>' `arel %`")
+command! Include call Yank("!printf '\\#include <\\%s>\n\n' `arel %`")
 
 " ##############################################################################
 " ##############################  Custom mappings  #############################
