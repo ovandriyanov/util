@@ -108,6 +108,7 @@ command! Include call Yank("!printf '\\#include <\\%s>\n\n' `arel %`")
 
 " QtCreator-like bindings
 nnoremap            <F2>            :YcmCompleter GoTo <cr>
+nnoremap            <S-F2>          :YcmCompleter GoToDeclaration <cr>
 nnoremap            <F4>            :silent! A <cr>
 nnoremap            <F6>            :vsplit <cr>:YcmCompleter GoTo <cr>
 nnoremap            <F8>            :silent! AV <cr>
