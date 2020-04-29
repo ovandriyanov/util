@@ -113,6 +113,12 @@ nnoremap            <F4>            :silent! A <cr>
 nnoremap            <F6>            :vsplit <cr>:YcmCompleter GoTo <cr>
 nnoremap            <F8>            :silent! AV <cr>
 
+" Highlight word under cursor
+nnoremap            <space>         :set hls \| call setreg('/', '\<' . expand('<cword>') . '\>')<Cr>
+vnoremap            <space>         :<C-u>set hls \| call setreg('/', getreg('*'))<Cr>
+vnoremap            \<space>        :<C-u>set hls \| call setreg('/', '\<' . getreg('*') . '\>')<Cr>
+nnoremap            <C-@>           :noh<Cr>
+
 " Visual mode search
 vnoremap            *               <esc>/\V<c-r>=escape(getreg('*'), '/')<cr><cr>
 vnoremap            #               <esc>`<?\V<c-r>=escape(getreg('*'), '/')<cr><cr>
