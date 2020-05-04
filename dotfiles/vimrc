@@ -34,6 +34,9 @@ set ttimeoutlen=0
 set wildmenu
 set shell=/bin/bash\ -O\ globstar
 
+" Konsole does not seem to support Xterm escape sequences for changing cursor shape - disable it
+set t_SH=
+
 highlight ExtraWhitespace ctermbg=darkgreen
 highlight Terminal guifg=#c0c0c0 guibg=#000040 ctermfg=gray ctermbg=black
 match ExtraWhitespace /\s\+$/
