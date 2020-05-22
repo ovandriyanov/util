@@ -33,6 +33,7 @@ set tabstop=4
 set ttimeoutlen=0
 set wildmenu
 set shell=/bin/bash\ -O\ globstar
+set foldmethod=marker
 
 " Konsole does not seem to support Xterm escape sequences for changing cursor shape - disable it
 set t_SH=
@@ -64,6 +65,7 @@ let g:ycm_always_populate_location_list = 1
 let g:ycm_confirm_extra_conf = 0
 let g:ycm_global_ycm_extra_conf = expand('~/git/ovandriyanov/util/kernel_ycm_extra_conf.py')
 let g:ycm_clangd_args=['--header-insertion=never']
+let g:ycm_auto_hover=''
 " let g:ycm_autoclose_preview_window_after_insertion = 1
 
 " AutoPairs settings
