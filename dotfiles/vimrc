@@ -202,6 +202,9 @@ nnoremap K k
 " Arithmetic evaluation
 vnoremap <Cr> c<C-r>=<C-r>"<Cr><Esc>
 
+" Debugging
+nnoremap <C-b> :call Break()<Cr>
+
 " Should probably get rid of these...
 nnoremap <F5>       :highlight ExtraWhitespace ctermbg=darkgreen <CR>
 nnoremap <S-F5>     :highlight ExtraWhitespace NONE <CR>
@@ -607,6 +610,10 @@ endfunction
 
 function! Cbuffer(cmd, line1, line2)
     execute a:line1 . ',' . a:line2 . a:cmd
+endfunction
+
+function! Break()
+    call term_sendkeys(winbufnr(1), "break " . expand("%:p") . ':' . line('.') . "\<Cr>")
 endfunction
 
 " ############################################################################## }}}
