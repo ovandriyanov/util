@@ -35,6 +35,7 @@ set wildmenu
 set shell=/bin/bash\ -O\ globstar
 set foldmethod=marker
 set completeopt=popup,menuone
+set clipboard=exclude:cons\|linux
 
 " Konsole does not seem to support Xterm escape sequences for changing cursor shape - disable it
 set t_SH=
@@ -127,14 +128,14 @@ nnoremap            <F8>            :silent! AV <cr>
 
 " Highlight word under cursor
 nnoremap            <space>         :set hls \| call setreg('/', '\<' . expand('<cword>') . '\>')<Cr>
-vnoremap            <space>         :<C-u>set hls \| call setreg('/', getreg('*'))<Cr>
-vnoremap            \<space>        :<C-u>set hls \| call setreg('/', '\<' . getreg('*') . '\>')<Cr>
+vnoremap            <space>         "zy:set hls \| call setreg('/', getreg('z'))<Cr>
+vnoremap            \<space>        "zy:set hls \| call setreg('/', '\<' . getreg('z') . '\>')<Cr>
 
 " Visual mode search
-vnoremap            *               <esc>/\V<c-r>=escape(getreg('*'), '/')<cr><cr>
-vnoremap            #               <esc>`<?\V<c-r>=escape(getreg('*'), '/')<cr><cr>
-vnoremap            <Leader>*       <esc>/\V\<<c-r>=escape(getreg('*'), '/')<cr>\><cr>
-vnoremap            <leader>#       <esc>`<?\V\<<c-r>=escape(getreg('*'), '/')<cr>\><cr>
+vnoremap            *               "zy/\V<c-r>=escape(getreg('z'), '/')<cr><cr>
+vnoremap            #               "zy`<?\V<c-r>=escape(getreg('z'), '/')<cr><cr>
+vnoremap            <Leader>*       "zy/\V\<<c-r>=escape(getreg('z'), '/')<cr>\><cr>
+vnoremap            <leader>#       "zy`<?\V\<<c-r>=escape(getreg('z'), '/')<cr>\><cr>
 
 " Command line register escaping
 cnoremap            <c-r>\"         <c-r>=escape(getreg('"'), '/')<cr>
@@ -201,7 +202,7 @@ tnoremap <C-W>S <C-W>:Scratch<Cr>
 
 " URL opening (_G_o _B_rowser)
 nnoremap gb :silent !xopen <cfile><Cr>
-vnoremap gb :<C-U>silent execute '!xopen' shellescape(getreg('*'))<Cr>
+vnoremap gb "zy:silent execute '!xopen' shellescape(getreg('z'))<Cr>
 
 " Opening man pages all of a sudden drives me crazy
 nnoremap K k
@@ -374,7 +375,8 @@ endfunction
 
 function! FindFileReuseWindow(visual)
     if a:visual
-        let l:cfile = getreg('*')
+        norm gv"zy
+        let l:cfile = getreg('z')
     else
         let l:cfile = expand('<cfile>')
     endif
@@ -515,7 +517,8 @@ function! CompleteFileAliases(arglead, ...)
 endfunction
 
 function! Xargs(args, substitute)
-    let l:result = system('xargs --delimiter "\n" ' . a:args, getreg('*'))
+    norm gv"zy
+    let l:result = system('xargs --delimiter "\n" ' . a:args, getreg('z'))
     let l:exit_status = v:shell_error
 
     if l:exit_status != 0
