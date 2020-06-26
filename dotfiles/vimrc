@@ -182,6 +182,10 @@ nnoremap            <C-F><C-O>      :silent call JumpToPrevFile()<Cr><C-g>
 nnoremap            <C-F><C-I>      :silent call JumpToNextFile()<Cr><C-g>
 nnoremap            <C-K>           :<C-U>call JumpOffset(-v:count1)<Cr>
 nnoremap            <C-J>           :<C-U>call JumpOffset(+v:count1)<Cr>
+nnoremap            [E              :lfirst<Cr>
+nnoremap            [e              :lbefore<Cr>
+nnoremap            ]e              :lafter<Cr>
+nnoremap            ]E              :llast<Cr>
 
 " Inserting
 inoremap <expr> <CR> MapCarriageReturn()
