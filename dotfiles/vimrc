@@ -231,6 +231,8 @@ augroup vimrc
     autocmd BufRead,BufNewFile /usr/include/c++/*,/usr/include/x86_64-linux-gnu/c++/*,/usr/include/linux/* call SetLibStdCppOptions()
 
     autocmd BufWinEnter /* call ChdirToParentDir(expand('<amatch>'))
+
+	autocmd BufWinEnter *.go setlocal noet
 augroup END
 
 " ############################################################################## }}}
