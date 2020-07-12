@@ -80,6 +80,7 @@ let g:AutoPairsShortcutToggle = '<C-p><C-p>'
 
 " NERDTree settings
 let g:loaded_netrwPlugin = 1
+let g:NERDTreeMapHelp = ''
 " let g:NERDTreeChDirMode = 3
 
 " My settings
