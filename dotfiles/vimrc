@@ -132,6 +132,16 @@ nnoremap            <F4>            :silent! A <cr>
 nnoremap            <F6>            :vsplit <cr>:YcmCompleter GoTo <cr>
 nnoremap            <F8>            :silent! AV <cr>
 
+" YouCompleteMe
+" nnoremap            <Tab><Tab>      :YcmCompleter GoTo<Cr>
+" nnoremap            <Tab>t          :YcmCompleter GetType<Cr>
+" nnoremap            <Tab>gt         :YcmCompleter GoToType<Cr>
+" nnoremap            <Tab>gi         :YcmCompleter GoToImplementation<Cr>
+" nnoremap            <Tab>x          :YcmCompleter FixIt<Cr>
+" nnoremap            <Tab>r          :YcmCompleter RefactorRename
+" nnoremap            <Tab>h          :YcmCompleter GetDoc<Cr>
+" nnoremap            <Tab>f          :YcmCompleter Format<Cr>
+
 " NERDTree
 nnoremap <expr>     <Cr>            NerdTreeFindExpr()
 
