@@ -205,7 +205,6 @@ vnoremap <C-_>   "zc/* <C-R>z */<Esc>gvo<Esc>W
 
 " Scratch window
 nnoremap <C-W>S :Scratch<Cr>
-tnoremap <C-W>S <C-W>:Scratch<Cr>
 
 " URL opening (_G_o _B_rowser)
 nnoremap gb :silent !xopen <cfile><Cr>
