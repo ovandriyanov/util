@@ -259,6 +259,10 @@ nnoremap <C-^>a<C-^>w :bd<Cr>
 tnoremap <C-^>a<C-^>w <C-^>:bd<Cr>
 nnoremap <C-^>a<C-^>d :bd!<Cr>
 tnoremap <C-^>a<C-^>d <C-^>:bd!<Cr>
+nnoremap <C-^>a<C-^>o :only<Cr>
+tnoremap <C-^>a<C-^>o <C-^>:only<Cr>
+nnoremap <C-^>as<C-^>o :call ForceOnly()<Cr>
+tnoremap <C-^>as<C-^>o <C-^>:call ForceOnly()<Cr>
 
 "   To tell apart CTRL+I and Tab
 nnoremap <C-^>c<C-^>i <C-i>
@@ -711,6 +715,29 @@ function! NerdTreeFindExpr()
         endif
     endfor
     return ":NERDTree " . l:root . "\<Cr>:NERDTreeFind " . l:curpath . "\<Cr>"
+endfunction
+
+function! ForceOnly()
+    let l:curwinid = win_getid()
+    let l:winnr = 1
+    let l:todelete = ''
+    while 1
+        let l:id = win_getid(l:winnr)
+
+        if l:id == 0
+            break
+        endif
+
+        if l:id == l:curwinid
+            let l:winnr += 1
+            continue
+        end
+
+        let l:todelete = l:todelete . ' ' . winbufnr(l:winnr)
+        let l:winnr += 1
+    endwhile
+
+    execute 'bdelete!' l:todelete
 endfunction
 
 " ############################################################################## }}}
