@@ -239,16 +239,16 @@ nnoremap <C-^>a<C-^>l <C-w>l
 tnoremap <C-^>a<C-^>l <C-^>l
 
 "   Buffer switching
-nnoremap <C-^>cs<C-^>j :bn<cr>
-tnoremap <C-^>cs<C-^>j <C-^>:bn<cr>
-nnoremap <C-^>cs<C-^>k :bp<cr>
-tnoremap <C-^>cs<C-^>k <C-^>:bp<cr>
+nnoremap <C-^>as<C-^>j :bn<cr>
+tnoremap <C-^>as<C-^>j <C-^>:bn<cr>
+nnoremap <C-^>as<C-^>k :bp<cr>
+tnoremap <C-^>as<C-^>k <C-^>:bp<cr>
 
 "   Tab switching
-nnoremap <C-^>cs<C-^>h gT
-tnoremap <C-^>cs<C-^>h <C-^>gT
-nnoremap <C-^>cs<C-^>l gt
-tnoremap <C-^>cs<C-^>l <C-^>gt
+nnoremap <C-^>as<C-^>h gT
+tnoremap <C-^>as<C-^>h <C-^>gT
+nnoremap <C-^>as<C-^>l gt
+tnoremap <C-^>as<C-^>l <C-^>gt
 
 "   Closing and opening windows
 nnoremap <C-^>a<C-^>t :terminal<Cr>
