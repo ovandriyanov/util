@@ -112,7 +112,8 @@ command! STerminal terminal
 command! CTerminal terminal ++curwin
 command! MTerminal split | resize 10 | set winfixheight | terminal ++curwin
 command! -bang -range -nargs=1 -complete=shellcmd Xargs call Xargs('<args>', '<bang>' == '!')
-command! -range Aopen call Aopen(<line1>, <line2>)
+command! -range Aopen call Aopen(<line1>, <line2>, 0)
+command! -range AopenCurrent call Aopen(<line1>, <line2>, 1)
 command! Scratch new | set bt=nofile
 command! VScratch vnew | set bt=nofile
 command! TScratch tabnew | set bt=nofile
@@ -571,8 +572,8 @@ function! JumpOffset(offset)
     execute 'normal ' . l:targetline . 'G'
 endfunction
 
-function! Aopen(line1, line2)
-    silent execute '!aopen %' a:line1 . '-' . a:line2
+function! Aopen(line1, line2, current)
+    silent execute '!aopen %' a:line1 . '-' . a:line2 a:current ? '-c' : ''
 endfunction
 
 function! Arel(filename) abort
