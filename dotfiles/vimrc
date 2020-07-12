@@ -269,11 +269,11 @@ tnoremap <C-^>as<C-^>o <C-^>:call ForceOnly()<Cr>
 "   To tell apart CTRL+I and Tab
 nnoremap <C-^>c<C-^>i <C-i>
 
-"   Enter command mode from normal and terminal modes
-nnoremap <C-^><C-^><Esc> :
+"   Enter command mode from terminal mode
 tnoremap <C-^><C-^><Esc> <C-^>:
-cnoremap <C-^><C-^><Esc> <C-c>
+nnoremap <C-^><C-^><Esc> <Esc>
 inoremap <C-^><C-^><Esc> <Esc>
+cnoremap <C-^><C-^><Esc> <C-c>
 " }}}
 
 " ############################################################################## }}}
