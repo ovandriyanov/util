@@ -79,6 +79,10 @@ let g:AutoPairsShortcutFastWrap = '<C-e>'
 let g:AutoPairsShortcutJump = '<C-n>'
 let g:AutoPairsShortcutToggle = '<C-p><C-p>'
 
+" NERDTree settings
+let g:loaded_netrwPlugin = 1
+" let g:NERDTreeChDirMode = 3
+
 " My settings
 let g:olan_path_aliases_file = expand('~/.vim/path_aliases')
 
@@ -90,7 +94,9 @@ command! Vrc exe 'edit' resolve(expand('~/.vimrc'))
 command! TVrc tabnew | exe 'edit' resolve(expand('~/.vimrc'))
 command! VVrc vsplit | exe 'edit' resolve(expand('~/.vimrc'))
 command! SVrc split | exe 'edit' resolve(expand('~/.vimrc'))
-command! Ve Vexplore!
+command! Explore e .
+command! SExplore split | e .
+command! Ve vsplit | e .
 command! StripTrailingWhitespace %s/\s\+$//e
 command! -count=1 PadDown call Pad(<count>)
 command! -count=1 PadUp call Pad(-<count>)
@@ -125,6 +131,9 @@ nnoremap            <S-F2>          :YcmCompleter GoToDeclaration <cr>
 nnoremap            <F4>            :silent! A <cr>
 nnoremap            <F6>            :vsplit <cr>:YcmCompleter GoTo <cr>
 nnoremap            <F8>            :silent! AV <cr>
+
+" NERDTree
+nnoremap <expr>     <Cr>            NerdTreeFindExpr()
 
 " Highlight word under cursor
 nnoremap            <space>         :set hls \| call setreg('/', '\<' . expand('<cword>') . '\>')<Cr>
@@ -342,22 +351,33 @@ function! IsTerminalWindow(winnr)
     return l:buftype == 'terminal'
 endfunction
 
+function! IsNerdTreeWindow(winnr)
+    let l:bufnr = winbufnr(a:winnr)
+    let l:filetype = getbufvar(l:bufnr, '&filetype')
+    return l:filetype == 'nerdtree'
+endfunction
+
 function! OpenOrReuseWindow()
     " TODO: netrw windows not handled very well
     let l:curwin = winnr()
     let l:curtab = tabpagenr()
     let l:wincnt = tabpagewinnr(l:curtab, '$')
     let l:termcnt = 0
+    let l:nerdtreecnt = 0
 
     for l:wnum in range(1, l:wincnt)
         if IsTerminalWindow(l:wnum)
             let l:termcnt += 1
+        endif
+        if IsNerdTreeWindow(l:wnum)
+            let l:nerdtreecnt += 1
         endif
     endfor
 
     let l:reusable = l:wincnt
     let l:reusable -= l:termcnt
     let l:reusable -= IsTerminalWindow(l:curwin) ? 0 : 1
+    let l:reusable -= IsNerdTreeWindow(l:curwin) ? 0 : 1
 
     if l:reusable == 0
         exe 'vsplit'
@@ -367,7 +387,7 @@ function! OpenOrReuseWindow()
     endif
 
     for l:wnum in range(1, l:wincnt)
-        if l:wnum != l:curwin && !IsTerminalWindow(l:wnum)
+        if l:wnum != l:curwin && !IsTerminalWindow(l:wnum) && !IsNerdTreeWindow(l:wnum)
             return l:wnum
         endif
     endfor
@@ -451,24 +471,29 @@ function! JumpToNextFile()
 endfunction
 
 function! LoadPathAliases()
+    if exists('g:olan_path_aliases') && exists('g:olan_root_dirs')
+        return
+    endif
+
     try
-        let l:aliases = {}
+        let g:olan_path_aliases = {}
+        let g:olan_root_dirs = []
         for l:line in readfile(g:olan_path_aliases_file)
             let l:items = l:line->split()
-            for l:alias in l:items[1:]
-                let l:aliases[tolower(l:alias)] = {'path': l:items[0], 'name': l:items[1]}
+            for l:alias in l:items[2:]
+                let g:olan_path_aliases[tolower(l:alias)] = {'path': l:items[0], 'name': l:items[2]}
             endfor
+            if l:items[1] == 'root'
+                call add(g:olan_root_dirs, expand(l:items[0]))
+            endif
         endfor
-        return l:aliases
     catch /Can't open file/
-        return {}
+        return
     endtry
 endfunction
 
 function! OpenFileByAlias(alias, window_splitter)
-    if !exists('g:olan_path_aliases')
-        let g:olan_path_aliases = LoadPathAliases()
-    endif
+    call LoadPathAliases()
 
     let l:value = get(g:olan_path_aliases, tolower(a:alias))
     if type(l:value) == type(0) && !l:value
@@ -490,9 +515,7 @@ function! OpenFileByAlias(alias, window_splitter)
 endfunction
 
 function! CompleteFileAliases(arglead, ...)
-    if !exists('g:olan_path_aliases')
-        let g:olan_path_aliases = LoadPathAliases()
-    endif
+    call LoadPathAliases()
 
     let l:candidates = {}
     let l:Chop = len(a:arglead) ? {str -> str[:len(a:arglead) - 1]} : {str -> ''}
@@ -628,6 +651,28 @@ function! Break()
     call term_sendkeys(winbufnr(1), "break " . expand("%:p") . ':' . line('.') . "\<Cr>")
 endfunction
 
+function! NerdTreeFindExpr()
+    call LoadPathAliases()
+
+    if &bt != ''
+        return "\<Cr>"
+    endif
+
+    let l:curpath = expand('%:p')
+    let l:root = expand('%:p:h')
+    let l:maxlen = 0
+    for l:path in g:olan_root_dirs
+        let l:prefix = l:curpath[0:len(l:path) - 1]
+        echom 'PREFIX: ' . l:prefix
+        echom 'PATH: ' . l:path
+        if l:prefix == l:path && l:maxlen < len(l:prefix)
+            let l:root = l:path
+            let l:maxlen = len(l:prefix)
+        endif
+    endfor
+    return ":NERDTree " . l:root . "\<Cr>:NERDTreeFind " . l:curpath . "\<Cr>"
+endfunction
+
 " ############################################################################## }}}
 " ################################  Vundle stuff  ############################## {{{
 " ##############################################################################
@@ -642,6 +687,7 @@ Plugin 'google/vim-searchindex'
 Plugin 'tpope/vim-repeat'
 Plugin 'tpope/vim-surround'
 Plugin 'vim-scripts/BufOnly.vim'
+Plugin 'preservim/nerdtree'
 
 if exists('g:devmode') && g:devmode
     " C/C++ stuff
