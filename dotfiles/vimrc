@@ -301,6 +301,8 @@ augroup vimrc
 
 	autocmd BufWinEnter *.go setlocal noet
 
+    autocmd FileType nerdtree set relativenumber
+
     autocmd TerminalOpen * set termwinkey=<C-^>
 augroup END
 
