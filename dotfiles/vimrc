@@ -718,8 +718,6 @@ function! NerdTreeFindExpr()
     let l:maxlen = 0
     for l:path in g:olan_root_dirs
         let l:prefix = l:curpath[0:len(l:path) - 1]
-        echom 'PREFIX: ' . l:prefix
-        echom 'PATH: ' . l:path
         if l:prefix == l:path && l:maxlen < len(l:prefix)
             let l:root = l:path
             let l:maxlen = len(l:prefix)
