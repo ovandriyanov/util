@@ -725,7 +725,17 @@ function! NerdTreeFindExpr()
             let l:maxlen = len(l:prefix)
         endif
     endfor
-    return ":NERDTree " . l:root . "\<Cr>:NERDTreeFind " . l:curpath . "\<Cr>"
+    return ":call NerdTreeFind('" . l:root .  "', '" . l:curpath . "')\<Cr>"
+endfunction
+
+function! NerdTreeFind(root, findpath) abort
+    if !exists('t:NERDTreeBufName') || getbufvar(t:NERDTreeBufName, 'NERDTreeRoot').path.str() !=# a:root
+        execute 'NERDTree' a:root
+        execute 'lcd' a:root
+    else
+        NERDTreeFocus
+    endif
+    execute 'NERDTreeFind' a:findpath
 endfunction
 
 function! ForceOnly()
