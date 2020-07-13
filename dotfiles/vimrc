@@ -256,6 +256,7 @@ tnoremap <C-^>as<C-^>l <C-^>gt
 "   Closing and opening windows
 nnoremap <C-^>a<C-^>t :terminal<Cr>
 nnoremap <C-^>a<C-^>n :new<Cr>
+nnoremap <C-^>as<C-^>n :tabnew<Cr>
 nnoremap <C-^>a<C-^>q :q<Cr>
 tnoremap <C-^>a<C-^>q <C-^>:q<Cr>
 nnoremap <C-^>a<C-^>w :bd<Cr>
@@ -271,10 +272,11 @@ tnoremap <C-^>as<C-^>o <C-^>:call ForceOnly()<Cr>
 nnoremap <C-^>c<C-^>i <C-i>
 
 "   Enter command mode from terminal mode
-tnoremap <C-^><C-^><Esc> <C-^>:
-nnoremap <C-^><C-^><Esc> <Esc>
-inoremap <C-^><C-^><Esc> <Esc>
-cnoremap <C-^><C-^><Esc> <C-c>
+tnoremap <C-^>a<C-^><Esc> <C-^>:
+nnoremap <C-^>a<C-^><Esc> <Esc>
+inoremap <C-^>a<C-^><Esc> <Esc>
+vnoremap <C-^>a<C-^><Esc> <Esc>
+cnoremap <C-^>a<C-^><Esc> <C-c>
 " }}}
 
 " ############################################################################## }}}
