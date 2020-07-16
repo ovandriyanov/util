@@ -318,6 +318,7 @@ augroup vimrc
     autocmd FileType nerdtree set relativenumber
 
     autocmd TerminalOpen * set termwinkey=<C-^>
+    autocmd TerminalOpen * set nowrap
 augroup END
 
 " ############################################################################## }}}
