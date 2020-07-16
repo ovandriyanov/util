@@ -316,6 +316,7 @@ augroup vimrc
 	autocmd BufWinEnter *.go setlocal noet
 
     autocmd FileType nerdtree set relativenumber
+    autocmd FileType nerdtree nnoremap <buffer> <nowait> <C-F> :NERDTreeFind **/
 
     autocmd TerminalOpen * set termwinkey=<C-^>
     autocmd TerminalOpen * set nowrap
