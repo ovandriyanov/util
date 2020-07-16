@@ -584,6 +584,9 @@ function! OpenFileByAlias(alias, window_splitter)
         execute a:window_splitter
     endif
     execute 'edit' l:path
+    if &filetype == 'nerdtree'
+        execute 'lcd' l:path
+    endif
 endfunction
 
 function! CompleteFileAliases(arglead, ...)
