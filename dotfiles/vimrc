@@ -259,6 +259,7 @@ tnoremap <C-^>as<C-^>l <C-^>gt
 
 "   Closing and opening windows
 nnoremap <C-^>a<C-^>t :terminal<Cr>
+tnoremap <C-^>a<C-^>t <C-^>:terminal<Cr>
 nnoremap <C-^>a<C-^>n :new<Cr>
 nnoremap <C-^>as<C-^>n :tabnew<Cr>
 nnoremap <C-^>a<C-^>q :q<Cr>
