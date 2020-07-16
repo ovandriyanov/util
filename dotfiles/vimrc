@@ -273,6 +273,15 @@ tnoremap <C-^>a<C-^>o <C-^>:only<Cr>
 nnoremap <C-^>as<C-^>o :call ForceOnly()<Cr>
 tnoremap <C-^>as<C-^>o <C-^>:call ForceOnly()<Cr>
 
+" Mode switching in terminal window
+tnoremap <C-^>as<C-^>n <C-^>N
+nnoremap <C-^>as<C-^>n i
+
+" Registers
+tnoremap <C-^>a<C-^>r <C-^>"
+inoremap <C-^>a<C-^>r <C-r>
+cnoremap <C-^>a<C-^>r <C-r>
+
 "   To tell apart CTRL+I and Tab
 nnoremap <C-^>c<C-^>i <C-i>
 
