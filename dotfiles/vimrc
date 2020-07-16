@@ -317,6 +317,8 @@ augroup vimrc
 
     autocmd FileType nerdtree set relativenumber
     autocmd FileType nerdtree nnoremap <buffer> <nowait> <C-F> :NERDTreeFind **/
+    autocmd FileType nerdtree nnoremap <buffer>          <C-^>a<C-^>t  :call OpenTerminalFromNerdTree(0)<Cr>
+    autocmd FileType nerdtree nnoremap <buffer>          <C-^>as<C-^>t :call OpenTerminalFromNerdTree(1)<Cr>
 
     autocmd TerminalOpen * set termwinkey=<C-^>
     autocmd TerminalOpen * set nowrap
@@ -778,6 +780,53 @@ function! ForceOnly()
     endwhile
 
     execute 'bdelete!' l:todelete
+endfunction
+
+function! OpenTerminalFromNerdTree(shift) abort
+    if &ft !=# 'nerdtree'
+        return ":terminal\<Cr>"
+    endif
+
+    let l:curnode = g:NERDTreeFileNode.GetSelected()
+    if l:curnode.path.isDirectory
+        let l:termpath = l:curnode.path.str()
+    else
+        let l:termpath = fnamemodify(l:curnode.path.str(), ':h')
+    endif
+
+    let l:didsplit = SplitForNerdTree()
+    if a:shift == 1 || l:didsplit
+        let l:maybe_curwin = ' ++curwin'
+    else
+        let l:maybe_curwin = ''
+    endif
+
+    echom 'terminal ++close' . l:maybe_curwin . ' /bin/bash -c "cd ' . l:termpath . ' && exec ' . &shell . '"'
+    execute 'terminal ++close' . l:maybe_curwin . ' /bin/bash -c "cd ' . l:termpath . ' && exec ' . &shell . '"'
+endfunction
+
+" Shamelessly stolen from NERDTree (s:Opener._newVSplit())
+function! SplitForNerdTree() abort
+    if winnr('$') !=# 1
+        wincmd p
+        return 0
+    endif
+
+    let l:splitright = &splitright
+    let l:eventignore = &eventignore
+
+    let &splitright = g:NERDTreeWinPos ==# 'left'
+    let &eventignore = 'all'
+
+    vsplit
+    let l:splitwinnr = winnr()
+    call g:NERDTree.CursorToTreeWin()
+    execute 'silent vertical resize ' . g:NERDTreeWinSize
+    execute l:splitwinnr . 'wincmd w'
+
+    let &eventignore=l:eventignore
+    let &splitright=l:splitright
+    return 1
 endfunction
 
 " ############################################################################## }}}
