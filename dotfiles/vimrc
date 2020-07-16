@@ -245,6 +245,12 @@ tnoremap <C-^>a<C-^>k <C-^>k
 nnoremap <C-^>a<C-^>l <C-w>l
 tnoremap <C-^>a<C-^>l <C-^>l
 
+"   Align windows with HJKL
+nnoremap <C-^>as<C-^>h <C-w>H
+nnoremap <C-^>as<C-^>j <C-w>J
+nnoremap <C-^>as<C-^>k <C-w>K
+nnoremap <C-^>as<C-^>l <C-w>L
+
 "   Buffer switching
 nnoremap <C-^>as<C-^>j :bn<cr>
 tnoremap <C-^>as<C-^>j <C-^>:bn<cr>
@@ -252,10 +258,16 @@ nnoremap <C-^>as<C-^>k :bp<cr>
 tnoremap <C-^>as<C-^>k <C-^>:bp<cr>
 
 "   Tab switching
-nnoremap <C-^>as<C-^>h gT
-tnoremap <C-^>as<C-^>h <C-^>gT
-nnoremap <C-^>as<C-^>l gt
-tnoremap <C-^>as<C-^>l <C-^>gt
+nnoremap <C-^>ac<C-^>h gT
+tnoremap <C-^>ac<C-^>h <C-^>gT
+nnoremap <C-^>ac<C-^>l gt
+tnoremap <C-^>ac<C-^>l <C-^>gt
+
+"   Tab shifting
+nnoremap <C-^>acs<C-^>h :tabmove -1<Cr>
+tnoremap <C-^>acs<C-^>h <C-^>:tabmove -1<Cr>
+nnoremap <C-^>acs<C-^>l :tabmove +1<Cr>
+tnoremap <C-^>acs<C-^>l <C-^>:tabmove +1<Cr>
 
 "   Closing and opening windows
 nnoremap <C-^>a<C-^>t :terminal<Cr>
