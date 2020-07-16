@@ -744,7 +744,7 @@ function! NerdTreeFindExpr()
 endfunction
 
 function! NerdTreeFind(root, findpath) abort
-    if !exists('t:NERDTreeBufName') || getbufvar(t:NERDTreeBufName, 'NERDTreeRoot', {'path': {'str': {->''}}}).path.str() !=# a:root
+    if !exists('t:NERDTreeBufName') || getbufvar(t:NERDTreeBufName, 'NERDTreeRoot', {'path': {'str': {->''} } }).path.str() !=# a:root
         execute 'NERDTree' a:root
         execute 'lcd' a:root
     else
