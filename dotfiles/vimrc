@@ -198,7 +198,9 @@ nnoremap            [e              :lbefore<Cr>
 nnoremap            ]e              :lafter<Cr>
 nnoremap            ]E              :llast<Cr>
 nnoremap            (               [(
+vnoremap            (               [(
 nnoremap            )               ])
+vnoremap            )               ])
 
 " Inserting
 inoremap <expr> <CR> MapCarriageReturn()
