@@ -81,6 +81,7 @@ let g:AutoPairsShortcutToggle = '<C-p><C-p>'
 " NERDTree settings
 let g:loaded_netrwPlugin = 1
 let g:NERDTreeMapHelp = ''
+let g:NERDTreeCustomOpenArgs = {'file': {'reuse': '', 'where': 'p'}, 'dir': {}}
 " let g:NERDTreeChDirMode = 3
 
 " My settings
