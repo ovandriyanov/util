@@ -265,6 +265,8 @@ nnoremap <C-^>a<C-^>k <C-w>k
 tnoremap <C-^>a<C-^>k <C-^>k
 nnoremap <C-^>a<C-^>l <C-w>l
 tnoremap <C-^>a<C-^>l <C-^>l
+nnoremap <C-^>a<C-^>p <C-w>p
+tnoremap <C-^>a<C-^>p <C-^>p
 " }}}
 
 "   Align windows with HJKL {{{
