@@ -203,8 +203,8 @@ vnoremap            <c-w>f          :call FindFileReuseWindow(1)<cr> {{{
 " Jumping around {{{
 nnoremap            <C-F><C-O>      :silent call JumpToPrevFile()<Cr><C-g>
 nnoremap            <C-F><C-I>      :silent call JumpToNextFile()<Cr><C-g>
-nnoremap            <C-K>           :<C-U>call JumpOffset(-v:count1)<Cr>
-nnoremap            <C-J>           :<C-U>call JumpOffset(+v:count1)<Cr>
+nnoremap <expr>     k               JumpOffsetExpr(-v:count1)
+nnoremap <expr>     j               JumpOffsetExpr(+v:count1)
 nnoremap            [E              :lfirst<Cr>
 nnoremap            [e              :lbefore<Cr>
 nnoremap            ]e              :lafter<Cr>
@@ -679,11 +679,23 @@ function! Xargs(args, substitute) " {{{
     endif
 endfunction " }}}
 
-function! JumpOffset(offset) " {{{
-    let l:curpos = getcurpos()[1]
-    let l:targetline = l:curpos + a:offset
-    execute 'normal ' . l:targetline . 'G'
+function! JumpOffsetExpr(offset) " {{{
+    if a:offset == 1
+        return 'j'
+    elseif a:offset == -1
+        return 'k'
+    endif
+
+    return "\<Esc>:call JumpOffset(" . a:offset . ")\<Cr>"
 endfunction " }}}
+
+function! JumpOffset(offset) " {{{
+    let l:contextmark = getpos("''")
+    normal! m'
+    call setpos("''", l:contextmark)
+
+    execute 'normal!' a:offset > 0 ? a:offset . 'j' : -a:offset . 'k'
+endfunction "}}}
 
 function! Aopen(line1, line2, current) " {{{
     silent execute '!aopen %' a:line1 . '-' . a:line2 a:current ? '-c' : ''
