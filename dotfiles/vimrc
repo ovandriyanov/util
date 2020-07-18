@@ -365,6 +365,8 @@ augroup vimrc
     autocmd FileType nerdtree nnoremap <buffer> <nowait> <C-F> :NERDTreeFind **/
     autocmd FileType nerdtree nnoremap <buffer>          <C-^>a<C-^>t  :call OpenTerminalFromNerdTree(0)<Cr>
     autocmd FileType nerdtree nnoremap <buffer>          <C-^>as<C-^>t :call OpenTerminalFromNerdTree(1)<Cr>
+    autocmd User NERDTreeNewRoot execute 'lcd' b:NERDTreeRoot.path.str()
+    autocmd User NERDTreeInit execute 'lcd' b:NERDTreeRoot.path.str()
 
     autocmd TerminalOpen * set termwinkey=<C-^>
     autocmd TerminalOpen * set nowrap
@@ -633,9 +635,6 @@ function! OpenFileByAlias(alias, window_splitter) " {{{
         execute a:window_splitter
     endif
     execute 'edit' l:path
-    if &filetype == 'nerdtree'
-        execute 'lcd' l:path
-    endif
 endfunction " }}}
 
 function! CompleteFileAliases(arglead, ...) " {{{
@@ -810,7 +809,6 @@ endfunction " }}}
 function! NerdTreeFind(root, findpath) abort " {{{
     if !exists('t:NERDTreeBufName') || getbufvar(t:NERDTreeBufName, 'NERDTreeRoot', {'path': {'str': {->''} } }).path.str() !=# a:root
         execute 'NERDTree' a:root
-        execute 'lcd' a:root
     else
         NERDTreeFocus
     endif
