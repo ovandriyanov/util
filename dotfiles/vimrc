@@ -632,7 +632,12 @@ function! OpenFileByAlias(alias, window_splitter) " {{{
     if len(a:window_splitter) > 0
         execute a:window_splitter
     endif
-    execute 'edit' l:path
+
+    if isdirectory(l:path)
+        execute 'NERDTree' l:path
+    else
+        execute 'edit' l:path
+    endif
 endfunction " }}}
 
 function! CompleteFileAliases(arglead, ...) " {{{
