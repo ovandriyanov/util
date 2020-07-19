@@ -500,7 +500,15 @@ function! OpenOrReuseWindow() " {{{
     let l:reusable -= IsTerminalWindow(l:curwin) || IsNerdTreeWindow(l:curwin) ? 0 : 1
 
     if l:reusable == 0
-        exe 'vsplit'
+        if getwinvar(l:curwin, '&bt') == 'terminal'
+            let l:splitbelow = &splitbelow
+            let &splitbelow = 1
+            split
+            let &splitbelow = l:splitbelow
+        else
+            vsplit
+        endif
+
         let l:newwin = winnr()
         call win_gotoid(win_getid(l:curwin))
         return l:newwin
