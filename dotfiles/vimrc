@@ -785,13 +785,7 @@ function! Break() " {{{
     call term_sendkeys(winbufnr(1), "break " . expand("%:p") . ':' . line('.') . "\<Cr>")
 endfunction " }}}
 
-function! NerdTreeFindExpr() " {{{
-    call LoadPathAliases()
-
-    if &bt != ''
-        return "\<Cr>"
-    endif
-
+function! NerdTreeGetPaths() " {{{
     let l:curpath = expand('%:p')
     let l:root = expand('%:p:h')
     let l:maxlen = 0
@@ -802,6 +796,19 @@ function! NerdTreeFindExpr() " {{{
             let l:maxlen = len(l:prefix)
         endif
     endfor
+    return [l:root, l:curpath, l:maxlen != 0]
+endfunction " }}}
+
+function! NerdTreeFindExpr() " {{{
+    call LoadPathAliases()
+
+    if &bt != ''
+        return "\<Cr>"
+    endif
+
+    let l:paths = NerdTreeGetPaths()
+    let l:root = l:paths[0]
+    let l:curpath = l:paths[1]
     return ":call NerdTreeFind('" . l:root .  "', '" . l:curpath . "')\<Cr>"
 endfunction " }}}
 
