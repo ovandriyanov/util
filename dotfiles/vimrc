@@ -861,7 +861,6 @@ function! OpenTerminalFromNerdTree(shift) abort " {{{
         let l:maybe_curwin = ''
     endif
 
-    echom 'terminal ++close' . l:maybe_curwin . ' /bin/bash -c "cd ' . l:termpath . ' && exec ' . &shell . '"'
     execute 'terminal ++close' . l:maybe_curwin . ' /bin/bash -c "cd ' . l:termpath . ' && exec ' . &shell . '"'
 endfunction " }}}
 
