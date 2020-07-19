@@ -481,7 +481,6 @@ function! IsNerdTreeWindow(winnr) " {{{
 endfunction " }}}
 
 function! OpenOrReuseWindow() " {{{
-    " TODO: netrw windows not handled very well
     let l:curwin = winnr()
     let l:curtab = tabpagenr()
     let l:wincnt = tabpagewinnr(l:curtab, '$')
@@ -491,16 +490,17 @@ function! OpenOrReuseWindow() " {{{
     for l:wnum in range(1, l:wincnt)
         if IsTerminalWindow(l:wnum)
             let l:termcnt += 1
-        endif
-        if IsNerdTreeWindow(l:wnum)
+        elseif IsNerdTreeWindow(l:wnum)
             let l:nerdtreecnt += 1
         endif
     endfor
 
+    "echom 'TERMCNT: ' . l:termcnt . '; NERDTREECNT: ' . l:nerdtreecnt . '; WINCNT: ' . l:wincnt
     let l:reusable = l:wincnt
     let l:reusable -= l:termcnt
-    let l:reusable -= IsTerminalWindow(l:curwin) ? 0 : 1
-    let l:reusable -= IsNerdTreeWindow(l:curwin) ? 0 : 1
+    let l:reusable -= l:nerdtreecnt
+    "let l:reusable -= IsTerminalWindow(l:curwin) ? 0 : 1
+    "let l:reusable -= IsNerdTreeWindow(l:curwin) ? 0 : 1
 
     if l:reusable == 0
         exe 'vsplit'
