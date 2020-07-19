@@ -498,8 +498,7 @@ function! OpenOrReuseWindow() " {{{
     let l:reusable = l:wincnt
     let l:reusable -= l:termcnt
     let l:reusable -= l:nerdtreecnt
-    "let l:reusable -= IsTerminalWindow(l:curwin) ? 0 : 1
-    "let l:reusable -= IsNerdTreeWindow(l:curwin) ? 0 : 1
+    let l:reusable -= IsTerminalWindow(l:curwin) || IsNerdTreeWindow(l:curwin) ? 0 : 1
 
     if l:reusable == 0
         exe 'vsplit'
