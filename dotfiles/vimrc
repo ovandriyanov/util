@@ -367,7 +367,8 @@ augroup vimrc
     autocmd FileType nerdtree nnoremap <buffer>          <C-^>as<C-^>t :call OpenTerminalFromNerdTree(1)<Cr>
     autocmd User NERDTreeNewRoot execute 'lcd' g:NERDTree.ForCurrentBuf().root.path.str()
     autocmd User NERDTreeInit execute 'lcd' g:NERDTree.ForCurrentBuf().root.path.str()
-    autocmd BufEnter * call NerdTreeSync()
+    autocmd BufEnter * call NerdTreeSync(0)
+    autocmd FileType,TerminalOpen * call NerdTreeSync(1)
 
     autocmd TerminalOpen * set termwinkey=<C-^>
     autocmd TerminalOpen * set nowrap
@@ -891,10 +892,17 @@ function! SplitForNerdTree() abort
     return 1
 endfunction " }}}
 
-function! NerdTreeSync() " {{{
-    if &bt !=# '' || &ft  == 'nerdtree'
+function! NerdTreeSync(isinit) " {{{
+    if a:isinit
+        let b:olan_ntsync =
+            \ &buftype ==# ''
+            \ || &buftype ==# 'terminal'
+    endif
+
+    if !exists('b:olan_ntsync') || !b:olan_ntsync
         return
     endif
+
     if
         \ type(g:NERDTree.ForCurrentTab()) != type({})
         \ || !g:NERDTree.ForCurrentTab().IsOpen()
@@ -902,7 +910,13 @@ function! NerdTreeSync() " {{{
     endif
 
     let l:curroot = g:NERDTree.ForCurrentTab().root.path.str()
-    let l:curpath = expand('%:p')
+
+    if &bt ==# 'terminal'
+        let l:curpath = getcwd() . '/'
+    else
+        let l:curpath = expand('%:p')
+    endif
+
     if  l:curpath[0:len(l:curroot) - 1] ==# l:curroot
         try
             execute 'NERDTreeFind' l:curpath
