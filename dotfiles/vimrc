@@ -368,7 +368,7 @@ augroup vimrc
     autocmd User NERDTreeNewRoot execute 'lcd' g:NERDTree.ForCurrentBuf().root.path.str()
     autocmd User NERDTreeInit execute 'lcd' g:NERDTree.ForCurrentBuf().root.path.str()
     autocmd BufEnter * call NerdTreeSync(0)
-    autocmd FileType,TerminalOpen * call NerdTreeSync(1)
+    autocmd BufWinEnter,FileType,TerminalOpen * call NerdTreeSync(1)
 
     autocmd TerminalOpen * set termwinkey=<C-^>
     autocmd TerminalOpen * set nowrap
