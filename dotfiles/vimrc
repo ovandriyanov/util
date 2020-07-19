@@ -494,7 +494,6 @@ function! OpenOrReuseWindow() " {{{
         endif
     endfor
 
-    "echom 'TERMCNT: ' . l:termcnt . '; NERDTREECNT: ' . l:nerdtreecnt . '; WINCNT: ' . l:wincnt
     let l:reusable = l:wincnt
     let l:reusable -= l:termcnt
     let l:reusable -= l:nerdtreecnt
