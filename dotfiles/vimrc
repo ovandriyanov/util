@@ -367,6 +367,7 @@ augroup vimrc
     autocmd FileType nerdtree nnoremap <buffer>          <C-^>as<C-^>t :call OpenTerminalFromNerdTree(1)<Cr>
     autocmd User NERDTreeNewRoot execute 'lcd' g:NERDTree.ForCurrentBuf().root.path.str()
     autocmd User NERDTreeInit execute 'lcd' g:NERDTree.ForCurrentBuf().root.path.str()
+    autocmd BufEnter * call NerdTreeSync()
 
     autocmd TerminalOpen * set termwinkey=<C-^>
     autocmd TerminalOpen * set nowrap
@@ -888,6 +889,29 @@ function! SplitForNerdTree() abort
     let &eventignore=l:eventignore
     let &splitright=l:splitright
     return 1
+endfunction " }}}
+
+function! NerdTreeSync() " {{{
+    if &bt !=# '' || &ft  == 'nerdtree'
+        return
+    endif
+    if
+        \ type(g:NERDTree.ForCurrentTab()) != type({})
+        \ || !g:NERDTree.ForCurrentTab().IsOpen()
+        return
+    endif
+
+    let l:curroot = g:NERDTree.ForCurrentTab().root.path.str()
+    let l:curpath = expand('%:p')
+    if  l:curpath[0:len(l:curroot) - 1] ==# l:curroot
+        try
+            execute 'NERDTreeFind' l:curpath
+        endtry
+    else
+        NERDTreeFocus
+        norm Pk
+    endif
+    wincmd p
 endfunction " }}}
 
 " ############################################################################## }}}
