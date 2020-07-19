@@ -275,13 +275,10 @@ nnoremap <C-^>as<C-^>h <C-w>H
 nnoremap <C-^>as<C-^>j <C-w>J
 nnoremap <C-^>as<C-^>k <C-w>K
 nnoremap <C-^>as<C-^>l <C-w>L
-" }}}
-
-"   Buffer switching {{{
-nnoremap <C-^>as<C-^>j :bn<cr>
-tnoremap <C-^>as<C-^>j <C-^>:bn<cr>
-nnoremap <C-^>as<C-^>k :bp<cr>
-tnoremap <C-^>as<C-^>k <C-^>:bp<cr>
+tnoremap <C-^>as<C-^>h <C-^>H
+tnoremap <C-^>as<C-^>j <C-^>J
+tnoremap <C-^>as<C-^>k <C-^>K
+tnoremap <C-^>as<C-^>l <C-^>L
 " }}}
 
 "   Tab switching {{{
