@@ -395,7 +395,6 @@ endfunction " }}}
 
 function! Pad(count) " {{{
     let l:x = a:count
-    " sleep 1
     let l:pad_to = col('.')
     while l:x != 0
         if l:x > 0
