@@ -366,6 +366,7 @@ augroup vimrc
     autocmd User NERDTreeInit execute 'lcd' g:NERDTree.ForCurrentBuf().root.path.str()
     autocmd BufEnter * call NerdTreeSync(0)
     autocmd BufWinEnter,FileType,TerminalOpen * call NerdTreeSync(1)
+    autocmd User OlanInitNtsync call NerdTreeSync(1)
 
     autocmd TerminalOpen * set termwinkey=<C-^>
     autocmd TerminalOpen * set nowrap
@@ -862,6 +863,8 @@ function! OpenTerminalFromNerdTree(shift) abort " {{{
     endif
 
     execute 'terminal ++close' . l:maybe_curwin . ' /bin/bash -c "cd ' . l:termpath . ' && exec ' . &shell . '"'
+    execute 'lcd' l:termpath
+    doautocmd User OlanInitNtsync
 endfunction " }}}
 
 " Shamelessly stolen from NERDTree (s:Opener._newVSplit()) " {{{
