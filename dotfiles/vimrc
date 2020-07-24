@@ -381,6 +381,7 @@ augroup vimrc
     autocmd FileType nerdtree nnoremap <buffer> <nowait> <C-F> :NERDTreeFind **/
     autocmd FileType nerdtree nnoremap <buffer>          <C-^>a<C-^>t  :call OpenTerminalFromNerdTree(0)<Cr>
     autocmd FileType nerdtree nnoremap <buffer>          <C-^>as<C-^>t :call OpenTerminalFromNerdTree(1)<Cr>
+    autocmd FileType nerdtree nnoremap <buffer>          <C-c> :call setreg('"', g:NERDTreeFileNode.GetSelected().path.str())<Cr>
     autocmd User NERDTreeNewRoot execute 'lcd' g:NERDTree.ForCurrentBuf().root.path.str()
     autocmd User NERDTreeInit execute 'lcd' g:NERDTree.ForCurrentBuf().root.path.str()
     autocmd BufEnter * call NerdTreeSync(0)
