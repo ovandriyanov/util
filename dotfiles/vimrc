@@ -338,6 +338,13 @@ inoremap <C-^>a<C-^><Esc> <Esc>
 vnoremap <C-^>a<C-^><Esc> <Esc>
 cnoremap <C-^>a<C-^><Esc> <C-c>
 " }}}
+
+"   Text highlighting {{{
+nnoremap <C-^>a<C-^><Space> :nohlsearch<Cr>
+inoremap <C-^>a<C-^><Space> <C-o>:nohlsearch<Cr>
+tnoremap <C-^>a<C-^><Space> <C-^>:nohlsearch<Cr>
+"    }}}
+
 " }}}
 
 " ############################################################################## }}}
