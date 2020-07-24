@@ -312,6 +312,8 @@ nnoremap <C-^>a<C-^>o :only<Cr>
 tnoremap <C-^>a<C-^>o <C-^>:only<Cr>
 nnoremap <C-^>as<C-^>o :call ForceOnly()<Cr>
 tnoremap <C-^>as<C-^>o <C-^>:call ForceOnly()<Cr>
+nnoremap <C-^>a<C-^>v <C-w>v
+nnoremap <C-^>a<C-^>s <C-w>s
 " }}}
 
 " Mode switching in terminal window {{{
