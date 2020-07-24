@@ -345,6 +345,13 @@ inoremap <C-^>a<C-^><Space> <C-o>:nohlsearch<Cr>
 tnoremap <C-^>a<C-^><Space> <C-^>:nohlsearch<Cr>
 "    }}}
 
+"   Jumping around {{{
+nnoremap <C-^>a<C-^>u [{
+nnoremap <C-^>as<C-^>u 100[{
+nnoremap <C-^>a<C-^>g :grep -rI '' .<Left><Left><Left>
+nnoremap <C-^>as<C-^>g :grep -rIi '' .<Left><Left><Left>
+"   }}}
+
 " }}}
 
 " ############################################################################## }}}
