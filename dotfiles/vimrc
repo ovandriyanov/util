@@ -286,6 +286,8 @@ nnoremap <C-^>ac<C-^>h gT
 tnoremap <C-^>ac<C-^>h <C-^>gT
 nnoremap <C-^>ac<C-^>l gt
 tnoremap <C-^>ac<C-^>l <C-^>gt
+nnoremap <C-^>as<C-^>t <C-w>v<C-w>T
+tnoremap <C-^>as<C-^>t <C-^>v<C-^>T
 " }}}
 
 "   Tab shifting {{{
