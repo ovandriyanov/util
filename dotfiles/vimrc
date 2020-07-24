@@ -35,6 +35,7 @@ set shell=/bin/bash\ -O\ globstar
 set foldmethod=marker
 set completeopt=popup,menuone
 set clipboard=exclude:cons\|linux
+set scrolloff=10
 
 " Konsole does not seem to support Xterm escape sequences for changing cursor shape - disable it
 set t_SH=
@@ -384,6 +385,7 @@ augroup vimrc
     autocmd User NERDTreeInit execute 'lcd' g:NERDTree.ForCurrentBuf().root.path.str()
     autocmd BufEnter * call NerdTreeSync(0)
     autocmd BufWinEnter,FileType,TerminalOpen * call NerdTreeSync(1)
+    autocmd TerminalOpen * setlocal scrolloff=0
     autocmd User OlanInitNtsync call NerdTreeSync(1)
 
     autocmd TerminalOpen * set termwinkey=<C-^>
