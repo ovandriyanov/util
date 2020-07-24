@@ -934,6 +934,16 @@ function! NerdTreeSync(isinit) " {{{
         return
     endif
 
+    for l:winid in popup_list()
+        if popup_getpos(l:winid).visible
+            return
+        endif
+    endfor
+
+    if len(bufname()) == 0
+        return
+    endif
+
     if
         \ type(g:NERDTree.ForCurrentTab()) != type({})
         \ || !g:NERDTree.ForCurrentTab().IsOpen()
