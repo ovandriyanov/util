@@ -934,11 +934,13 @@ function! NerdTreeSync(isinit) " {{{
         return
     endif
 
-    for l:winid in popup_list()
-        if popup_getpos(l:winid).visible
-            return
-        endif
-    endfor
+    if exists('*popup_list')
+        for l:winid in popup_list()
+            if popup_getpos(l:winid).visible
+                return
+            endif
+        endfor
+    endif
 
     if len(bufname()) == 0
         return
