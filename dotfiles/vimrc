@@ -969,7 +969,7 @@ function! NerdTreeSync(isinit) " {{{
     wincmd p
 endfunction " }}}
 
-function! Align(where)
+function! Align(where) " {{{
     if type(g:NERDTree.ForCurrentTab()) == type(0) || !g:NERDTree.ForCurrentTab().IsOpen()
         execute "normal! \<C-w>" . a:where
         return
@@ -979,7 +979,7 @@ function! Align(where)
     execute "normal! \<C-w>" . a:where
     NERDTreeToggle
     execute "normal! \<C-w>p"
-endfunction
+endfunction " }}}
 
 " ############################################################################## }}}
 " ################################  Vundle stuff  ############################## {{{
