@@ -271,14 +271,14 @@ tnoremap <C-^>a<C-^>p <C-^>p
 " }}}
 
 "   Align windows with HJKL {{{
-nnoremap <C-^>as<C-^>h <C-w>H
-nnoremap <C-^>as<C-^>j <C-w>J
-nnoremap <C-^>as<C-^>k <C-w>K
-nnoremap <C-^>as<C-^>l <C-w>L
-tnoremap <C-^>as<C-^>h <C-^>H
-tnoremap <C-^>as<C-^>j <C-^>J
-tnoremap <C-^>as<C-^>k <C-^>K
-tnoremap <C-^>as<C-^>l <C-^>L
+nnoremap <C-^>as<C-^>h :call Align('H')<Cr>
+nnoremap <C-^>as<C-^>j :call Align('J')<Cr>
+nnoremap <C-^>as<C-^>k :call Align('K')<Cr>
+nnoremap <C-^>as<C-^>l :call Align('L')<Cr>
+tnoremap <C-^>as<C-^>h <C-^>:call Align('H')<Cr>
+tnoremap <C-^>as<C-^>j <C-^>:call Align('J')<Cr>
+tnoremap <C-^>as<C-^>k <C-^>:call Align('K')<Cr>
+tnoremap <C-^>as<C-^>l <C-^>:call Align('L')<Cr>
 " }}}
 
 "   Tab switching {{{
@@ -937,6 +937,18 @@ function! NerdTreeSync(isinit) " {{{
     endif
     wincmd p
 endfunction " }}}
+
+function! Align(where)
+    if type(g:NERDTree.ForCurrentTab()) == type(0) || !g:NERDTree.ForCurrentTab().IsOpen()
+        execute "normal! \<C-w>" . a:where
+        return
+    endif
+
+    NERDTreeToggle
+    execute "normal! \<C-w>" . a:where
+    NERDTreeToggle
+    execute "normal! \<C-w>p"
+endfunction
 
 " ############################################################################## }}}
 " ################################  Vundle stuff  ############################## {{{
