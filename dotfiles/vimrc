@@ -946,13 +946,12 @@ function! NerdTreeSync(isinit) " {{{
         return
     endif
 
-    if
-        \ type(g:NERDTree.ForCurrentTab()) != type({})
-        \ || !g:NERDTree.ForCurrentTab().IsOpen()
+    let l:ntcurtab = g:NERDTree.ForCurrentTab()
+    if type(l:ntcurtab) != type({}) || !l:ntcurtab.IsOpen()
         return
     endif
 
-    let l:curroot = g:NERDTree.ForCurrentTab().root.path.str()
+    let l:curroot = l:ntcurtab.root.path.str()
 
     if &bt ==# 'terminal'
         let l:curpath = getcwd() . '/'
@@ -961,9 +960,17 @@ function! NerdTreeSync(isinit) " {{{
     endif
 
     if  l:curpath[0:len(l:curroot) - 1] ==# l:curroot
-        try
-            execute 'NERDTreeFind' l:curpath
-        endtry
+        let l:pathobj = g:NERDTreePath.New(l:curpath)
+        NERDTreeFocus
+        let l:node = l:ntcurtab.root.reveal(l:pathobj)
+
+        call l:node.putCursorHere(1, 0)
+        let l:text = substitute(getline('.'), '^[ ]\+', '', '')
+        let l:rendered_node_text = l:node.displayString()
+        if l:text != l:rendered_node_text
+            call l:ntcurtab.render()
+            call l:node.putCursorHere(1, 0)
+        endif
     else
         NERDTreeFocus
         norm Pk
