@@ -954,14 +954,18 @@ function! NerdTreeSync(isinit) " {{{
     let l:curroot = l:ntcurtab.root.path.str()
 
     if &bt ==# 'terminal'
-        let l:curpath = getcwd() . '/'
+        let l:curpath = getcwd()
     else
         let l:curpath = expand('%:p')
     endif
 
-    if  l:curpath[0:len(l:curroot) - 1] ==# l:curroot
+    NERDTreeFocus
+    if l:curpath == l:curroot
+        norm P
+    elseif l:curpath[0:len(l:curroot) - 1] !=# l:curroot
+        norm Pk
+    else
         let l:pathobj = g:NERDTreePath.New(l:curpath)
-        NERDTreeFocus
         let l:node = l:ntcurtab.root.reveal(l:pathobj)
 
         call l:node.putCursorHere(1, 0)
@@ -971,9 +975,6 @@ function! NerdTreeSync(isinit) " {{{
             call l:ntcurtab.render()
             call l:node.putCursorHere(1, 0)
         endif
-    else
-        NERDTreeFocus
-        norm Pk
     endif
     wincmd p
 endfunction " }}}
