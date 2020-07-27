@@ -965,16 +965,22 @@ function! NerdTreeSync(isinit) " {{{
     elseif l:curpath[0:len(l:curroot) - 1] !=# l:curroot
         norm Pk
     else
+        let l:prevnode = g:NERDTreeFileNode.GetSelected()
         let l:pathobj = g:NERDTreePath.New(l:curpath)
         let l:node = l:ntcurtab.root.reveal(l:pathobj)
 
-        call l:node.putCursorHere(1, 0)
+        mark '
+        let l:line_before = line('.')
+        call l:node.putCursorHere(0, 0)
+        let l:line_after = line('.')
+
         let l:text = substitute(getline('.'), '^[ ]\+', '', '')
         let l:rendered_node_text = l:node.displayString()
-        if l:text != l:rendered_node_text
+        if l:text != l:rendered_node_text || (l:line_before == l:line_after && l:prevnode.path.str() !=# l:node.path.str())
             call l:ntcurtab.render()
-            call l:node.putCursorHere(1, 0)
+            call l:node.putCursorHere(0, 0)
         endif
+        setlocal cursorline " Ghost cursorline workaround
     endif
     wincmd p
 endfunction " }}}
