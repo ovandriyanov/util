@@ -319,6 +319,10 @@ nnoremap <C-^>as<C-^>o :only<Cr>
 tnoremap <C-^>as<C-^>o <C-^>:only<Cr>
 nnoremap <C-^>a<C-^>v <C-w>v
 nnoremap <C-^>a<C-^>s <C-w>s
+nnoremap <C-^>ac<C-^>d :DHidden<Cr>
+tnoremap <C-^>ac<C-^>d <C-^>:DHidden<Cr>
+nnoremap <C-^>acs<C-^>d :DHidden!<Cr>
+tnoremap <C-^>acs<C-^>d <C-^>:DHidden!<Cr>
 " }}}
 
 " Mode switching in terminal window {{{
