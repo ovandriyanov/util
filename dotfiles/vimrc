@@ -85,6 +85,9 @@ let g:NERDTreeMapHelp = ''
 let g:NERDTreeCustomOpenArgs = {'file': {'reuse': '', 'where': 'p'}, 'dir': {}}
 " let g:NERDTreeChDirMode = 3
 
+" Fugitive settings
+cnoreabbrev <expr> Gstatus ((getcmdtype() ==# ':' && getcmdline() ==# 'Gstatus') ? 'aboveleft Gstatus' : 'Gstatus')
+
 " My settings
 let g:olan_path_aliases_file = expand('~/.vim/path_aliases')
 
