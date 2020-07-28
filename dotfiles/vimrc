@@ -352,8 +352,13 @@ tnoremap <C-^>a<C-^><Space> <C-^>:nohlsearch<Cr>
 "   Jumping around {{{
 nnoremap <C-^>a<C-^>u [{
 nnoremap <C-^>as<C-^>u 100[{
-nnoremap <C-^>a<C-^>g :grep -rI '' .<Left><Left><Left>
-nnoremap <C-^>as<C-^>g :grep -rIi '' .<Left><Left><Left>
+"    }}}
+
+"   Grep {{{
+nnoremap <expr> <C-^>a<C-^>g GrepExpr(0)
+nnoremap <expr> <C-^>as<C-^>g GrepExpr(1)
+nnoremap <Tab><Tab> :call Grep('\<' . expand('<cword>') . '\>', 0)<Cr>
+vnoremap <Tab> "zy:call Grep(getreg('z'), 0)<Cr>
 "   }}}
 
 " }}}
@@ -1001,6 +1006,26 @@ function! Align(where) " {{{
     execute "normal! \<C-w>" . a:where
     NERDTreeToggle
     execute "normal! \<C-w>p"
+endfunction " }}}
+
+function! GrepDir() " {{{
+    if type(g:NERDTree.ForCurrentTab()) == type(0) || !g:NERDTree.ForCurrentTab().IsOpen()
+        return '.'
+    else
+        return g:NERDTree.ForCurrentTab().root.path.str()
+    endif
+endfunction " }}}
+
+function! GrepExpr(ctrl) " {{{
+    return ":call Grep('', " . a:ctrl . ")\<C-Left>\<Left>\<Left>\<Left>"
+endfunction " }}}
+
+function! Grep(pattern, icase) " {{{
+    let l:maybe_icase = a:icase ? 'i' : ''
+    silent execute 'grep -rI' . l:maybe_icase . ' "' . escape(a:pattern, '"\#') . '" ' . GrepDir()
+    copen
+    wincmd p
+    redraw!
 endfunction " }}}
 
 " ############################################################################## }}}
