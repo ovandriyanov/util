@@ -308,8 +308,9 @@ nnoremap <C-^>a<C-^>n :new<Cr>
 nnoremap <C-^>a<C-^>b :tabnew<Cr>
 nnoremap <C-^>a<C-^>q :q<Cr>
 tnoremap <C-^>a<C-^>q <C-^>:q<Cr>
-nnoremap <C-^>a<C-^>w :bd<Cr>
-tnoremap <C-^>a<C-^>w <C-^>:bd<Cr>
+nnoremap <C-^>a<C-^>w :w<Cr>
+nnoremap <C-^>a<C-^>x :wq<Cr>
+inoremap <C-^>a<C-^>x <Esc>:wq<Cr>
 nnoremap <C-^>a<C-^>d :bd!<Cr>
 tnoremap <C-^>a<C-^>d <C-^>:bd!<Cr>
 nnoremap <C-^>a<C-^>o :call Only()<Cr>
