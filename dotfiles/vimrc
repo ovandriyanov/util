@@ -1047,7 +1047,7 @@ if exists('g:devmode') && g:devmode
     Plugin 'vim-scripts/a.vim'                  " Quick switching between .h/.cpp
     Plugin 'tpope/vim-fugitive'
     Plugin 'vim-signify', {'pinned': 1}
-    " Plugin 'vim-quarc', {'pinned': 1}
+    Plugin 'vim-quarc', {'pinned': 1}
 endif
 
 call vundle#end()
