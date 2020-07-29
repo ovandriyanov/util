@@ -869,6 +869,10 @@ function! NerdTreeFind(root, findpath) abort " {{{
 endfunction " }}}
 
 function! Only() " {{{
+    if &filetype ==# 'nerdtree'
+        only
+        return
+    endif
     let l:ntcurtab = g:NERDTree.ForCurrentTab()
     if type(l:ntcurtab) != type({}) || !l:ntcurtab.IsOpen()
         only
