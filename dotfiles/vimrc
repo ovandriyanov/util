@@ -312,6 +312,7 @@ tnoremap <C-^>a<C-^>t <C-^>:terminal<Cr>
 nnoremap <C-^>a<C-^>n :exec &bt ==# 'terminal' ? 'rightbelow new' : 'new'<Cr>
 tnoremap <C-^>a<C-^>n <C-^>:rightbelow new<Cr>
 nnoremap <C-^>a<C-^>b :tabnew<Cr>
+tnoremap <C-^>a<C-^>b <C-^>:tabnew<Cr>
 nnoremap <C-^>a<C-^>q :q<Cr>
 tnoremap <C-^>a<C-^>q <C-^>:q<Cr>
 nnoremap <C-^>a<C-^>w :w<Cr>
