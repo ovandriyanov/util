@@ -419,7 +419,8 @@ augroup vimrc
     autocmd User OlanInitNtsync call NerdTreeSync(1)
 
     autocmd TerminalOpen * set termwinkey=<C-^>
-    autocmd TerminalOpen * set nowrap
+    autocmd TerminalOpen * set wrap
+    autocmd TerminalOpen * set wfw | setlocal termwinsize=0*5000
 augroup END
 
 " ############################################################################## }}}
