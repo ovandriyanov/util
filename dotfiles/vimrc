@@ -375,6 +375,10 @@ nnoremap <Tab><Tab> :call Grep('\<' . expand('<cword>') . '\>', 0)<Cr>
 vnoremap <Tab> "zy:call Grep(getreg('z'), 0)<Cr>
 "   }}}
 
+"    Settings {{{
+nnoremap <C-^>a<C-^>w :let &wrap=!&wrap<Cr>
+"    }}}
+
 " }}}
 
 " ############################################################################## }}}
