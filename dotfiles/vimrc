@@ -364,6 +364,8 @@ tnoremap <C-^>a<C-^><Space> <C-^>:nohlsearch<Cr>
 "   Jumping around {{{
 nnoremap <C-^>a<C-^>u [{
 nnoremap <C-^>as<C-^>u 100[{
+nnoremap <C-^>a<C-^>c :C 
+tnoremap <C-^>a<C-^>c <C-^>:C 
 "    }}}
 
 "   Grep {{{
