@@ -140,6 +140,7 @@ nnoremap            <F8>            :silent! AV <cr>
 " }}}
 
 " YouCompleteMe {{{
+nnoremap            <Tab>           <Nop>
 nnoremap            <Tab><Space>    :YcmCompleter GoTo<Cr>
 nnoremap            <Tab>t          :YcmCompleter GetType<Cr>
 nnoremap            <Tab>gt         :YcmCompleter GoToType<Cr>
