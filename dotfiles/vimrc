@@ -208,6 +208,8 @@ vnoremap            <c-w>f          :call FindFileReuseWindow(1)<cr> {{{
 " Jumping around {{{
 nnoremap            <C-F><C-O>      :silent call JumpToPrevFile()<Cr><C-g>
 nnoremap            <C-F><C-I>      :silent call JumpToNextFile()<Cr><C-g>
+nnoremap            <C-F><Esc>      <Nop>
+nnoremap            <C-F>           <Nop>
 nnoremap <expr>     k               JumpOffsetExpr(-v:count1)
 nnoremap <expr>     j               JumpOffsetExpr(+v:count1)
 nnoremap            [E              :lfirst<Cr>
