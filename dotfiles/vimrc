@@ -1035,10 +1035,19 @@ function! GrepExpr(ctrl) " {{{
 endfunction " }}}
 
 function! Grep(pattern, icase) " {{{
+    let l:nerdtree = &ft ==# 'nerdtree'
+    let l:didsplit = 0
+    if l:nerdtree
+        let l:didsplit = SplitForNerdTree()
+    endif
+
     let l:maybe_icase = a:icase ? 'i' : ''
     silent execute 'grep -rI' . l:maybe_icase . ' "' . escape(a:pattern, '"\#') . '" ' . shellescape(GrepDir())
     copen
     wincmd p
+    if l:didsplit && len(getqflist()) == 0
+        wincmd q
+    endif
     redraw!
 endfunction " }}}
 
