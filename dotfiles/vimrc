@@ -1036,7 +1036,7 @@ endfunction " }}}
 
 function! Grep(pattern, icase) " {{{
     let l:maybe_icase = a:icase ? 'i' : ''
-    silent execute 'grep -rI' . l:maybe_icase . ' "' . escape(a:pattern, '"\#') . '" ' . GrepDir()
+    silent execute 'grep -rI' . l:maybe_icase . ' "' . escape(a:pattern, '"\#') . '" ' . shellescape(GrepDir())
     copen
     wincmd p
     redraw!
