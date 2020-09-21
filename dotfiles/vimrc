@@ -1022,7 +1022,7 @@ function! Align(where) " {{{
     execute "normal! \<C-w>p"
 endfunction " }}}
 
-function! GrepDir() " {{{
+function! ProjectDir() " {{{
     if type(g:NERDTree.ForCurrentTab()) == type(0) || !g:NERDTree.ForCurrentTab().IsOpen()
         return '.'
     else
@@ -1042,7 +1042,7 @@ function! Grep(pattern, icase) " {{{
     endif
 
     let l:maybe_icase = a:icase ? 'i' : ''
-    silent execute 'grep -rI' . l:maybe_icase . ' "' . escape(a:pattern, '"\#') . '" ' . shellescape(GrepDir())
+    silent execute 'grep -rI' . l:maybe_icase . ' "' . escape(a:pattern, '"\#') . '" ' . shellescape(ProjectDir())
     copen
     wincmd p
     if l:didsplit && len(getqflist()) == 0
