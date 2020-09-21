@@ -228,6 +228,10 @@ vnoremap            )               ])
 inoremap <expr> <CR> MapCarriageReturn()
 " }}}
 
+" Formatting {{{
+vnoremap <C-^>a<C-^>j :<C-u>call JsonFormat()<Cr>
+" }}}
+
 " Commenting {{{
 nnoremap <C-_>iw "zciw/* <C-R>z */<Esc>bb
 nnoremap <C-_>iW "zciw/* <C-R>z */<Esc>bB
@@ -1059,6 +1063,19 @@ function! DropTab() " {{{
     for l:i in range(winnr('$'))
         execute 'bd!' winbufnr(1)
     endfor
+endfunction " }}}
+
+function! JsonFormat() "{{{
+    echom 'JSONFORMAT!'
+    normal! gv"zy
+    let l:output = system('python3 -mjson.tool', getreg('z'))
+    if v:shell_error != 0
+        echoerr l:output
+        return
+    endif
+    call setreg('z', l:output[:-2])
+
+    execute "normal! gvc\<C-r>z\<Esc>"
 endfunction " }}}
 
 " ############################################################################## }}}
