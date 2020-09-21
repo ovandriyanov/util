@@ -317,11 +317,15 @@ nnoremap <C-^>a<C-^>b :tabnew<Cr>
 tnoremap <C-^>a<C-^>b <C-^>:tabnew<Cr>
 nnoremap <C-^>a<C-^>q :q<Cr>
 tnoremap <C-^>a<C-^>q <C-^>:q<Cr>
+nnoremap <C-^>as<C-^>q :tabclose<Cr>
+tnoremap <C-^>as<C-^>q <C-^>:tabclose<Cr>
 nnoremap <C-^>a<C-^>w :w<Cr>
 nnoremap <C-^>a<C-^>x :wq<Cr>
 inoremap <C-^>a<C-^>x <Esc>:wq<Cr>
 nnoremap <C-^>a<C-^>d :bd!<Cr>
 tnoremap <C-^>a<C-^>d <C-^>:bd!<Cr>
+nnoremap <C-^>as<C-^>d :call DropTab()<Cr>
+tnoremap <C-^>as<C-^>d <C-^>:call DropTab()<Cr>
 nnoremap <C-^>a<C-^>o :call Only()<Cr>
 tnoremap <C-^>a<C-^>o <C-^>:call Only()<Cr>
 nnoremap <C-^>as<C-^>o :only<Cr>
@@ -1049,6 +1053,12 @@ function! Grep(pattern, icase) " {{{
         wincmd q
     endif
     redraw!
+endfunction " }}}
+
+function! DropTab() " {{{
+    for l:i in range(winnr('$'))
+        execute 'bd!' winbufnr(1)
+    endfor
 endfunction " }}}
 
 " ############################################################################## }}}
