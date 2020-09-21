@@ -423,6 +423,8 @@ augroup vimrc
     autocmd TerminalOpen * set termwinkey=<C-^>
     autocmd TerminalOpen * set wrap
     autocmd TerminalOpen * set wfw | setlocal termwinsize=0*5000
+
+    autocmd QuickFixCmdPre * copen|execute 'lcd'  ProjectDir()
 augroup END
 
 " ############################################################################## }}}
@@ -1043,8 +1045,6 @@ function! Grep(pattern, icase) " {{{
 
     let l:maybe_icase = a:icase ? 'i' : ''
     silent execute 'grep -rI' . l:maybe_icase . ' "' . escape(a:pattern, '"\#') . '" ' . shellescape(ProjectDir())
-    copen
-    wincmd p
     if l:didsplit && len(getqflist()) == 0
         wincmd q
     endif
