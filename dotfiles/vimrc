@@ -151,7 +151,7 @@ nnoremap            <Tab>x          :YcmCompleter FixIt<Cr>
 nnoremap            <Tab>r          "zyiw:YcmCompleter RefactorRename <C-r>z
 nnoremap            <Tab>h          :YcmCompleter GetDoc<Cr>
 nnoremap            <Tab>f          :YcmCompleter Format<Cr>
-nnoremap            <Tab>u          :YcmCompleter GoToReferences<Cr>
+nnoremap            <Tab>u          :call GoToReferences()<Cr>
 nnoremap            <Tab>d          :YcmDiags<Cr>
 " }}}
 
@@ -421,12 +421,14 @@ augroup vimrc
     autocmd FileType nerdtree nunmap <buffer> :call
     autocmd FileType nerdtree nunmap <buffer> CD
     autocmd FileType qf set foldmethod=manual
+    autocmd FileType qf call ReloadQuickFix()
     autocmd User NERDTreeNewRoot execute 'lcd' g:NERDTree.ForCurrentBuf().root.path.str()
     autocmd User NERDTreeInit execute 'lcd' g:NERDTree.ForCurrentBuf().root.path.str()
     autocmd BufEnter,DirChanged * call NerdTreeSync(0)
     autocmd BufWinEnter,FileType,TerminalOpen * call NerdTreeSync(1)
     autocmd TerminalOpen * setlocal scrolloff=0
     autocmd User OlanInitNtsync call NerdTreeSync(1)
+    autocmd User YcmQuickFixOpened resize 10|autocmd! ycmquickfix WinLeave
 
     autocmd TerminalOpen * set termwinkey=<C-^>
     autocmd TerminalOpen * set wrap
@@ -440,6 +442,9 @@ augroup END
 " ##############################################################################
 
 function! ChdirToParentDir(file) " {{{
+    if &ft ==# 'qf'
+        return
+    endif
     let l:newbufnr = bufnr(a:file)
     if getbufvar(l:newbufnr, '&buftype') != '' || bufnr() != l:newbufnr
         return
@@ -1076,6 +1081,27 @@ function! JsonFormat() "{{{
     call setreg('z', l:output[:-2])
 
     execute "normal! gvc\<C-r>z\<Esc>"
+endfunction " }}}
+
+function! ReloadQuickFix() " {{{
+    if exists('g:ycmref')
+        return
+    endif
+
+    let l:eventignore = &eventignore
+    set eventignore=all
+    execute 'lcd' ProjectDir()
+    call setqflist(getqflist())
+    let &eventignore = l:eventignore
+endfunction " }}}
+
+function! GoToReferences() " {{{
+    let g:ycmref = 1
+    YcmCompleter GoToReferences
+
+    execute 'lcd' ProjectDir()
+    call setqflist(getqflist())
+    unlet g:ycmref
 endfunction " }}}
 
 " ############################################################################## }}}
