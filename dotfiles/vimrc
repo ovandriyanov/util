@@ -419,7 +419,7 @@ augroup vimrc
     autocmd FileType nerdtree nnoremap <buffer>          <C-c> :call setreg('"', g:NERDTreeFileNode.GetSelected().path.str())<Cr>
     autocmd FileType nerdtree nunmap <buffer> :call
     autocmd FileType nerdtree nunmap <buffer> CD
-    autocmd FileType qf set foldmethod=manual
+    autocmd FileType qf setlocal foldmethod=manual
     autocmd FileType qf call ReloadQuickFix()
     autocmd User NERDTreeNewRoot execute 'lcd' g:NERDTree.ForCurrentBuf().root.path.str()
     autocmd User NERDTreeInit execute 'lcd' g:NERDTree.ForCurrentBuf().root.path.str()
