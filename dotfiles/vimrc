@@ -1083,7 +1083,7 @@ function! JsonFormat() "{{{
 endfunction " }}}
 
 function! ReloadQuickFix() " {{{
-    if exists('g:ycmref')
+    if exists('g:ycmref') || QuickFixBufNr() != bufnr()
         return
     endif
 
