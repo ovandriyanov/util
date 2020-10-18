@@ -444,6 +444,10 @@ function! ChdirToParentDir(file) " {{{
     if &ft ==# 'qf'
         return
     endif
+    if &ft ==# 'nerdtree'
+        execute 'lcd' g:NERDTree.ForCurrentBuf().root.path.str()
+        return
+    endif
     let l:newbufnr = bufnr(a:file)
     if getbufvar(l:newbufnr, '&buftype') != '' || bufnr() != l:newbufnr
         return
