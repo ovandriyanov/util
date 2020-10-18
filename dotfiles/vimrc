@@ -7,7 +7,6 @@ set diffopt+=vertical
 set expandtab
 set exrc
 set foldcolumn=1
-set foldmethod=manual
 set formatoptions=cq
 set hidden
 set hlsearch
