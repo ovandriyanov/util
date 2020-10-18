@@ -142,16 +142,16 @@ nnoremap            <F8>            :silent! AV <cr>
 
 " YouCompleteMe {{{
 nnoremap            <Tab>           <Nop>
-nnoremap            <Tab><Space>    :YcmCompleter GoTo<Cr>
+nnoremap            <Tab><Space>    :call GoTo()<Cr>
 nnoremap            <Tab>t          :YcmCompleter GetType<Cr>
 nnoremap            <Tab>gt         :YcmCompleter GoToType<Cr>
-nnoremap            <Tab>i          :YcmCompleter GoToImplementation<Cr>
+nnoremap            <Tab>i          :call GoToImplementation()<Cr>
 nnoremap            <Tab>x          :YcmCompleter FixIt<Cr>
-nnoremap            <Tab>r          "zyiw:YcmCompleter RefactorRename <C-r>z
+nnoremap            <Tab>r          "zyiw:call RefactorRename('<C-r>z')<Left><Left>
 nnoremap            <Tab>h          :YcmCompleter GetDoc<Cr>
 nnoremap            <Tab>f          :YcmCompleter Format<Cr>
 nnoremap            <Tab>u          :call GoToReferences()<Cr>
-nnoremap            <Tab>d          :YcmDiags<Cr>
+nnoremap            <Tab>d          :call Diags()<Cr>
 " }}}
 
 " NERDTree {{{
@@ -1102,6 +1102,37 @@ function! GoToReferences() " {{{
     call setqflist(getqflist())
     unlet g:ycmref
 endfunction " }}}
+
+function! Diags() " {{{
+    let g:ycmref = 1
+    YcmDiags 
+    unlet g:ycmref
+endfunction " }}}
+
+function! RefactorRename(name) " {{{
+    let g:ycmref = 1
+    exec 'YcmCompleter RefactorRename' a:name
+    unlet g:ycmref
+endfunction " }}}
+
+function! GoTo() " {{{
+    let g:ycmref = 1
+    exec 'YcmCompleter GoTo'
+    unlet g:ycmref
+endfunction
+" }}}
+
+function! GoToImplementation() " {{{
+    let g:ycmref = 1
+    YcmCompleter GoToImplementation
+    unlet g:ycmref
+endfunction
+" }}}
+
+function! QuickFixBufNr() " {{{
+    return getqflist({'qfbufnr': 1})['qfbufnr']
+endfunction
+" }}}
 
 " ############################################################################## }}}
 " ################################  Vundle stuff  ############################## {{{
