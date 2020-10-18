@@ -1054,11 +1054,20 @@ function! Grep(pattern, icase) " {{{
     if l:nerdtree
         let l:didsplit = SplitForNerdTree()
     endif
+    if l:didsplit && &ft ==# 'nerdtree'
+        let l:winid = win_getid()
+        wincmd n
+        call win_gotoid(l:winid)
+        wincmd q
+    endif
 
     let l:maybe_icase = a:icase ? 'i' : ''
     silent execute 'grep -rI' . l:maybe_icase . ' "' . escape(a:pattern, '"\#') . '" ' . shellescape(ProjectDir())
     if l:didsplit && len(getqflist()) == 0
         wincmd q
+        wincmd q
+        echom 'Nothing found for pattern ' . a:pattern
+        return
     endif
     redraw!
 endfunction " }}}
