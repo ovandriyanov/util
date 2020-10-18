@@ -423,7 +423,7 @@ augroup vimrc
     autocmd FileType qf call ReloadQuickFix()
     autocmd User NERDTreeNewRoot execute 'lcd' g:NERDTree.ForCurrentBuf().root.path.str()
     autocmd User NERDTreeInit execute 'lcd' g:NERDTree.ForCurrentBuf().root.path.str()
-    autocmd BufEnter,DirChanged * call NerdTreeSync(0)
+    autocmd BufEnter,DirChanged,BufWritePost * call NerdTreeSync(0)
     autocmd BufWinEnter,FileType,TerminalOpen * call NerdTreeSync(1)
     autocmd TerminalOpen * setlocal scrolloff=0
     autocmd User OlanInitNtsync call NerdTreeSync(1)
@@ -985,10 +985,6 @@ function! NerdTreeSync(isinit) " {{{
         endfor
     endif
 
-    if len(bufname()) == 0
-        return
-    endif
-
     let l:ntcurtab = g:NERDTree.ForCurrentTab()
     if type(l:ntcurtab) != type({}) || !l:ntcurtab.IsOpen()
         return
@@ -996,10 +992,19 @@ function! NerdTreeSync(isinit) " {{{
 
     let l:curroot = l:ntcurtab.root.path.str()
 
-    if &bt ==# 'terminal'
+    if &bt ==# 'terminal' || len(bufname()) == 0
         let l:curpath = getcwd()
     else
         let l:curpath = expand('%:p')
+    endif
+
+    if !isdirectory(l:curpath) && !filereadable(l:curpath)
+        let l:parentdir = g:NERDTreePath.New(fnamemodify(l:curpath, ':p:h'))
+        let l:node = l:ntcurtab.root.reveal(l:parentdir)
+        NERDTreeFocus
+        call l:node.putCursorHere(0, 0)
+        wincmd p
+        return
     endif
 
     NERDTreeFocus
