@@ -129,7 +129,7 @@ command! TScratch tabnew | set bt=nofile
 command! -range=% Cgetbuffer call Cbuffer('cgetbuffer', <line1>, <line2>)
 command! -range=% Cbuffer call Cbuffer('cbuffer', <line1>, <line2>)
 command! Arel Yank !arel %
-command! Include call Yank("!printf '\\#include <\\%s>\n\n' `arel %`")
+command! Include call Include()
 
 " ############################################################################## }}}
 " ##############################  Custom mappings  ############################# {{{
@@ -1155,6 +1155,25 @@ function! QuickFixBufNr() " {{{
 endfunction
 " }}}
 
+function! Include() abort " {{{
+    if &ft == 'go'
+        let l:packageline = getline(1)
+        let l:m = matchlist(l:packageline, 'package \(.*\)')
+        if len(l:m) == 0
+            echoerr 'Invalid package line: ' . l:packageline
+            return
+        endif
+        let l:package = l:m[1]
+
+        let l:arel = system('arel ' . shellescape(expand('%')))
+        let l:arelbase = fnamemodify(l:arel, ':h:h')
+
+        call Yank("\t\"a.yandex-team.ru/" . l:arelbase . '/' .  l:package . "\"\n")
+        return
+    endif
+
+    call Yank("!printf '\\#include <\\%s>\n\n' `arel %`")
+endfunction " }}}
 " ############################################################################## }}}
 " ################################  Vundle stuff  ############################## {{{
 " ##############################################################################
