@@ -392,6 +392,11 @@ nnoremap <Tab><Tab> :call Grep('\<' . expand('<cword>') . '\>', 0)<Cr>
 vnoremap <Tab> "zy:call Grep(getreg('z'), 0)<Cr>
 "   }}}
 
+"   SQL {{{
+nnoremap <C-^>c<C-^><Space> :call CtrlSpace()<Cr>
+vnoremap <C-^>c<C-^><Space> :<C-U>DBExecVisualSQL<Cr>
+"   }}}
+
 "    Settings {{{
 nnoremap <C-^>a<C-^>w :let &wrap=!&wrap<Cr>
 "    }}}
@@ -1264,6 +1269,7 @@ if exists('g:devmode') && g:devmode
     Plugin 'vim-scripts/git-time-lapse'
     Plugin 'vim-scripts/a.vim'                  " Quick switching between .h/.cpp
     Plugin 'tpope/vim-fugitive'
+    Plugin 'vim-scripts/dbext.vim'
     Plugin 'vim-signify', {'pinned': 1}
     Plugin 'vim-quarc', {'pinned': 1}
 endif
