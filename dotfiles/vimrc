@@ -1182,6 +1182,12 @@ function! QuickFixBufNr() " {{{
 endfunction
 " }}}
 
+function! CtrlSpace() abort " {{{
+    if &ft ==# 'sql'
+        DBExecSQLUnderCursor
+    endif
+endfunction " }}}
+
 function! Include() abort " {{{
     if &ft == 'go'
         let l:packageline = getline(1)
