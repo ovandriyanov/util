@@ -397,6 +397,10 @@ nnoremap <C-^>c<C-^><Space> :call CtrlSpace()<Cr>
 vnoremap <C-^>c<C-^><Space> :<C-U>DBExecVisualSQL<Cr>
 "   }}}
 
+"   Sorting text {{{
+vnoremap <C-^>a<C-^>s :sort<Cr>
+"   }}}
+
 "    Settings {{{
 nnoremap <C-^>a<C-^>w :let &wrap=!&wrap<Cr>
 "    }}}
