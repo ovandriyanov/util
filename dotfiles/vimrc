@@ -431,10 +431,14 @@ augroup vimrc
     autocmd FileType qf call ReloadQuickFix()
     autocmd User NERDTreeNewRoot execute 'lcd' g:NERDTree.ForCurrentBuf().root.path.str()
     autocmd User NERDTreeInit execute 'lcd' g:NERDTree.ForCurrentBuf().root.path.str()
-    autocmd BufEnter,DirChanged,BufWritePost * call NerdTreeSync(0)
-    autocmd BufWinEnter,FileType,TerminalOpen * call NerdTreeSync(1)
+    autocmd BufEnter * call NerdTreeSync(0, 'BufEnter', expand('<amatch>'))
+    autocmd DirChanged * call NerdTreeSync(0, 'DirChanged', expand('<amatch>'))
+    autocmd BufWritePost * call NerdTreeSync(0, 'BufWritePost', expand('<amatch>'))
+    autocmd BufWinEnter * call NerdTreeSync(1, 'BufWinEnter', expand('<amatch>'))
+    autocmd FileType * call NerdTreeSync(1, 'FileType', expand('<amatch>'))
+    autocmd TerminalOpen * call NerdTreeSync(1, 'TerminalOpen', expand('<amatch>'))
     autocmd TerminalOpen * setlocal scrolloff=0
-    autocmd User OlanInitNtsync call NerdTreeSync(1)
+    autocmd User OlanInitNtsync call NerdTreeSync(1, 'OlanInitNtsync', expand('<amatch>'))
     autocmd User YcmQuickFixOpened resize 10|autocmd! ycmquickfix WinLeave
 
     autocmd TerminalOpen * set termwinkey=<C-^>
@@ -975,10 +979,10 @@ function! SplitForNerdTree() abort
     return 1
 endfunction " }}}
 
-function! NerdTreeSync(isinit) " {{{
+function! NerdTreeSync(isinit, event, match) " {{{
     if a:isinit
         let b:olan_ntsync =
-            \ &buftype ==# ''
+            \ (&buftype ==# '' && bufname() !=# 'Result')
             \ || &buftype ==# 'terminal'
     endif
 
@@ -998,6 +1002,14 @@ function! NerdTreeSync(isinit) " {{{
     if type(l:ntcurtab) != type({}) || !l:ntcurtab.IsOpen()
         return
     endif
+
+    " TODO: ugly hack, but i don't know any other way to fix calling this from setloclist()
+    try
+        NERDTreeFocus
+        wincmd p
+    catch /.*/
+        return
+    endtry
 
     let l:curroot = l:ntcurtab.root.path.str()
 
