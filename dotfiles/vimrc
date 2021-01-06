@@ -447,7 +447,7 @@ augroup vimrc
     autocmd User YcmQuickFixOpened resize 10|autocmd! ycmquickfix WinLeave
 
     autocmd TerminalOpen * set termwinkey=<C-^>
-    autocmd TerminalOpen * set wrap
+    autocmd TerminalOpen * setlocal nowrap
     autocmd TerminalOpen * set wfw | setlocal termwinsize=0*5000
 
     autocmd QuickFixCmdPre * copen|execute 'lcd'  ProjectDir()
