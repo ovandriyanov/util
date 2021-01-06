@@ -377,8 +377,10 @@ tnoremap <C-^>a<C-^><Space> <C-^>:nohlsearch<Cr>
 "    }}}
 
 "   Jumping around {{{
-nnoremap <C-^>a<C-^>u [{
+nnoremap <C-^>a<C-^>u :call Up()<Cr>
 nnoremap <C-^>as<C-^>u 100[{
+vnoremap <C-^>a<C-^>u :<C-D>call Up()<Cr>
+vnoremap <C-^>as<C-^>u 100[{
 nnoremap <C-^>a<C-^>c :C 
 tnoremap <C-^>a<C-^>c <C-^>:C 
 "    }}}
