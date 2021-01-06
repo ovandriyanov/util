@@ -349,6 +349,9 @@ tnoremap <C-^>as<C-^>n <C-^>N
 nnoremap <C-^>as<C-^>n i
 " }}}
 
+" Toggle termwinsize with alt+w
+tnoremap <C-^>a<C-^>w <C-^>:call ToggleTermwinsize()<Cr>
+
 " Registers {{{
 tnoremap <C-^>a<C-^>r <C-^>"
 inoremap <C-^>a<C-^>r <C-r>
@@ -1175,6 +1178,54 @@ function! Include() abort " {{{
 
     call Yank("!printf '\\#include <\\%s>\n\n' `arel %`")
 endfunction " }}}
+
+function! ToggleTermwinsize() abort " {{{
+    if len(&tws) == 0
+        set termwinsize=0*5000
+    else
+        set termwinsize=
+    endif
+endfunction " }}}
+
+function! CurrentSyntaxGroup() abort
+    let l:stack = synstack(line('.'), col('.'))
+    if len(l:stack) == 0
+        return -1
+    endif
+    return l:stack[-1]
+endfunction
+
+function! Skip() abort
+    let l:stack = synstack(line('.'), col('.'))
+    if len(l:stack) == 0
+        return 0
+    endif
+    let l:last = l:stack[-1]
+    return
+        \ l:last == 693
+        \ || l:last == 284
+        \ || l:last == 253
+        \ || l:last == 174
+        \ || l:last == 166
+endfunction
+
+function! Up() abort
+    if &ft !~# 'go\|json\|cpp'
+        normal! [{
+        return
+    endif
+
+    let l:contextmark = getpos("''")
+    normal! m'
+    call setpos("''", l:contextmark)
+
+    let l:result = searchpair('[[{(]', '', '[]})]', 'b', funcref('Skip'), 1)
+    "let l:result = searchpair('[[{(]', '', '[]})]', 'b', '', 1)
+    if result <= 0
+        execute "normal! \<C-O>"
+    endif
+endfunction
+
 " ############################################################################## }}}
 " ################################  Vundle stuff  ############################## {{{
 " ##############################################################################
