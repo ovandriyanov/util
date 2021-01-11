@@ -316,7 +316,7 @@ tnoremap <C-^>acs<C-^>l <C-^>:tabmove +1<Cr>
 
 "   Closing and opening windows {{{
 nnoremap <C-^>a<C-^>t :terminal<Cr>
-tnoremap <C-^>a<C-^>t <C-^>:terminal<Cr><C-W>:set nowinfixwidth<Cr>
+tnoremap <C-^>a<C-^>t <C-^>:terminal<Cr><C-^>:set nowinfixwidth<Cr>
 nnoremap <C-^>a<C-^>n :exec &bt ==# 'terminal' ? 'rightbelow new' : 'new'<Cr>
 tnoremap <C-^>a<C-^>n <C-^>:rightbelow new<Cr>
 nnoremap <C-^>a<C-^>b :tabnew<Cr>
