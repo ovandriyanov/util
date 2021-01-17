@@ -1279,6 +1279,7 @@ if exists('g:devmode') && g:devmode
     Plugin 'vim-scripts/git-time-lapse'
     Plugin 'vim-scripts/a.vim'                  " Quick switching between .h/.cpp
     Plugin 'tpope/vim-fugitive'
+    Plugin 'ovandriyanov/dlvim'
     Plugin 'vim-scripts/dbext.vim'
     Plugin 'vim-signify', {'pinned': 1}
     Plugin 'vim-quarc', {'pinned': 1}
