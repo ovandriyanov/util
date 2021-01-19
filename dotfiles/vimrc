@@ -454,7 +454,7 @@ augroup vimrc
     autocmd TerminalOpen * setlocal nowrap
     autocmd TerminalOpen * set wfw | setlocal termwinsize=0*5000
 
-    execute 'autocmd BufWritePost' g:olan_path_aliases_file 'unlet g:olan_path_aliases'
+    execute 'autocmd BufWritePost' g:olan_path_aliases_file 'unlet! g:olan_path_aliases'
 
     autocmd QuickFixCmdPre * copen|execute 'lcd'  ProjectDir()
 augroup END
