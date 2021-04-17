@@ -449,6 +449,7 @@ augroup vimrc
     autocmd BufEnter * call NerdTreeSync(0, 'BufEnter', expand('<amatch>'))
     autocmd DirChanged * call NerdTreeSync(0, 'DirChanged', expand('<amatch>'))
     autocmd BufWritePost * call NerdTreeSync(0, 'BufWritePost', expand('<amatch>'))
+    autocmd BufWritePre *.go :YcmCompleter Format
     autocmd BufWinEnter * call NerdTreeSync(1, 'BufWinEnter', expand('<amatch>'))
     autocmd FileType * call NerdTreeSync(1, 'FileType', expand('<amatch>'))
     autocmd TerminalOpen * call NerdTreeSync(1, 'TerminalOpen', expand('<amatch>'))
