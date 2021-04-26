@@ -136,6 +136,7 @@ command! -range=% Cgetbuffer call Cbuffer('cgetbuffer', <line1>, <line2>)
 command! -range=% Cbuffer call Cbuffer('cbuffer', <line1>, <line2>)
 command! Arel Yank !arel %
 command! Include call Include()
+command! Break call Break()
 
 " ############################################################################## }}}
 " ##############################  Custom mappings  ############################# {{{
@@ -1262,6 +1263,11 @@ function! Up() abort
     if result <= 0
         execute "normal! \<C-O>"
     endif
+endfunction
+
+function! Break() abort
+    Arel
+    call setreg('"', 'break ' . getreg('"') . ':' . line('.'))
 endfunction
 
 " ############################################################################## }}}
