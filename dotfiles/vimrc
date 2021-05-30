@@ -1043,10 +1043,16 @@ function! NerdTreeSync(isinit, event, match) " {{{
     endif
 
     if !isdirectory(l:curpath) && !filereadable(l:curpath)
-        let l:parentdir = g:NERDTreePath.New(fnamemodify(l:curpath, ':p:h'))
-        let l:node = l:ntcurtab.root.reveal(l:parentdir)
-        NERDTreeFocus
-        call l:node.putCursorHere(0, 0)
+        let l:parentpath = fnamemodify(l:curpath, ':p:h')
+        if l:parentpath == l:curroot
+            NERDTreeFocus
+            call l:ntcurtab.root.putCursorHere(0, 0)
+        else
+            let l:parentdir = g:NERDTreePath.New(l:parentpath)
+            let l:node = l:ntcurtab.root.reveal(l:parentdir)
+            NERDTreeFocus
+            call l:node.putCursorHere(0, 0)
+        endif
         wincmd p
         return
     endif
