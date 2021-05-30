@@ -742,7 +742,16 @@ function! OpenFileByAlias(alias, window_splitter) " {{{
     endif
 
     if isdirectory(l:path)
-        execute 'NERDTree' l:path
+        if has_key(b:, 'NERDTree') && winnr('$') == 1
+            let l:curbuf = bufnr()
+            new
+            execute 'bdelete' l:curbuf
+            let l:emptybuf = bufnr()
+            execute 'NERDTree' l:path
+            execute 'bdelete' l:emptybuf
+        else
+            execute 'NERDTree' l:path
+        endif
     else
         execute 'edit' l:path
     endif
