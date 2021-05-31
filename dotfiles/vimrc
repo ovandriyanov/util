@@ -388,8 +388,11 @@ nnoremap <C-^>a<C-^>u :call Up()<Cr>
 nnoremap <C-^>as<C-^>u 100[{
 vnoremap <C-^>a<C-^>u :<C-D>call Up()<Cr>
 vnoremap <C-^>as<C-^>u 100[{
-nnoremap <C-^>a<C-^>c :C 
-tnoremap <C-^>a<C-^>c <C-^>:C 
+"    }}}
+
+"    Copy current file path {{{
+nnoremap <C-^>a<C-^>c :Yank %:p<Cr>
+tnoremap <C-^>a<C-^>c <C-^>:execute 'Yank' getcwd()<Cr>
 "    }}}
 
 "   Grep {{{
@@ -441,6 +444,7 @@ augroup vimrc
     autocmd FileType nerdtree nnoremap <buffer>          <C-^>a<C-^>t  :call OpenTerminalFromNerdTree(0)<Cr>
     autocmd FileType nerdtree nnoremap <buffer>          <C-^>as<C-^>t :call OpenTerminalFromNerdTree(1)<Cr>
     autocmd FileType nerdtree nnoremap <buffer>          <C-c> :call setreg('"', g:NERDTreeFileNode.GetSelected().path.str())<Cr>
+    autocmd FileType nerdtree nnoremap <buffer>          <C-^>a<C-^>c :call setreg('"', g:NERDTreeFileNode.GetSelected().path.str())<Cr>
     autocmd FileType nerdtree nunmap <buffer> :call
     autocmd FileType nerdtree nunmap <buffer> CD
     autocmd FileType qf setlocal foldmethod=manual
