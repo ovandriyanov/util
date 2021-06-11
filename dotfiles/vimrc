@@ -165,7 +165,8 @@ nnoremap            <Tab>d          :call Diags()<Cr>
 " }}}
 
 " NERDTree {{{
-nnoremap <expr>     <Cr>            NerdTreeFindExpr()
+nnoremap <expr>     <Cr>            NerdTreeFindExpr('')
+tnoremap <expr>     <C-^>a<C-^><Cr> NerdTreeFindExpr("\<C-^>")
 " }}}
 
 " Highlight word under cursor {{{
@@ -911,7 +912,11 @@ function! Break() " {{{
 endfunction " }}}
 
 function! NerdTreeGetPaths() " {{{
-    let l:curpath = expand('%:p')
+    if &bt ==# 'terminal'
+        let l:curpath = getcwd() . '/'
+    else
+        let l:curpath = expand('%:p')
+    endif
     let l:root = expand('%:p:h')
     let l:maxlen = 0
     for l:path in g:olan_root_dirs
@@ -924,17 +929,17 @@ function! NerdTreeGetPaths() " {{{
     return [l:root, l:curpath, l:maxlen != 0]
 endfunction " }}}
 
-function! NerdTreeFindExpr() " {{{
+function! NerdTreeFindExpr(prefix) " {{{
     call LoadPathAliases()
 
-    if &bt != ''
+    if &bt != '' && &bt != 'terminal'
         return "\<Cr>"
     endif
 
     let l:paths = NerdTreeGetPaths()
     let l:root = l:paths[0]
     let l:curpath = l:paths[1]
-    return ":call NerdTreeFind('" . l:root .  "', '" . l:curpath . "')\<Cr>"
+    return a:prefix . ":call NerdTreeFind('" . l:root .  "', '" . l:curpath . "')\<Cr>"
 endfunction " }}}
 
 function! NerdTreeFind(root, findpath) abort " {{{
