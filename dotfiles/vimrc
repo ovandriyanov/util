@@ -450,7 +450,7 @@ augroup vimrc
     autocmd FileType nerdtree nunmap <buffer> :call
     autocmd FileType nerdtree nunmap <buffer> CD
     autocmd FileType qf setlocal foldmethod=manual
-    autocmd FileType qf call ReloadQuickFix()
+    " autocmd FileType qf call ReloadQuickFix()
     autocmd User NERDTreeNewRoot execute 'lcd' g:NERDTree.ForCurrentBuf().root.path.str()
     autocmd User NERDTreeInit execute 'lcd' g:NERDTree.ForCurrentBuf().root.path.str()
     autocmd BufEnter * call NerdTreeSync(0, 'BufEnter', expand('<amatch>'))
@@ -470,7 +470,7 @@ augroup vimrc
 
     execute 'autocmd BufWritePost' g:olan_path_aliases_file 'unlet! g:olan_path_aliases'
 
-    autocmd QuickFixCmdPre * copen|execute 'lcd'  ProjectDir()
+    " autocmd QuickFixCmdPre * copen|execute 'lcd'  ProjectDir()
 augroup END
 
 " ############################################################################## }}}
@@ -836,7 +836,10 @@ function! Arel(filename) abort " {{{
 endfunction " }}}
 
 function! Tapi_FillQuickfixWindow(buffer, logfile) " {{{
+    cd $ARCADIA_ROOT
     execute 'cgetfile' a:logfile
+    cd -
+    copen
     call system('rm -f ' . a:logfile)
 endfunction " }}}
 
