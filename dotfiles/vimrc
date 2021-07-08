@@ -955,6 +955,7 @@ function! NerdTreeFind(root, findpath) abort " {{{
     let l:ntcurtab = g:NERDTree.ForCurrentTab()
     let l:nodepath = g:NERDTreePath.New(a:findpath)
     let l:node = l:ntcurtab.root.reveal(l:nodepath)
+    call l:ntcurtab.render()
     call l:node.putCursorHere(0, 0)
     " execute 'NERDTreeFind' a:findpath
 endfunction " }}}
