@@ -916,7 +916,7 @@ function! Break() " {{{
 endfunction " }}}
 
 function! NerdTreeGetPaths() " {{{
-    if &bt ==# 'terminal'
+    if &bt ==# 'terminal' || len(expand('%')) == 0
         let l:curpath = getcwd() . '/'
     else
         let l:curpath = expand('%:p')
