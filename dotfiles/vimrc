@@ -947,16 +947,24 @@ function! NerdTreeFindExpr(prefix) " {{{
 endfunction " }}}
 
 function! NerdTreeFind(root, findpath) abort " {{{
+    let l:findpath = a:findpath
+    if len(l:findpath) == 0
+        let l:findpath = getcwd()
+    endif
     if !exists('t:NERDTreeBufName') || getbufvar(t:NERDTreeBufName, 'NERDTreeRoot', {'path': {'str': {->''} } }).path.str() !=# a:root
         execute 'NERDTree' a:root
     else
         NERDTreeFocus
     endif
     let l:ntcurtab = g:NERDTree.ForCurrentTab()
-    let l:nodepath = g:NERDTreePath.New(a:findpath)
-    let l:node = l:ntcurtab.root.reveal(l:nodepath)
-    call l:ntcurtab.render()
-    call l:node.putCursorHere(0, 0)
+    let l:nodepath = g:NERDTreePath.New(l:findpath)
+    if l:ntcurtab.root.path.str() ==# l:nodepath.str()
+        let l:node = l:ntcurtab.root.putCursorHere(0, 0)
+    else
+        let l:node = l:ntcurtab.root.reveal(l:nodepath)
+        call l:ntcurtab.render()
+        call l:node.putCursorHere(0, 0)
+    endif
     " execute 'NERDTreeFind' a:findpath
 endfunction " }}}
 
