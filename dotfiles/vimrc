@@ -1258,9 +1258,14 @@ function! Include() abort " {{{
 
         call Yank("\t\"a.yandex-team.ru/" . l:arelbase . '/' .  l:package . "\"\n")
         return
+    elseif &ft == 'python'
+        let l:relative = trim(system('arel ' . shellescape(expand('%'))))
+        let l:import_string = substitute(l:relative, '/', '.', 'g')
+        let l:import_string = substitute(l:import_string, '\.py$', '', '')
+        call Yank('import ' . l:import_string . "\n")
+    else
+        call Yank("!printf '\\#include <\\%s>\n\n' `arel %`")
     endif
-
-    call Yank("!printf '\\#include <\\%s>\n\n' `arel %`")
 endfunction " }}}
 
 function! ToggleTermwinsize() abort " {{{
