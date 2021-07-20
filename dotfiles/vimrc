@@ -38,6 +38,7 @@ set foldmethod=marker
 set completeopt=popup,menuone
 set clipboard=exclude:cons\|linux
 set scrolloff=10
+set nostartofline
 
 let s:grepfmt = '%f|%l col %c| %m'
 if       &errorformat !~# '^' . s:grepfmt . ',.*'
