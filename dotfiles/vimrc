@@ -922,7 +922,7 @@ function! NerdTreeGetPaths() " {{{
     else
         let l:curpath = expand('%:p')
     endif
-    let l:root = expand('%:p:h')
+    let l:root = fnamemodify(l:curpath, ':h')
     let l:maxlen = 0
     for l:path in g:olan_root_dirs
         let l:prefix = l:curpath[0:len(l:path) - 1]
