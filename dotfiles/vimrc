@@ -190,10 +190,6 @@ cnoremap            <c-r>\+         <c-r>=escape(getreg('+'), '/')<cr>
 " }}}
 
 " Padding {{{
-nnoremap            <silent>        <Plug>PadDown :<c-U>call Pad(v:count1)<cr>:call repeat#set("\<Plug>PadDown")<cr>
-nnoremap            <silent>        <Plug>PadUp :<c-U>call Pad(-v:count1)<cr>:call repeat#set("\<Plug>PadUp")<cr>
-nnoremap            <C-p>j          <Plug>PadDown
-nnoremap            <C-p>k          <Plug>PadUp
 nnoremap            <silent>        <Plug>BreakAndPadComma :<c-U>call BreakAndPad(',', v:count1)<cr>:call repeat#set("\<Plug>BreakAndPadComma")<cr>
 nmap                <C-p>,          <Plug>BreakAndPadComma
 " }}}
