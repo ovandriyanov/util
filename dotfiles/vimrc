@@ -39,6 +39,7 @@ set completeopt=popup,menuone
 set clipboard=exclude:cons\|linux
 set scrolloff=10
 set nostartofline
+let &fillchars='vert:|,fold: ,eob:~'
 
 let s:grepfmt = '%f|%l col %c| %m'
 if       &errorformat !~# '^' . s:grepfmt . ',.*'
@@ -1371,6 +1372,7 @@ call vundle#end()
 filetype plugin indent on
 
 colorscheme github
+highlight Folded ctermfg=0   ctermbg=255  guifg=#000000   guibg=#F8F8FF
 
 " ############################################################################## }}}
 " ############################  Extra configuration  ########################### {{{
