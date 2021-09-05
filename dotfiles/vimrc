@@ -144,6 +144,10 @@ command! Break call Break()
 " ##############################  Custom mappings  ############################# {{{
 " ##############################################################################
 
+nnoremap <silent> <Plug>NCFJ :call NextClosedFold('j')<Cr>:call repeat#set("\<Plug>NCFJ")<Cr>
+nnoremap <silent> <Plug>NCFK :call NextClosedFold('k')<Cr>:call repeat#set("\<Plug>NCFK")<Cr>
+nmap zj <Plug>NCFJ
+nmap zk <Plug>NCFK
 " QtCreator-like bindings {{{
 nnoremap            <F2>            :YcmCompleter GoTo <cr>
 nnoremap            <S-F2>          :YcmCompleter GoToDeclaration <cr>
@@ -1272,6 +1276,21 @@ function! ToggleTermwinsize() abort " {{{
         set termwinsize=
     endif
 endfunction " }}}
+
+" https://stackoverflow.com/questions/9403098/is-it-possible-to-jump-to-the-next-closed-fold-in-vim
+function! NextClosedFold(dir)
+    let cmd = 'norm!z' . a:dir
+    let view = winsaveview()
+    let [l0, l, open] = [0, view.lnum, 1]
+    while l != l0 && open
+        exe cmd
+        let [l0, l] = [l, line('.')]
+        let open = foldclosed(l) < 0
+    endwhile
+    if open
+        call winrestview(view)
+    endif
+endfunction
 
 function! CurrentSyntaxGroup() abort
     let l:stack = synstack(line('.'), col('.'))
