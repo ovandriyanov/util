@@ -463,6 +463,7 @@ augroup vimrc
     autocmd FileType * call NerdTreeSync(1, 'FileType', expand('<amatch>'))
     autocmd TerminalOpen * call NerdTreeSync(1, 'TerminalOpen', expand('<amatch>'))
     autocmd TerminalOpen * setlocal scrolloff=0
+    autocmd FileType proto setlocal smartindent
     autocmd User OlanInitNtsync call NerdTreeSync(1, 'OlanInitNtsync', expand('<amatch>'))
     autocmd User YcmQuickFixOpened resize 10|autocmd! ycmquickfix WinLeave
 
