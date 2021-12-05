@@ -562,7 +562,7 @@ endfunction " }}}
 function! DeleteHiddenBuffers(bang) " {{{
     let tpbl=[]
     call map(range(1, tabpagenr('$')), 'extend(tpbl, tabpagebuflist(v:val))')
-    for buf in filter(range(1, bufnr('$')), 'bufloaded(v:val) && index(tpbl, v:val)==-1')
+    for buf in filter(range(1, bufnr('$')), 'bufloaded(v:val) && buflisted(v:val) && index(tpbl, v:val)==-1')
         silent execute 'silent bdelete' . a:bang buf
     endfor
 endfunction " }}}
