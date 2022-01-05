@@ -984,19 +984,21 @@ function! NerdTreeFind(root, findpath) abort " {{{
 endfunction " }}}
 
 function! Only() " {{{
-    if &filetype ==# 'nerdtree'
-        only
-        return
-    endif
-    let l:ntcurtab = g:NERDTree.ForCurrentTab()
-    if type(l:ntcurtab) != type({}) || !l:ntcurtab.IsOpen()
-        only
-        return
-    endif
-    NERDTreeToggle
-    only
-    NERDTreeToggle
-    wincmd p
+    let l:current_window_number = 1
+    let l:windows_to_close = []
+    for l:bufnr in tabpagebuflist()
+        if l:current_window_number != winnr()
+            \ && type(getbufvar(l:bufnr, 'NERDTree', v:null)) == type(v:null)
+            \ && type(getbufvar(l:bufnr, 'dlvim',    v:null)) == type(v:null)
+
+            call add(l:windows_to_close, l:current_window_number)
+        endif
+        let l:current_window_number += 1
+    endfor
+    call reverse(l:windows_to_close)
+    for l:window_number in l:windows_to_close
+        execute l:window_number .. 'close'
+    endfor
 endfunction " }}}
 
 function! OpenTerminalFromNerdTree(shift) abort " {{{
