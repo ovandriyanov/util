@@ -459,7 +459,8 @@ augroup vimrc
     autocmd FileType nerdtree nunmap <buffer> :call
     autocmd FileType nerdtree nunmap <buffer> CD
     autocmd FileType tf setlocal indentexpr=
-    autocmd FileType tf setlocal cindent
+    autocmd FileType tf setlocal nocindent
+    autocmd FileType tf setlocal autoindent
     autocmd FileType tf setlocal softtabstop=2
     autocmd FileType tf setlocal tabstop=2
     autocmd FileType tf setlocal shiftwidth=2
