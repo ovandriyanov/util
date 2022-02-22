@@ -1288,9 +1288,9 @@ endfunction " }}}
 
 function! ToggleTermwinsize() abort " {{{
     if len(&tws) == 0
-        set termwinsize=0*5000
+        setlocal termwinsize=0*5000
     else
-        set termwinsize=
+        setlocal termwinsize=
     endif
 endfunction " }}}
 
