@@ -450,6 +450,7 @@ augroup vimrc
 
 	autocmd BufWinEnter *.go setlocal noet
 
+    autocmd BufRead *.tfvars set filetype=tf
     autocmd FileType nerdtree set relativenumber
     autocmd FileType nerdtree nnoremap <buffer> <nowait> <C-F> :NERDTreeFind **/
     autocmd FileType nerdtree nnoremap <buffer>          <C-^>a<C-^>t  :call OpenTerminalFromNerdTree(0)<Cr>
