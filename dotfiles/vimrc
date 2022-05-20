@@ -172,8 +172,11 @@ nnoremap            <Tab>d          :call Diags()<Cr>
 " }}}
 
 " NERDTree {{{
-nnoremap <expr>     <Cr>            NerdTreeFindExpr('')
-tnoremap <expr>     <C-^>a<C-^><Cr> NerdTreeFindExpr("\<C-^>")
+nnoremap <expr>     <Cr>             NerdTreeFindExpr('')
+tnoremap <expr>     <C-^>a<C-^><Cr>  NerdTreeFindExpr("\<C-^>")
+nnoremap            <C-^>ac<C-^><Cr> :NERDTreeFocus<Cr>
+tnoremap            <C-^>ac<C-^><Cr> <C-^>:NERDTreeFocus<Cr>
+
 " }}}
 
 " Highlight word under cursor {{{
@@ -286,6 +289,10 @@ nnoremap <Up>   <C-y>k
 inoremap <C-_> \
 cnoremap <C-_> \
 tnoremap <C-_> \
+" }}}
+
+" Stuff {{{
+vnoremap x :Xargs 
 " }}}
 
 
