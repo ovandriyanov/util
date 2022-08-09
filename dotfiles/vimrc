@@ -96,7 +96,19 @@ let g:loaded_netrwPlugin = 1
 let g:NERDTreeMapHelp = ''
 let g:NERDTreeCustomOpenArgs = {'file': {'reuse': '', 'where': 'p', 'keepopen': 1}, 'dir': {}}
 let g:NERDTreeCascadeSingleChildDir=0
-let g:NERDTreeIgnore=['.*\.pb\.go', '.*\.pb\.gw\.go', '.*\.res\.go', '.*\.a', '.*\.vld\.go', 'test-results']
+let g:NERDTreeIgnore=[
+\     '.*\.pb\.go',
+\     '.*\.pb\.gw\.go',
+\     '.*\.res\.go',
+\     '.*\.a$',
+\     '.*\.vld\.go',
+\     '.*\.oneof\.go$',
+\     '.*\.convert\.go$',
+\     '.*\.status\.go$',
+\     '.*\.comments\.go$',
+\     '^descriptors.go$',
+\     'test-results',
+\ ]
 " let g:NERDTreeChDirMode = 3
 
 " Fugitive settings
@@ -141,6 +153,7 @@ command! -range=% Cbuffer call Cbuffer('cbuffer', <line1>, <line2>)
 command! Arel Yank !arel %
 command! Include call Include()
 command! Break call Break()
+command! Xrestore call Xrestore()
 
 " ############################################################################## }}}
 " ##############################  Custom mappings  ############################# {{{
@@ -1363,6 +1376,11 @@ endfunction
 function! Break() abort
     Arel
     call setreg('"', 'break ' . getreg('"') . ':' . line('.'))
+endfunction
+
+function! Xrestore() abort
+    xrestore
+    let $SSH_AUTH_SOCK=readfile(expand('~/.ssh_auth_sock_path'))[0]
 endfunction
 
 " ############################################################################## }}}
