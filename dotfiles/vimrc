@@ -54,9 +54,6 @@ set t_SH=
 set t_TI=
 set t_TE=
 
-highlight ExtraWhitespace ctermbg=darkgreen
-highlight Terminal guifg=#c0c0c0 guibg=#000040 ctermfg=gray ctermbg=black
-match ExtraWhitespace /\s\+$/
 syntax enable
 
 " ############################################################################## }}}
@@ -1419,6 +1416,9 @@ filetype plugin indent on
 
 colorscheme github
 highlight Folded ctermfg=0   ctermbg=255  guifg=#000000   guibg=#F8F8FF
+highlight ExtraWhitespace ctermbg=darkgreen
+highlight Terminal guifg=#c0c0c0 guibg=#000040 ctermfg=gray ctermbg=black
+match ExtraWhitespace /\s\+$/
 
 " ############################################################################## }}}
 " ############################  Extra configuration  ########################### {{{
