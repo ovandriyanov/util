@@ -192,7 +192,7 @@ tnoremap            <C-^>ac<C-^><Cr> <C-^>:NERDTreeFocus<Cr>
 
 " Highlight word under cursor {{{
 nnoremap            <space>         :set hls \| call setreg('/', '\<' . expand('<cword>') . '\>')<Cr>
-vnoremap            <space>         "zy:set hls \| call setreg('/', getreg('z'))<Cr>
+vnoremap            <space>         "zy:set hls \| call setreg('/', '\V' ..  escape(getreg('z'), '/\'))<Cr>
 vnoremap            \<space>        "zy:set hls \| call setreg('/', '\<' . getreg('z') . '\>')<Cr>
 " }}}
 
