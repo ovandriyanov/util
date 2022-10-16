@@ -915,7 +915,9 @@ function! MapCarriageReturn() " {{{
         let l:maybe_semicolon = '}' ? ';' : "\<C-O>a;"
     endif
 
-    return "\<CR>" . l:maybe_rbrace . l:maybe_semicolon . "\<C-O>O"
+    let l:maybe_backspace = &ft == 'proto' ? "\<BS>" : '' " For some reason there is an extra padding after in proto files after <CR>
+
+    return "\<CR>" . l:maybe_rbrace . l:maybe_backspace . l:maybe_semicolon . "\<C-O>O"
 endfunction " }}}
 
 function! CppShouldAddSemicolon(line) " {{{
