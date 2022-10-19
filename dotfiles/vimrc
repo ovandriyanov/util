@@ -270,8 +270,8 @@ nnoremap <C-W>S :Scratch<Cr>
 " }}}
 
 " URL opening (_G_o _B_rowser) {{{
-nnoremap gb :silent !xopen <cfile><Cr>
-vnoremap gb "zy:silent execute '!xopen' shellescape(getreg('z'))<Cr>
+nnoremap gb :silent !xdg-open <cfile><Cr>
+vnoremap gb "zy:silent execute '!xdg-open' shellescape(getreg('z'))<Cr>
 " }}}
 
 " Opening man pages all of a sudden drives me crazy {{{
