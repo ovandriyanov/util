@@ -80,6 +80,7 @@ let g:ycm_add_preview_to_completeopt = 0
 let g:ycm_key_invoke_completion = '<C-^>c<C-^><Space>'
 let g:ycm_gopls_binary_path = expand('~/github/golang/tools/gopls/gopls')
 let g:ycm_update_diagnostics_in_insert_mode = 0
+let g:ycm_echo_current_diagnostic = 0
 " let g:ycm_autoclose_preview_window_after_insertion = 1
 
 " AutoPairs settings
