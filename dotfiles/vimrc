@@ -466,6 +466,7 @@ augroup vimrc
     " Set libstdc++ source files options
     autocmd BufRead,BufNewFile /usr/include/c++/*,/usr/include/x86_64-linux-gnu/c++/*,/usr/include/linux/* call SetLibStdCppOptions()
 
+    autocmd BufRead,BufNewFile *.tf set filetype=tf | setlocal indentexpr= | setlocal cindent
     autocmd BufWinEnter */templates/*.tmpl set syntax=go
     autocmd BufWinEnter */templates/*.tmpl setlocal smartindent
 
@@ -511,6 +512,8 @@ augroup vimrc
     execute 'autocmd BufWritePost' g:olan_path_aliases_file 'unlet! g:olan_path_aliases'
 
     " autocmd QuickFixCmdPre * copen|execute 'lcd'  ProjectDir()
+    autocmd QuickFixCmdPre  * silent execute 'lcd'  $ARCADIA_ROOT
+    "autocmd QuickFixCmdPost * execute 'lcd'  $ARCADIA_ROOT
 augroup END
 
 " ############################################################################## }}}
@@ -1400,6 +1403,7 @@ Plugin 'tpope/vim-surround'
 Plugin 'vim-scripts/BufOnly.vim'
 Plugin 'preservim/nerdtree'
 Plugin 'udalov/kotlin-vim'
+"Plugin 'rlue/vim-barbaric'
 
 if exists('g:devmode') && g:devmode
     " C/C++ stuff
