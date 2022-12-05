@@ -143,7 +143,7 @@ command! CTerminal terminal ++curwin
 command! MTerminal split | resize 10 | set winfixheight | terminal ++curwin
 command! -bang -range -nargs=1 -complete=shellcmd Xargs call Xargs('<args>', '<bang>' == '!')
 command! -range Aopen call Aopen(<line1>, <line2>, 0)
-command! -range AopenCurrent call Aopen(<line1>, <line2>, 1)
+command! -bar -range AopenCurrent call Aopen(<line1>, <line2>, 1)
 command! Scratch new | set bt=nofile
 command! VScratch vnew | set bt=nofile
 command! TScratch tabnew | set bt=nofile
