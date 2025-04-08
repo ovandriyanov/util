@@ -18,10 +18,13 @@ set langmap+=аf,пg,рh,оj,лk,дl,ж\\;,э',яz,чx,сc,мv,иb,тn,ьm,б\\,
 set lazyredraw
 set noautoindent
 set nocompatible
-set noesckeys
+if !has('nvim')
+    set noesckeys
+    set clipboard=exclude:cons\|linux
+endif
 set nosmartindent
 set number
-set relativenumber
+"set relativenumber
 set ruler
 set runtimepath+=~/.vim/bundle/Vundle.vim/
 set secure
@@ -36,7 +39,6 @@ set wildmenu
 set shell=/bin/bash\ -O\ globstar
 set foldmethod=marker
 set completeopt=popup,menuone
-set clipboard=exclude:cons\|linux
 set scrolloff=10
 set nostartofline
 let &fillchars='vert:|,fold: ,eob:~'
@@ -60,6 +62,10 @@ syntax enable
 " ##############################  Plugin settings  ############################# {{{
 " ##############################################################################
 
+if has('nvim')
+    set mouse=
+endif
+
 " C++11 syntax workaround
 let c_no_curly_error=1
 
@@ -73,12 +79,16 @@ let g:netrw_preview = 1 " Vertical preview window
 let g:ycm_always_populate_location_list = 1
 let g:ycm_confirm_extra_conf = 0
 let g:ycm_global_ycm_extra_conf = expand('~/git/ovandriyanov/util/kernel_ycm_extra_conf.py')
-let g:ycm_clangd_args=['--header-insertion=never']
+let g:ycm_clangd_args=['--header-insertion=never', '--query-driver=/home/ovandriyanov/.ya/tools/v4/7599469156/bin/clang++']
+let g:ycm_clangd_binary_path=expand('~/tmp/clangd/clangd_18.1.3/bin/clangd')
 let g:ycm_auto_hover=''
 let g:ycm_max_diagnostics_to_display = 10
 let g:ycm_add_preview_to_completeopt = 0
 let g:ycm_key_invoke_completion = '<C-^>c<C-^><Space>'
-let g:ycm_gopls_binary_path = expand('~/github/golang/tools/gopls/gopls')
+let g:ycm_gopls_binary_path = expand('~/tmp/gopls')
+let g:ycm_gopls_args = ['-logfile', '/home/ovandriyanov/tmp/gopls-vim.log', '-rpc.trace']
+"let g:ycm_gopls_binary_path = expand('/home/ovandriyanov/github/golang/tools/gopls/gopls')
+"let g:ycm_gopls_binary_path = expand('/home/ovandriyanov/.vim/bundle/YouCompleteMe/third_party/ycmd/third_party/go/bin/gopls')
 let g:ycm_update_diagnostics_in_insert_mode = 0
 let g:ycm_echo_current_diagnostic = 0
 " let g:ycm_autoclose_preview_window_after_insertion = 1
@@ -88,7 +98,7 @@ let g:AutoPairsMapCR = 0
 let g:AutoPairsMultilineClose = 0
 let g:AutoPairsShortcutFastWrap = '<C-e>'
 let g:AutoPairsShortcutJump = '<C-n>'
-let g:AutoPairsShortcutToggle = '<C-p><C-p>'
+"let g:AutoPairsShortcutToggle = '<C-p><C-p>'
 
 " NERDTree settings
 let g:loaded_netrwPlugin = 1
@@ -101,10 +111,13 @@ let g:NERDTreeIgnore=[
 \     '.*\.res\.go',
 \     '.*\.a$',
 \     '.*\.vld\.go',
+\     '.*\.yc\.go',
 \     '.*\.oneof\.go$',
 \     '.*\.convert\.go$',
 \     '.*\.status\.go$',
 \     '.*\.comments\.go$',
+\     '.*\.jar$',
+\     '.*\.dynform.json$',
 \     '^descriptors.go$',
 \     'test-results',
 \ ]
@@ -158,6 +171,9 @@ command! Xrestore call Xrestore()
 " ##############################  Custom mappings  ############################# {{{
 " ##############################################################################
 
+vnoremap Y y
+nnoremap co :colder<Cr>
+nnoremap cO :cnewer<Cr>
 nnoremap <silent> <Plug>NCFJ :call NextClosedFold('j')<Cr>:call repeat#set("\<Plug>NCFJ")<Cr>
 nnoremap <silent> <Plug>NCFK :call NextClosedFold('k')<Cr>:call repeat#set("\<Plug>NCFK")<Cr>
 nmap zj <Plug>NCFJ
@@ -172,16 +188,29 @@ nnoremap            <F8>            :silent! AV <cr>
 
 " YouCompleteMe {{{
 nnoremap            <Tab>           <Nop>
-nnoremap            <Tab><Space>    :call GoTo()<Cr>
-nnoremap            <Tab>t          :YcmCompleter GetType<Cr>
-nnoremap            <Tab>gt         :YcmCompleter GoToType<Cr>
-nnoremap            <Tab>i          :call GoToImplementation()<Cr>
-nnoremap            <Tab>x          :YcmCompleter FixIt<Cr>
-nnoremap            <Tab>r          "zyiw:call RefactorRename('<C-r>z')<Left><Left>
-nnoremap            <Tab>h          :YcmCompleter GetDoc<Cr>
-nnoremap            <Tab>f          :YcmCompleter Format<Cr>
-nnoremap            <Tab>u          :call GoToReferences()<Cr>
-nnoremap            <Tab>d          :call Diags()<Cr>
+if has('nvim')
+    nnoremap            <Tab><Space>    :lua vim.lsp.buf.definition()<Cr>
+    nnoremap            <Tab>t          :lua vim.lsp.buf.hover()<Cr>
+    nnoremap            <Tab>gt         :lua vim.lsp.buf.type_definition()<Cr>
+    nnoremap            <Tab>i          :lua vim.lsp.buf.definition()<Cr>
+    nnoremap            <Tab>r          "zyiw:lua vim.lsp.buf.rename('<C-r>z')<Left><Left>
+    nnoremap            <Tab>u          :lua vim.lsp.buf.references()<Cr>
+    nnoremap            <Tab>d          :lua vim.diagnostic.setloclist()<Cr>
+    nnoremap            <Tab>h          :lua vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())<Cr>
+    nnoremap            <Tab>s          :lua vim.lsp.buf.document_symbol()<Cr>
+    nnoremap            <Tab>w          :lua vim.lsp.buf.workspace_symbol()<Cr>
+else
+    nnoremap            <Tab><Space>    :call GoTo()<Cr>
+    nnoremap            <Tab>t          :YcmCompleter GetType<Cr>
+    nnoremap            <Tab>gt         :YcmCompleter GoToType<Cr>
+    nnoremap            <Tab>i          :call GoToImplementation()<Cr>
+    nnoremap            <Tab>x          :YcmCompleter FixIt<Cr>
+    nnoremap            <Tab>r          "zyiw:call RefactorRename('<C-r>z')<Left><Left>
+    nnoremap            <Tab>h          :YcmCompleter GetDoc<Cr>
+    nnoremap            <Tab>f          :YcmCompleter Format<Cr>
+    nnoremap            <Tab>u          :call GoToReferences()<Cr>
+    nnoremap            <Tab>d          :call Diags()<Cr>
+endif
 " }}}
 
 " NERDTree {{{
@@ -276,8 +305,6 @@ nnoremap gb :silent execute '!xdg-open >/dev/null 2>&1 <cfile>' \| redraw!<Cr>
 vnoremap gb "zy:silent execute '!xdg-open >/dev/null 2>&1' shellescape(getreg('z')) \| redraw!<Cr>
 " }}}
 
-" Opening man pages all of a sudden drives me crazy {{{
-nnoremap K k
 " }}}
 
 " Arithmetic evaluation {{{
@@ -312,78 +339,129 @@ vnoremap x :Xargs
 " Specal mappings for sequences generated by a terminal emulator {{{
 "   Window navigation {{{
 nnoremap <C-^>a<C-^>h <C-w>h
-tnoremap <C-^>a<C-^>h <C-^>h
 nnoremap <C-^>a<C-^>j <C-w>j
-tnoremap <C-^>a<C-^>j <C-^>j
 nnoremap <C-^>a<C-^>k <C-w>k
-tnoremap <C-^>a<C-^>k <C-^>k
 nnoremap <C-^>a<C-^>l <C-w>l
-tnoremap <C-^>a<C-^>l <C-^>l
 nnoremap <C-^>a<C-^>p <C-w>p
-tnoremap <C-^>a<C-^>p <C-^>p
+
+if has('nvim')
+    tnoremap <C-^>a<C-^>h <C-\><C-N><C-w>h
+    tnoremap <C-^>a<C-^>j <C-\><C-N><C-w>j
+    tnoremap <C-^>a<C-^>k <C-\><C-N><C-w>k
+    tnoremap <C-^>a<C-^>l <C-\><C-N><C-w>l
+    tnoremap <C-^>a<C-^>p <C-^>p
+else
+    tnoremap <C-^>a<C-^>h <C-^>h
+    tnoremap <C-^>a<C-^>j <C-^>j
+    tnoremap <C-^>a<C-^>k <C-^>k
+    tnoremap <C-^>a<C-^>l <C-^>l
+    tnoremap <C-^>a<C-^>p <C-^>p
+endif
 " }}}
 
 "   Align windows with HJKL {{{
+if has('nvim')
+    tnoremap <C-^>as<C-^>h <C-\><C-O>:call Align('H')<Cr>
+    tnoremap <C-^>as<C-^>j <C-\><C-O>:call Align('J')<Cr>
+    tnoremap <C-^>as<C-^>k <C-\><C-O>:call Align('K')<Cr>
+    tnoremap <C-^>as<C-^>l <C-\><C-O>:call Align('L')<Cr>
+else
+    tnoremap <C-^>as<C-^>h <C-^>:call Align('H')<Cr>
+    tnoremap <C-^>as<C-^>j <C-^>:call Align('J')<Cr>
+    tnoremap <C-^>as<C-^>k <C-^>:call Align('K')<Cr>
+    tnoremap <C-^>as<C-^>l <C-^>:call Align('L')<Cr>
+endif
 nnoremap <C-^>as<C-^>h :call Align('H')<Cr>
 nnoremap <C-^>as<C-^>j :call Align('J')<Cr>
 nnoremap <C-^>as<C-^>k :call Align('K')<Cr>
 nnoremap <C-^>as<C-^>l :call Align('L')<Cr>
-tnoremap <C-^>as<C-^>h <C-^>:call Align('H')<Cr>
-tnoremap <C-^>as<C-^>j <C-^>:call Align('J')<Cr>
-tnoremap <C-^>as<C-^>k <C-^>:call Align('K')<Cr>
-tnoremap <C-^>as<C-^>l <C-^>:call Align('L')<Cr>
 " }}}
 
 "   Tab switching {{{
 nnoremap <C-^>ac<C-^>h gT
-tnoremap <C-^>ac<C-^>h <C-^>gT
 nnoremap <C-^>ac<C-^>l gt
-tnoremap <C-^>ac<C-^>l <C-^>gt
 nnoremap <C-^>as<C-^>t <C-w>s<C-w>T
-tnoremap <C-^>as<C-^>t <C-^>s<C-^>T
 nnoremap <C-^>as<C-^>w <C-w>T
-tnoremap <C-^>as<C-^>w <C-^>T
+
+if has('nvim')
+    tnoremap <C-^>ac<C-^>h <C-\><C-O>gT
+    tnoremap <C-^>ac<C-^>l <C-\><C-O>gt
+    tnoremap <C-^>as<C-^>t <C-\><C-O>s<C-^>T
+    tnoremap <C-^>as<C-^>w <C-\><C-O>T
+else
+    tnoremap <C-^>ac<C-^>h <C-^>gT
+    tnoremap <C-^>ac<C-^>l <C-^>gt
+    tnoremap <C-^>as<C-^>t <C-^>s<C-^>T
+    tnoremap <C-^>as<C-^>w <C-^>T
+endif
 " }}}
 
 "   Tab shifting {{{
 nnoremap <C-^>acs<C-^>h :tabmove -1<Cr>
-tnoremap <C-^>acs<C-^>h <C-^>:tabmove -1<Cr>
 nnoremap <C-^>acs<C-^>l :tabmove +1<Cr>
-tnoremap <C-^>acs<C-^>l <C-^>:tabmove +1<Cr>
+if has('nvim')
+    tnoremap <C-^>acs<C-^>h <C-\><C-O>:tabmove -1<Cr>
+    tnoremap <C-^>acs<C-^>l <C-\><C-O>:tabmove +1<Cr>
+else
+    tnoremap <C-^>acs<C-^>h <C-^>:tabmove -1<Cr>
+    tnoremap <C-^>acs<C-^>l <C-^>:tabmove +1<Cr>
+endif
 " }}}
 
 "   Closing and opening windows {{{
-nnoremap <C-^>a<C-^>t :terminal<Cr><C-^>:set nowinfixwidth<Cr>
-tnoremap <C-^>a<C-^>t <C-^>:terminal<Cr><C-^>:set nowinfixwidth<Cr>
+if has('nvim')
+    nnoremap <C-^>a<C-^>t :new<Cr>:terminal<Cr>i
+else
+    nnoremap <C-^>a<C-^>t :terminal<Cr><C-^>:set nowinfixwidth<Cr>
+endif
 nnoremap <C-^>a<C-^>n :exec &bt ==# 'terminal' ? 'rightbelow new' : 'new'<Cr>
-tnoremap <C-^>a<C-^>n <C-^>:rightbelow new<Cr>
 nnoremap <C-^>a<C-^>b :tabnew<Cr>
-tnoremap <C-^>a<C-^>b <C-^>:tabnew<Cr>
 nnoremap <C-^>a<C-^>q :q<Cr>
-tnoremap <C-^>a<C-^>q <C-^>:q<Cr>
 nnoremap <C-^>as<C-^>q :tabclose<Cr>
-tnoremap <C-^>as<C-^>q <C-^>:tabclose<Cr>
 nnoremap <C-^>a<C-^>w :w<Cr>
 nnoremap <C-^>a<C-^>x :wq<Cr>
 inoremap <C-^>a<C-^>x <Esc>:wq<Cr>
 nnoremap <C-^>a<C-^>d :bd!<Cr>
-tnoremap <C-^>a<C-^>d <C-^>:bd!<Cr>
 nnoremap <C-^>as<C-^>d :call DropTab()<Cr>
-tnoremap <C-^>as<C-^>d <C-^>:call DropTab()<Cr>
 nnoremap <C-^>a<C-^>o :call Only()<Cr>
-tnoremap <C-^>a<C-^>o <C-^>:call Only()<Cr>
 nnoremap <C-^>as<C-^>o :only<Cr>
-tnoremap <C-^>as<C-^>o <C-^>:only<Cr>
 nnoremap <C-^>a<C-^>v <C-w>v
 nnoremap <C-^>a<C-^>s <C-w>s
 nnoremap <C-^>ac<C-^>d :DHidden<Cr>
-tnoremap <C-^>ac<C-^>d <C-^>:DHidden<Cr>
 nnoremap <C-^>acs<C-^>d :DHidden!<Cr>
-tnoremap <C-^>acs<C-^>d <C-^>:DHidden!<Cr>
+if has('nvim')
+    tnoremap <C-^>a<C-^>t   <C-\><C-O>:terminal<Cr><C-^>:set nowinfixwidth<Cr>
+    tnoremap <C-^>a<C-^>n   <C-\><C-O>:rightbelow new<Cr>
+    tnoremap <C-^>a<C-^>b   <C-\><C-O>:tabnew<Cr>
+    tnoremap <C-^>a<C-^>q   <C-\><C-O>:q<Cr>
+    tnoremap <C-^>as<C-^>q  <C-\><C-O>:tabclose<Cr>
+    tnoremap <C-^>a<C-^>d   <C-\><C-O>:bd!<Cr>
+    tnoremap <C-^>as<C-^>d  <C-\><C-O>:call DropTab()<Cr>
+    tnoremap <C-^>a<C-^>o   <C-\><C-O>:call Only()<Cr>
+    tnoremap <C-^>as<C-^>o  <C-\><C-O>:only<Cr>
+    tnoremap <C-^>ac<C-^>d  <C-\><C-O>:DHidden<Cr>
+    tnoremap <C-^>acs<C-^>d <C-\><C-O>:DHidden!<Cr>
+else
+    tnoremap <C-^>a<C-^>t   <C-^>:terminal<Cr><C-^>:set nowinfixwidth<Cr>
+    tnoremap <C-^>a<C-^>n   <C-^>:rightbelow new<Cr>
+    tnoremap <C-^>a<C-^>b   <C-^>:tabnew<Cr>
+    tnoremap <C-^>a<C-^>q   <C-^>:q<Cr>
+    tnoremap <C-^>as<C-^>q  <C-^>:tabclose<Cr>
+    tnoremap <C-^>a<C-^>d   <C-^>:bd!<Cr>
+    tnoremap <C-^>as<C-^>d  <C-^>:call DropTab()<Cr>
+    tnoremap <C-^>a<C-^>o   <C-^>:call Only()<Cr>
+    tnoremap <C-^>as<C-^>o  <C-^>:only<Cr>
+    tnoremap <C-^>ac<C-^>d  <C-^>:DHidden<Cr>
+    tnoremap <C-^>acs<C-^>d <C-^>:DHidden!<Cr>
+endif
 " }}}
 
 " Mode switching in terminal window {{{
-tnoremap <C-^>as<C-^>n <C-^>N
+if has('nvim')
+    tnoremap <C-^>as<C-^>n <C-\><C-N>
+else
+    tnoremap <C-^>as<C-^>n <C-^>N
+endif
 nnoremap <C-^>as<C-^>n i
 " }}}
 
@@ -391,7 +469,11 @@ nnoremap <C-^>as<C-^>n i
 tnoremap <C-^>a<C-^>w <C-^>:call ToggleTermwinsize()<Cr>
 
 " Registers {{{
-tnoremap <C-^>a<C-^>r <C-^>"
+if has('nvim')
+    tnoremap <C-^>a<C-^>r <C-\><C-O>:execute('normal "' .. nr2char(getchar()) .. 'p')<Cr>
+else
+    tnoremap <C-^>a<C-^>r <C-^>"
+endif
 inoremap <C-^>a<C-^>r <C-r>
 cnoremap <C-^>a<C-^>r <C-r>
 " }}}
@@ -401,7 +483,11 @@ nnoremap <C-^>c<C-^>i <C-i>
 " }}}
 
 "   Enter command mode from terminal mode {{{
-tnoremap <C-^>a<C-^><Esc> <C-^>:
+if has('nvim')
+    tnoremap <C-^>a<C-^><Esc> <C-\><C-O>:
+else
+    tnoremap <C-^>a<C-^><Esc> <C-^>:
+endif
 nnoremap <C-^>a<C-^><Esc> <Esc>
 inoremap <C-^>a<C-^><Esc> <Esc>
 vnoremap <C-^>a<C-^><Esc> <Esc>
@@ -444,6 +530,7 @@ vnoremap <C-^>a<C-^>s :sort<Cr>
 
 "    Settings {{{
 nnoremap <C-^>a<C-^>w :let &wrap=!&wrap<Cr>
+nnoremap <C-^>a<C-^>r :let &relativenumber=!&relativenumber<Cr>
 "    }}}
 
 " }}}
@@ -496,18 +583,31 @@ augroup vimrc
     autocmd BufEnter * call NerdTreeSync(0, 'BufEnter', expand('<amatch>'))
     autocmd DirChanged * call NerdTreeSync(0, 'DirChanged', expand('<amatch>'))
     autocmd BufWritePost * call NerdTreeSync(0, 'BufWritePost', expand('<amatch>'))
-    autocmd BufWritePre *.go :YcmCompleter Format
+    if has('nvim')
+        autocmd BufWritePre *.go :lua vim.lsp.buf.format()
+    else
+        autocmd BufWritePre *.go :YcmCompleter Format
+    endif
     autocmd BufWinEnter * call NerdTreeSync(1, 'BufWinEnter', expand('<amatch>'))
     autocmd FileType * call NerdTreeSync(1, 'FileType', expand('<amatch>'))
-    autocmd TerminalOpen * call NerdTreeSync(1, 'TerminalOpen', expand('<amatch>'))
-    autocmd TerminalOpen * setlocal scrolloff=0
+    if has('nvim')
+        autocmd TermOpen * call NerdTreeSync(1, 'TermOpen', expand('<amatch>'))
+        autocmd TermOpen * setlocal scrolloff=0
+
+        "autocmd TermOpen * set termwinkey=<C-^>
+        "autocmd TermOpen * setlocal nowrap
+        "autocmd TermOpen * set wfw | setlocal termwinsize=0*5000
+    else
+        autocmd TerminalOpen * call NerdTreeSync(1, 'TerminalOpen', expand('<amatch>'))
+        autocmd TerminalOpen * setlocal scrolloff=0
+        autocmd TerminalOpen * set termwinkey=<C-^>
+        autocmd TerminalOpen * setlocal nowrap
+        autocmd TerminalOpen * set wfw | setlocal termwinsize=0*5000
+    endif
     autocmd FileType proto setlocal smartindent
     autocmd User OlanInitNtsync call NerdTreeSync(1, 'OlanInitNtsync', expand('<amatch>'))
     autocmd User YcmQuickFixOpened resize 10|autocmd! ycmquickfix WinLeave
 
-    autocmd TerminalOpen * set termwinkey=<C-^>
-    autocmd TerminalOpen * setlocal nowrap
-    autocmd TerminalOpen * set wfw | setlocal termwinsize=0*5000
 
     execute 'autocmd BufWritePost' g:olan_path_aliases_file 'unlet! g:olan_path_aliases'
 
@@ -1044,13 +1144,17 @@ function! OpenTerminalFromNerdTree(shift) abort " {{{
     endif
 
     let l:didsplit = SplitForNerdTree()
-    if a:shift == 1 || l:didsplit
+    if !has('nvim') && (a:shift == 1 || l:didsplit)
         let l:maybe_curwin = ' ++curwin'
     else
         let l:maybe_curwin = ''
     endif
 
-    execute 'terminal ++close' . l:maybe_curwin . ' /bin/bash -c "cd ' . l:termpath . ' && exec ' . &shell . '"'
+    if has('nvim')
+        execute 'terminal ' . l:maybe_curwin . ' /bin/bash -c "cd ' . l:termpath . ' && exec ' . &shell . '"'
+    else
+        execute 'terminal ++close' . l:maybe_curwin . ' /bin/bash -c "cd ' . l:termpath . ' && exec ' . &shell . '"'
+    endif
     execute 'lcd' l:termpath
     set nowinfixwidth
     doautocmd User OlanInitNtsync
@@ -1357,7 +1461,7 @@ function! Skip() abort
         \ || l:last == 284
         \ || l:last == 253
         \ || l:last == 174
-        \ || l:last == 166
+        "\ || l:last == 166
 endfunction
 
 function! Up() abort
@@ -1404,6 +1508,7 @@ Plugin 'vim-scripts/BufOnly.vim'
 Plugin 'preservim/nerdtree'
 Plugin 'udalov/kotlin-vim'
 "Plugin 'rlue/vim-barbaric'
+Plugin 'vim-signify', {'pinned': 1}
 
 if exists('g:devmode') && g:devmode
     " C/C++ stuff
@@ -1415,14 +1520,14 @@ if exists('g:devmode') && g:devmode
     Plugin 'tpope/vim-fugitive'
     Plugin 'ovandriyanov/dlvim'
     Plugin 'vim-scripts/dbext.vim'
-    Plugin 'vim-signify', {'pinned': 1}
+    "Plugin 'vim-signify', {'pinned': 1}
     Plugin 'vim-quarc', {'pinned': 1}
 endif
 
 call vundle#end()
 filetype plugin indent on
 
-colorscheme github
+colorscheme desert
 highlight Folded ctermfg=0   ctermbg=255  guifg=#000000   guibg=#F8F8FF
 highlight ExtraWhitespace ctermbg=darkgreen
 highlight Terminal guifg=#c0c0c0 guibg=#000040 ctermfg=gray ctermbg=black
@@ -1438,3 +1543,5 @@ if filereadable(s:extra_conf_file)
 endif
 
 " ############################################################################## }}}
+
+nnoremap K k
