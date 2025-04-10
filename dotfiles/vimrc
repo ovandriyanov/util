@@ -192,7 +192,7 @@ if has('nvim')
     nnoremap            <Tab><Space>    :lua vim.lsp.buf.definition()<Cr>
     nnoremap            <Tab>t          :lua vim.lsp.buf.hover()<Cr>
     nnoremap            <Tab>gt         :lua vim.lsp.buf.type_definition()<Cr>
-    nnoremap            <Tab>i          :lua vim.lsp.buf.definition()<Cr>
+    nnoremap            <Tab>i          :lua vim.lsp.buf.implementation()<Cr>
     nnoremap            <Tab>r          "zyiw:lua vim.lsp.buf.rename('<C-r>z')<Left><Left>
     nnoremap            <Tab>u          :lua vim.lsp.buf.references()<Cr>
     nnoremap            <Tab>d          :lua vim.diagnostic.setloclist()<Cr>
@@ -430,7 +430,7 @@ nnoremap <C-^>a<C-^>s <C-w>s
 nnoremap <C-^>ac<C-^>d :DHidden<Cr>
 nnoremap <C-^>acs<C-^>d :DHidden!<Cr>
 if has('nvim')
-    tnoremap <C-^>a<C-^>t   <C-\><C-O>:terminal<Cr><C-^>:set nowinfixwidth<Cr>
+    tnoremap <C-^>a<C-^>t   <C-\><C-O>:new<Cr><Esc>:terminal<Cr>i
     tnoremap <C-^>a<C-^>n   <C-\><C-O>:rightbelow new<Cr>
     tnoremap <C-^>a<C-^>b   <C-\><C-O>:tabnew<Cr>
     tnoremap <C-^>a<C-^>q   <C-\><C-O>:q<Cr>
@@ -584,7 +584,7 @@ augroup vimrc
     autocmd DirChanged * call NerdTreeSync(0, 'DirChanged', expand('<amatch>'))
     autocmd BufWritePost * call NerdTreeSync(0, 'BufWritePost', expand('<amatch>'))
     if has('nvim')
-        autocmd BufWritePre *.go :lua vim.lsp.buf.format()
+        autocmd BufWritePre *.go :lua vim.lsp.buf.format({timeout_ms=500})
     else
         autocmd BufWritePre *.go :YcmCompleter Format
     endif
@@ -593,6 +593,8 @@ augroup vimrc
     if has('nvim')
         autocmd TermOpen * call NerdTreeSync(1, 'TermOpen', expand('<amatch>'))
         autocmd TermOpen * setlocal scrolloff=0
+        autocmd TermEnter * set norelativenumber
+        autocmd TermLeave * set relativenumber
 
         "autocmd TermOpen * set termwinkey=<C-^>
         "autocmd TermOpen * setlocal nowrap
@@ -1144,14 +1146,20 @@ function! OpenTerminalFromNerdTree(shift) abort " {{{
     endif
 
     let l:didsplit = SplitForNerdTree()
-    if !has('nvim') && (a:shift == 1 || l:didsplit)
+    if a:shift == 1 || l:didsplit
+        let l:use_current_window = 1
         let l:maybe_curwin = ' ++curwin'
     else
+        let l:use_current_window = 0
         let l:maybe_curwin = ''
     endif
 
     if has('nvim')
-        execute 'terminal ' . l:maybe_curwin . ' /bin/bash -c "cd ' . l:termpath . ' && exec ' . &shell . '"'
+        if !l:use_current_window
+            new
+        endif
+        execute 'terminal /bin/bash -c "cd ' . l:termpath . ' && exec ' . &shell . '"'
+        startinsert
     else
         execute 'terminal ++close' . l:maybe_curwin . ' /bin/bash -c "cd ' . l:termpath . ' && exec ' . &shell . '"'
     endif
@@ -1324,9 +1332,8 @@ function! DropTab() " {{{
 endfunction " }}}
 
 function! JsonFormat() "{{{
-    echom 'JSONFORMAT!'
     normal! gv"zy
-    let l:output = system('python3 -mjson.tool', getreg('z'))
+    let l:output = system('jq --sort-keys', getreg('z'))
     if v:shell_error != 0
         echoerr l:output
         return
@@ -1509,6 +1516,7 @@ Plugin 'preservim/nerdtree'
 Plugin 'udalov/kotlin-vim'
 "Plugin 'rlue/vim-barbaric'
 Plugin 'vim-signify', {'pinned': 1}
+Plugin 'vim-scripts/dbext.vim'
 
 if exists('g:devmode') && g:devmode
     " C/C++ stuff
@@ -1519,7 +1527,6 @@ if exists('g:devmode') && g:devmode
     Plugin 'vim-scripts/a.vim'                  " Quick switching between .h/.cpp
     Plugin 'tpope/vim-fugitive'
     Plugin 'ovandriyanov/dlvim'
-    Plugin 'vim-scripts/dbext.vim'
     "Plugin 'vim-signify', {'pinned': 1}
     Plugin 'vim-quarc', {'pinned': 1}
 endif
@@ -1531,6 +1538,10 @@ colorscheme desert
 highlight Folded ctermfg=0   ctermbg=255  guifg=#000000   guibg=#F8F8FF
 highlight ExtraWhitespace ctermbg=darkgreen
 highlight Terminal guifg=#c0c0c0 guibg=#000040 ctermfg=gray ctermbg=black
+highlight clear MatchParen
+highlight MatchParen guibg=#505050
+highlight clear Folded
+highlight Folded guibg=#606060
 match ExtraWhitespace /\s\+$/
 
 " ############################################################################## }}}
