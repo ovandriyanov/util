@@ -24,7 +24,7 @@ if !has('nvim')
 endif
 set nosmartindent
 set number
-"set relativenumber
+set relativenumber
 set ruler
 set runtimepath+=~/.vim/bundle/Vundle.vim/
 set secure
@@ -328,6 +328,9 @@ nnoremap <Up>   <C-y>k
 " }}}
 
 " Backslash finger issues {{{
+inoremap <C-/> \
+cnoremap <C-/> \
+tnoremap <C-/> \
 inoremap <C-_> \
 cnoremap <C-_> \
 tnoremap <C-_> \
@@ -481,7 +484,7 @@ cnoremap <A-r> <C-r>
 " }}}
 
 "   To tell apart CTRL+I and Tab {{{
-nnoremap <C-^>c<C-^>i <C-i>
+nnoremap <C-i> <C-i>
 " }}}
 
 "   Enter command mode from terminal mode {{{
