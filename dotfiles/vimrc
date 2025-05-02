@@ -95,9 +95,10 @@ let g:ycm_echo_current_diagnostic = 0
 
 " AutoPairs settings
 let g:AutoPairsMapCR = 0
+let g:AutoPairsMapSpace = 0
 let g:AutoPairsMultilineClose = 0
 let g:AutoPairsShortcutFastWrap = '<C-e>'
-let g:AutoPairsShortcutJump = '<C-n>'
+"let g:AutoPairsShortcutJump = '<C-n>'
 "let g:AutoPairsShortcutToggle = '<C-p><C-p>'
 
 " NERDTree settings
@@ -561,6 +562,7 @@ augroup vimrc
 
 	autocmd BufWinEnter *.go setlocal noet
 
+    autocmd BufEnter  *.go inoremap <buffer> <expr> <Space> MapSpace()
     autocmd BufRead *.tfvars set filetype=tf
     autocmd FileType nerdtree set relativenumber
     autocmd FileType nerdtree nnoremap <buffer> <nowait> <C-F> :NERDTreeFind **/
@@ -1556,3 +1558,17 @@ endif
 " ############################################################################## }}}
 
 nnoremap K k
+
+function! MapSpace()
+    let l:line = getline('.')
+    if match(l:line, '^\s*if$') < 0
+        return  ' '
+    end
+    let l:index = match(l:line, 'if$')
+    if l:index >= 0
+        let l:whitespace = ''
+    else
+        let l:whitespace = l:line[0:l:index-1]
+    end 
+    return " \<Esc>" .. ':lua vim.snippet.expand(" ${1:true} {\n' .. l:whitespace .. '\t$0\n}")' .. "\<Cr>"
+endfunction
