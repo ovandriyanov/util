@@ -23,7 +23,7 @@ if !has('nvim')
     set clipboard=exclude:cons\|linux
 endif
 set nosmartindent
-set number
+"set number
 set relativenumber
 set ruler
 set runtimepath+=~/.vim/bundle/Vundle.vim/
@@ -1531,6 +1531,7 @@ Plugin 'preservim/nerdtree'
 Plugin 'udalov/kotlin-vim'
 "Plugin 'rlue/vim-barbaric'
 Plugin 'vim-signify', {'pinned': 1}
+Plugin 'lewis6991/gitsigns.nvim'
 Plugin 'vim-scripts/dbext.vim'
 
 if exists('g:devmode') && g:devmode

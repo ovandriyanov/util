@@ -3,4 +3,9 @@ vim.cmd.source(vimrc)
 vim.cmd("highlight clear DiagnosticUnderlineError")
 vim.cmd("highlight DiagnosticUnderlineError guibg=#a00000")
 vim.cmd("highlight clear DiagnosticUnderlineWarn")
-vim.cmd("highlight DiagnosticUnderlineWarn guibg=orange")
+vim.cmd("highlight DiagnosticUnderlineWarn guibg=#707000")
+
+-- gitsigns.nvim
+local gitsigns = require("gitsigns")
+vim.keymap.set("n", "]c", function() gitsigns.nav_hunk('next') end)
+vim.keymap.set("n", "[c", function() gitsigns.nav_hunk('prev') end)
