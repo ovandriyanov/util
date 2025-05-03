@@ -36,7 +36,7 @@ set t_ut=
 set tabstop=4
 set ttimeoutlen=0
 set wildmenu
-set shell=/bin/bash\ -O\ globstar
+set shell=$HOME/local/bin/bash\ -O\ globstar
 set foldmethod=marker
 set completeopt=popup,menuone
 set scrolloff=10
