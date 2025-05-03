@@ -602,6 +602,7 @@ augroup vimrc
         autocmd TermEnter * set norelativenumber
         autocmd TermLeave * execute exists('b:left_at_terminal_mode') && b:left_at_terminal_mode ? '' : 'set relativenumber'
         autocmd WinEnter term://* execute exists('b:left_at_terminal_mode') && b:left_at_terminal_mode ? 'unlet b:left_at_terminal_mode | normal i' : ''
+        autocmd TermClose term://* execute exists('b:from_nerd_tree') && b:from_nerd_tree ? 'close' : ''
     else
         autocmd TerminalOpen * call NerdTreeSync(1, 'TerminalOpen', expand('<amatch>'))
         autocmd TerminalOpen * setlocal scrolloff=0
@@ -1162,6 +1163,7 @@ function! OpenTerminalFromNerdTree(shift) abort " {{{
             new
         endif
         execute 'terminal /bin/bash -c "cd ' . l:termpath . ' && exec ' . &shell . '"'
+        let b:from_nerd_tree = 1
         startinsert
     else
         execute 'terminal ++close' . l:maybe_curwin . ' /bin/bash -c "cd ' . l:termpath . ' && exec ' . &shell . '"'
