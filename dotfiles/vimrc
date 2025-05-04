@@ -1532,7 +1532,9 @@ Plugin 'preservim/nerdtree'
 Plugin 'udalov/kotlin-vim'
 "Plugin 'rlue/vim-barbaric'
 Plugin 'vim-signify', {'pinned': 1}
-Plugin 'lewis6991/gitsigns.nvim'
+if !filereadable(expand('~/.vim/bundle/vim-signify/plugin/signify.vim'))
+    Plugin 'lewis6991/gitsigns.nvim'
+endif
 Plugin 'vim-scripts/dbext.vim'
 
 if exists('g:devmode') && g:devmode
@@ -1549,6 +1551,7 @@ if exists('g:devmode') && g:devmode
 endif
 
 call vundle#end()
+
 filetype plugin indent on
 
 colorscheme desert

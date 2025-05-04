@@ -6,6 +6,8 @@ vim.cmd("highlight clear DiagnosticUnderlineWarn")
 vim.cmd("highlight DiagnosticUnderlineWarn guibg=#707000")
 
 -- gitsigns.nvim
-local gitsigns = require("gitsigns")
-vim.keymap.set("n", "]c", function() gitsigns.nav_hunk('next') end)
-vim.keymap.set("n", "[c", function() gitsigns.nav_hunk('prev') end)
+local ok, gitsigns = pcall(require, "gitsigns")
+if ok then
+    vim.keymap.set("n", "]c", function() gitsigns.nav_hunk('next') end)
+    vim.keymap.set("n", "[c", function() gitsigns.nav_hunk('prev') end)
+end
