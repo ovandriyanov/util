@@ -390,8 +390,8 @@ nnoremap <A-S-t> <C-w>s<C-w>T
 nnoremap <A-S-w> <C-w>T
 
 if has('nvim')
-    tnoremap <A-C-h> <C-\><C-O>gT
-    tnoremap <A-C-l> <C-\><C-O>gt
+    tnoremap <A-C-h> <C-\><C-O>gT<Esc>
+    tnoremap <A-C-l> <C-\><C-O>gt<Esc>
     tnoremap <A-S-t> <C-\><C-O><C-w>s<C-\><C-O><C-w>T
     tnoremap <A-S-w> <C-\><C-O><C-w>T
 else
@@ -503,7 +503,11 @@ cnoremap <A-Esc> <C-c>
 "   Text highlighting {{{
 nnoremap <A-Space> :nohlsearch<Cr>
 inoremap <A-Space> <C-o>:nohlsearch<Cr>
-tnoremap <A-Space> <C-^>:nohlsearch<Cr>
+if has('nvim')
+    tnoremap <A-Space> <C-\><C-o><Cmd>nohlsearch<Cr>
+else
+    tnoremap <A-Space> <C-^>:nohlsearch<Cr>
+endif
 "    }}}
 
 "   Jumping around {{{
