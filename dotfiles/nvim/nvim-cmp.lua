@@ -115,7 +115,6 @@ cmp.setup.cmdline(':', {
   matching = { disallow_symbol_nonprefix_matching = false }
 })
 
--- Set up lspconfig.
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
 local home = os.getenv("HOME")
 -- Replace <YOUR_LSP_SERVER> with each lsp server you've enabled.
@@ -169,8 +168,6 @@ Goplscfg = {
   capabilities = capabilities,
 }
 
---require('lspconfig')['gopls'].setup(Goplscfg)
-
 Lualscfg = {
   capabilities = capabilities,
   cmd = { home .. "/luals/bin/lua-language-server" },
@@ -210,49 +207,40 @@ Lualscfg = {
   }
 }
 
+Pylspcfg = {
+  cmd = { 'pylsp' },
+  filetypes = { 'python' },
+  root_markers = {
+    'pyproject.toml',
+    'setup.py',
+    'setup.cfg',
+    'requirements.txt',
+    'Pipfile',
+    '.git',
+  },
+  handlers = {
+      ["$/progress"] = function(_, result, _)
+          vim.print(result.value.message)
+          return nil, nil
+      end,
+      ["textDocument/publishDiagnostics"] = function(err, result, ctx)
+          local handler_res, handler_err = default_diagnostic_handler(err, result, ctx)
+          if result["uri"] == 'file://' .. vim.fn.expand('%:p') then
+              vim.diagnostic.setloclist({open = false})
+          end
+          return handler_res, handler_err
+      end,
+  },
+}
+
 vim.lsp.config['gopls'] = Goplscfg
 vim.lsp.config['lua_ls'] = Lualscfg
+vim.lsp.config['pylsp'] = Pylspcfg
 
---require('lspconfig')['lua_ls'].setup {
---  capabilities = capabilities,
---  cmd = { home .. "/luals/bin/lua-language-server" },
---  on_init = function(client)
---    if client.workspace_folders then
---      local path = client.workspace_folders[1].name
---      if path ~= vim.fn.stdpath('config') and (vim.loop.fs_stat(path..'/.luarc.json') or vim.loop.fs_stat(path..'/.luarc.jsonc')) then
---        return
---      end
---    end
---
---    client.config.settings.Lua = vim.tbl_deep_extend('force', client.config.settings.Lua, {
---      runtime = {
---        -- Tell the language server which version of Lua you're using
---        -- (most likely LuaJIT in the case of Neovim)
---        version = 'LuaJIT'
---      },
---      -- Make the server aware of Neovim runtime files
---      workspace = {
---        checkThirdParty = false,
---        library = {
---          vim.env.VIMRUNTIME
---          -- Depending on the usage, you might want to add additional paths here.
---          -- "${3rd}/luv/library"
---          -- "${3rd}/busted/library",
---        }
---        -- or pull in all of 'runtimepath'. NOTE: this is a lot slower and will cause issues when working on your own configuration (see https://github.com/neovim/nvim-lspconfig/issues/3189)
---        -- library = vim.api.nvim_get_runtime_file("", true)
---      }
---    })
---  end,
---  settings = {
---    Lua = {
---        hint = {enable = true}
---    }
---  }
---}
+vim.lsp.enable('gopls')
+vim.lsp.enable('lua_ls')
+vim.lsp.enable('pylsp')
 
-vim.lsp.enable("gopls")
-vim.lsp.enable("lua_ls")
 vim.diagnostic.config({
   float = true,
   jump = {
