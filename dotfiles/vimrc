@@ -612,7 +612,7 @@ augroup vimrc
         autocmd TermOpen * nnoremap <buffer> i <Cmd>let b:desired_mode = 't'<Cr>i
         autocmd TermEnter * set norelativenumber
         autocmd TermLeave * execute get(b:, 'desired_mode', '') == 'n' ? 'set relativenumber' : ''
-        autocmd WinEnter term://* execute get(b:, 'desired_mode', '') == 't' ? 'normal i' : ''
+        autocmd WinEnter term://* execute get(b:, 'desired_mode', '') == 't' && mode() != 't' ? 'normal i' : ''
         autocmd TermClose term://* close!
     else
         autocmd TerminalOpen * call NerdTreeSync(1, 'TerminalOpen', expand('<amatch>'))
