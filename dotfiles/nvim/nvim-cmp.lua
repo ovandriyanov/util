@@ -233,13 +233,29 @@ Pylspcfg = {
   },
 }
 
+Clangdcfg = {
+  capabilities = {
+    offsetEncoding = { "utf-8", "utf-16" },
+    textDocument = {
+  	  completion = {
+  	    editsNearCursor = true
+  	  }
+    }
+  },
+  cmd = {"clangd-12"},
+  filetypes = { "c", "cpp", "objc", "objcpp", "cuda", "proto" },
+  root_markers = { ".clangd", ".clang-tidy", ".clang-format", "compile_commands.json", "compile_flags.txt", "configure.ac", ".git" },
+}
+
 vim.lsp.config['gopls'] = Goplscfg
 vim.lsp.config['lua_ls'] = Lualscfg
 vim.lsp.config['pylsp'] = Pylspcfg
+vim.lsp.config['clangd'] = Clangdcfg
 
 vim.lsp.enable('gopls')
 vim.lsp.enable('lua_ls')
 vim.lsp.enable('pylsp')
+vim.lsp.enable("clangd")
 
 vim.diagnostic.config({
   float = true,
