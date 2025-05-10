@@ -115,20 +115,23 @@ cmp.setup.cmdline(':', {
   matching = { disallow_symbol_nonprefix_matching = false }
 })
 
-local capabilities = require('cmp_nvim_lsp').default_capabilities()
 local home = os.getenv("HOME")
--- Replace <YOUR_LSP_SERVER> with each lsp server you've enabled.
+local arcadia_root = home .. "/go/src/a.yandex-team.ru"
+local cloudia_root = home .. "/go/src/cloudia"
+
+local capabilities = require('cmp_nvim_lsp').default_capabilities()
 local default_diagnostic_handler = vim.lsp.handlers["textDocument/publishDiagnostics"]
+
+local debug_gopls = false
+local gopls_args = debug_gopls and {"-logfile", "/tmp/gopls.log", "-rpc.trace"} or {}
+local arcadia_gopls_cmd = { "bash", "-c", "cd " .. arcadia_root .. " && exec " .. home .. "/.ya/tools/v4/gopls-linux/gopls" .. table.concat(gopls_args, ' ')}
+local has_arcadia = vim.fn.isdirectory(arcadia_root) == 1 and true or false
+local gopls_cmd = has_arcadia and arcadia_gopls_cmd or { "gopls" }
+local gopls_root = has_arcadia and arcadia_root or nil
+
 local gopls_options = {
   expandWorkspaceToModule = true,
   ["local"]               = "a.yandex-team.ru", -- Put imports beginning with 'a.yandex-team.ru' after all other imports, e.g. from vendor/
-  arcadiaIndexDirs        = {
-      "/home/ovandriyanov/go/src/a.yandex-team.ru/cloud/dataplatform",
-      "/home/ovandriyanov/go/src/a.yandex-team.ru/transfer_manager",
-      "/home/ovandriyanov/go/src/cloudia/cloud/cloud-go/devtools/terraform-provider-ycp",
-
-      --"/home/ovandriyanov/go/src/a.yandex-team.ru/transfer_manager/go/pkg/controlplane",
-  },
   hints = {
       assignVariableTypes     =  true,
       compositeLiteralFields  =  true,
@@ -139,16 +142,19 @@ local gopls_options = {
       rangeVariableTypes      =  true,
   },
 }
+if has_arcadia then
+    gopls_options['arcadiaIndexDirs'] = {
+      arcadia_root .. "/cloud/dataplatform",
+      arcadia_root .. "/transfer_manager",
+      cloudia_root .. "/cloud/cloud-go/devtools/terraform-provider-ycp",
+  }
+end
 
-local arcadia_root = "/home/ovandriyanov/go/src/a.yandex-team.ru"
-local home = os.getenv("HOME")
 Goplscfg = {
   name = "gopls",
-  cmd                 = { "bash", "-c", "cd " .. arcadia_root .. " && exec " .. home .. "/.ya/tools/v4/gopls-linux/gopls"},
-  --cmd                 = { "bash", "-c", "cd " .. arcadia_root .. " && exec " .. home .. "/.ya/tools/v4/gopls-linux/gopls -logfile /home/ovandriyanov/tmp/gopls.log -rpc.trace"},
-  --cmd                 = { "/home/ovandriyanov/tmp/gopls", "-logfile", "/home/ovandriyanov/tmp/gopls.log", "-rpc.trace"},
+  cmd                 = gopls_cmd,
   filetypes           = { "go", "gomod", "gowork", "gotmpl" },
-  root_dir            = "/home/ovandriyanov/go/src/a.yandex-team.ru",
+  root_dir            = gopls_root,
   single_file_support = true,
   init_options = gopls_options,
   handlers = {
@@ -175,7 +181,7 @@ Lualscfg = {
   on_init = function(client)
     if client.workspace_folders then
       local path = client.workspace_folders[1].name
-      if path ~= vim.fn.stdpath('config') and (vim.loop.fs_stat(path..'/.luarc.json') or vim.loop.fs_stat(path..'/.luarc.jsonc')) then
+      if path ~= vim.fn.stdpath('config') and (vim.fn.filereadable(path..'/.luarc.json') or vim.fn.filereadable(path..'/.luarc.jsonc')) then
         return
       end
     end
