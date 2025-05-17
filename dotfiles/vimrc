@@ -1519,6 +1519,20 @@ function! Htonl()
     execute "normal! gvc\<C-r>=system('htonl \<C-r>" .. '"' .. "')\<Cr>"
 endfunction
 
+function! MapSpace()
+    let l:line = getline('.')
+    if match(l:line, '^\s*if$') < 0
+        return  ' '
+    end
+    let l:index = match(l:line, 'if$')
+    if l:index >= 0
+        let l:whitespace = ''
+    else
+        let l:whitespace = l:line[0:l:index-1]
+    end 
+    return " \<Esc>" .. ':lua vim.snippet.expand(" ${1:true} {\n' .. l:whitespace .. '\t$0\n}")' .. "\<Cr>"
+endfunction
+
 " ############################################################################## }}}
 " ################################  Vundle stuff  ############################## {{{
 " ##############################################################################
@@ -1581,17 +1595,3 @@ endif
 " ############################################################################## }}}
 
 nnoremap K k
-
-function! MapSpace()
-    let l:line = getline('.')
-    if match(l:line, '^\s*if$') < 0
-        return  ' '
-    end
-    let l:index = match(l:line, 'if$')
-    if l:index >= 0
-        let l:whitespace = ''
-    else
-        let l:whitespace = l:line[0:l:index-1]
-    end 
-    return " \<Esc>" .. ':lua vim.snippet.expand(" ${1:true} {\n' .. l:whitespace .. '\t$0\n}")' .. "\<Cr>"
-endfunction
