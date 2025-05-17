@@ -127,10 +127,11 @@ local gopls_args = debug_gopls and {"-logfile", "/tmp/gopls.log", "-rpc.trace"} 
 local arcadia_gopls_cmd = { "bash", "-c", "cd " .. arcadia_root .. " && exec " .. home .. "/.ya/tools/v4/gopls-linux/gopls" .. table.concat(gopls_args, ' ')}
 local has_arcadia = vim.fn.isdirectory(arcadia_root) == 1 and true or false
 local gopls_cmd = has_arcadia and arcadia_gopls_cmd or { "gopls" }
-local gopls_root = has_arcadia and arcadia_root or nil
+local gopls_root = has_arcadia and arcadia_root or home .. '/github/ovandriyanov/test'
 
 local gopls_options = {
   expandWorkspaceToModule = true,
+  matcher                 = "Fuzzy",
   ["local"]               = "a.yandex-team.ru", -- Put imports beginning with 'a.yandex-team.ru' after all other imports, e.g. from vendor/
   hints = {
       assignVariableTypes     =  true,
