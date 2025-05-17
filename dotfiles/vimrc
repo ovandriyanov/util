@@ -169,6 +169,7 @@ command! Arel Yank !arel %
 command! Include call Include()
 command! Break call Break()
 command! Xrestore call Xrestore()
+command! -range Htonl call Htonl()
 
 " ############################################################################## }}}
 " ##############################  Custom mappings  ############################# {{{
@@ -1512,6 +1513,10 @@ endfunction
 function! Xrestore() abort
     xrestore
     let $SSH_AUTH_SOCK=readfile(expand('~/.ssh_auth_sock_path'))[0]
+endfunction
+
+function! Htonl()
+    execute "normal! gvc\<C-r>=system('htonl \<C-r>" .. '"' .. "')\<Cr>"
 endfunction
 
 " ############################################################################## }}}
