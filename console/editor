@@ -1,0 +1,19 @@
+#!/usr/bin/env python3
+
+import os
+import pynvim
+import sys
+
+
+def main():
+    nvim = pynvim.attach('socket', path=os.getenv('NVIM_SOCKET'))
+    nvim.subscribe('edit_file_done')
+    nvim.call('EditFile', nvim.channel_id, sys.argv[1])
+    while True:
+        msg = nvim.next_message()
+        if msg.type == 'notification' and msg.name == 'edit_file_done':
+            return
+
+
+if __name__ == '__main__':
+    main()

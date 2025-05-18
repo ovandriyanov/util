@@ -42,6 +42,7 @@ set foldmethod=marker
 set completeopt=popup,menuone
 set scrolloff=10
 set nostartofline
+call setenv('NVIM_SOCKET', v:servername)
 let &fillchars='vert:|,fold: ,eob:~'
 
 let s:grepfmt = '%f|%l col %c| %m'
@@ -1531,6 +1532,24 @@ function! MapSpace()
         let l:whitespace = l:line[0:l:index-1]
     end 
     return " \<Esc>" .. ':lua vim.snippet.expand(" ${1:true} {\n' .. l:whitespace .. '\t$0\n}")' .. "\<Cr>"
+endfunction
+
+function! EditFile(channel, file_path)
+    let l:splitbelow = &splitbelow
+    let &splitbelow = 1
+    let l:terminal_window = win_getid()
+    execute trim(system('wc -l <' .. shellescape(a:file_path))) .. 'new'
+    let &splitbelow = l:splitbelow
+
+    execute 'edit' a:file_path
+    setlocal bufhidden=delete
+    nnoremap <buffer> <Cr> <Cmd>wq<Cr>
+    nnoremap <buffer> <A-q> <Cmd>1,$d<Cr><Cmd>wq<Cr>
+    nnoremap <buffer> <A-d> <Cmd>1,$d<Cr><Cmd>wq<Cr>
+    let l:group = 'g' .. rand()
+    execute 'augroup' l:group
+    execute 'autocmd ' .. l:group .. ' BufWinLeave <buffer> autocmd! ' .. l:group .. ' | call rpcnotify(' .. a:channel .. ', "edit_file_done") | lua vim.schedule(function() vim.fn.win_gotoid(' .. l:terminal_window .. ') end)'
+    execute 'augroup END'
 endfunction
 
 " ############################################################################## }}}
