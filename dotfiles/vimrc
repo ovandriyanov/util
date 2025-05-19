@@ -43,6 +43,7 @@ set completeopt=popup,menuone
 set scrolloff=10
 set nostartofline
 call setenv('NVIM_SOCKET', v:servername)
+set guicursor=n-v-c-sm:block,i-ci-ve:ver25,r-cr-o:hor20,t:block-blinkon0
 let &fillchars='vert:|,fold: ,eob:~'
 
 let s:grepfmt = '%f|%l col %c| %m'

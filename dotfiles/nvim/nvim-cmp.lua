@@ -116,8 +116,8 @@ cmp.setup.cmdline(':', {
 })
 
 local home = os.getenv("HOME")
-local arcadia_root = home .. "/go/src/a.yandex-team.ru"
-local cloudia_root = home .. "/go/src/cloudia"
+local arcadia_root = os.getenv("ARCADIA_ROOT")
+local cloudia_root = os.getenv("CLOUDIA_ROOT")
 
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
 local default_diagnostic_handler = vim.lsp.handlers["textDocument/publishDiagnostics"]
