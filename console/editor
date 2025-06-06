@@ -6,6 +6,9 @@ import sys
 
 
 def main():
+    nvim_socket_path = os.getenv('NVIM_SOCKET')
+    if nvim_socket_path is None:
+        os.execvp("nvim", sys.argv)
     nvim = pynvim.attach('socket', path=os.getenv('NVIM_SOCKET'))
     nvim.subscribe('edit_file_done')
     nvim.call('EditFile', nvim.channel_id, sys.argv[1])
