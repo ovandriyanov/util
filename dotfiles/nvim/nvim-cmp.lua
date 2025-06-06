@@ -252,6 +252,11 @@ Clangdcfg = {
   cmd = {"clangd-12"},
   filetypes = { "c", "cpp", "objc", "objcpp", "cuda" },
   root_markers = { ".clangd", ".clang-tidy", ".clang-format", "compile_commands.json", "compile_flags.txt", "configure.ac", ".git" },
+  settings = {
+    Index = {
+      Background = 'Skip',
+    },
+  },
 }
 
 vim.lsp.config['gopls'] = Goplscfg
