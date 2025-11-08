@@ -26,7 +26,21 @@ Plug 'saadparwaiz1/cmp_luasnip'
 " Plug 'dcampos/nvim-snippy'
 " Plug 'dcampos/cmp-snippy'
 
+" CodeCompanion
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-mini/mini.diff'
+Plug 'olimorris/codecompanion.nvim'
+
+" Telescope
+Plug 'BurntSushi/ripgrep'
+Plug 'sharkdp/fd'
+Plug 'nvim-treesitter/nvim-treesitter'
+Plug 'nvim-tree/nvim-web-devicons'
+Plug 'nvim-telescope/telescope.nvim'
+
 call plug#end()
 
+lua require('mini.diff').setup()
 luafile /home/ovandriyanov/.config/nvim/nvim-cmp.lua
 luafile /home/ovandriyanov/.config/nvim/gosnip.lua
+luafile /home/ovandriyanov/github/ovandriyanov/util/dotfiles/nvim/codecompanion.lua
