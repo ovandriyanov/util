@@ -24,7 +24,7 @@ code_companion.setup({
         },
     },
     prompt_library = {
-        ["buffer"] = {
+        buffer = {
             strategy = "chat",
             description = "Send buffer to AI with Telescope picker",
             opts = {
