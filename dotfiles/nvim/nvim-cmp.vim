@@ -30,6 +30,7 @@ Plug 'saadparwaiz1/cmp_luasnip'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-mini/mini.diff'
 Plug 'olimorris/codecompanion.nvim'
+Plug 'ravitemer/codecompanion-history.nvim'
 
 " Telescope
 Plug 'BurntSushi/ripgrep'

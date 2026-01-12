@@ -117,18 +117,21 @@ cmp.setup.cmdline(':', {
 
 local home = os.getenv("HOME")
 local arcadia_root = os.getenv("ARCADIA_ROOT")
-local cloudia_root = os.getenv("CLOUDIA_ROOT")
+local cloudia_root = os.getenv("CLOUDIA_ROOT") .. "/cloud/cloud-go"
 
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
 local default_diagnostic_handler = vim.lsp.handlers["textDocument/publishDiagnostics"]
 
 local debug_gopls = false
 local gopls_args = debug_gopls and { "-logfile", "/tmp/gopls.log", "-rpc.trace" } or {}
-local arcadia_gopls_cmd = { "bash", "-c", "cd " ..
-arcadia_root .. " && exec " .. home .. "/.ya/tools/v4/gopls-linux/gopls" .. table.concat(gopls_args, ' ') }
-local has_arcadia = vim.fn.isdirectory(arcadia_root) == 1 and true or false
+local arcadia_gopls_cmd = { "bash", "-c", "cd " .. arcadia_root .. " && exec " .. home .. "/.ya/tools/v4/gopls-linux/gopls" .. table.concat(gopls_args, ' ') }
+--local cloudia_gopls_cmd = { "bash", "-c", "cd " .. cloudia_root .. " && exec " .. home .. "/.ya/tools/v4/gopls-linux/gopls " .. table.concat(gopls_args, ' ') }
+local has_arcadia = arcadia_root and vim.fn.isdirectory(arcadia_root) == 1 and true or false
+local has_cloudia = cloudia_root and vim.fn.isdirectory(cloudia_root) == 1 and true or false
 local gopls_cmd = has_arcadia and arcadia_gopls_cmd or { "gopls" }
 local gopls_root = has_arcadia and arcadia_root or home .. '/github/ovandriyanov/test'
+--local gopls_cmd = has_cloudia and cloudia_gopls_cmd or { "gopls" }
+--local gopls_root = has_cloudia and cloudia_root or home .. '/github/ovandriyanov/test'
 
 local gopls_options = {
     expandWorkspaceToModule = true,
@@ -144,13 +147,25 @@ local gopls_options = {
         rangeVariableTypes     = true,
     },
 }
+
 if has_arcadia then
     gopls_options['arcadiaIndexDirs'] = {
         arcadia_root .. "/cloud/dataplatform",
         arcadia_root .. "/transfer_manager",
-        cloudia_root .. "/cloud/cloud-go/devtools/terraform-provider-ycp",
+        --cloudia_root .. "/cloud/cloud-go/devtools/terraform-provider-ycp",
+        --cloudia_root .. "/cloud/cloud-go/cli",
     }
 end
+
+--if has_cloudia then
+--    gopls_options['arcadiaIndexDirs'] = {
+--        --arcadia_root .. "/cloud/dataplatform",
+--        --arcadia_root .. "/transfer_manager",
+--        --cloudia_root .. "/cloud/cloud-go/cli/pkg/public/datatransfer",
+--        cloudia_root .. "/cli",
+--        cloudia_root .. "/devtools/terraform-provider-ycp",
+--    }
+--end
 
 Goplscfg = {
     name                = "gopls",
@@ -263,8 +278,34 @@ Clangdcfg = {
 JSCfg = {
     cmd = { "typescript-language-server", "--stdio" },
     capabilities = capabilities,
-    filetypes = { "javascript" },
+    root_markers = { "tsconfig.json" },
+    filetypes = { "javascript", "typescript" },
     settings = {}
+}
+vim.lsp.config['js'] = JSCfg
+vim.lsp.enable('js')
+
+TerraformCfg = {
+    cmd = { "bash", "-c", "cd /home/ovandriyanov/arc/arcadia/cloud/dataplatform/connman/infra/terraform/modules/connman && exec terraform-ls serve --log-file " .. home .. "/terraform/terraform-ls.log" },
+    --cmd = {
+    --    "bash", "-c",
+    --    "cd /home/ovandriyanov/arc/arcadia/cloud/dataplatform/connman/infra/terraform/modules/connman && exec strace -f -s5000 -o /home/ovandriyanov/tfstrace -- terraform-ls serve --log-file " .. home .. "/terraform/terraform-ls.log",
+    --},
+    --root_dir = "/home/ovandriyanov/arc/arcadia/transfer_manager/ci/terraform",
+    --root_dir = "/home/ovandriyanov/arc/arcadia/cloud/dataplatform/connman/infra/terraform/modules/connman",
+    --root_dir = function(bufnr, on_dir)
+    --    local path = vim.api.nvim_buf_get_name(bufnr)
+    --    print('PATH: ' .. path)
+    --    local expanded = vim.fn.expand(path .. ":h")
+    --    print('EXPANDED: ' .. expanded)
+    --    on_dir(expanded)
+    --end,
+    root_markers = {".terraform"},
+    capabilities = capabilities,
+    filetypes = { "tf", "terraform" },
+    settings = {
+        logFilePath = home .. "/terraform/terraform-ls.log",
+    },
 }
 
 vim.lsp.config['gopls'] = Goplscfg
@@ -272,12 +313,14 @@ vim.lsp.config['lua_ls'] = Lualscfg
 vim.lsp.config['pylsp'] = Pylspcfg
 vim.lsp.config['clangd'] = Clangdcfg
 vim.lsp.config['js'] = JSCfg
+vim.lsp.config['terraform'] = TerraformCfg
 
 vim.lsp.enable('gopls')
 vim.lsp.enable('lua_ls')
 vim.lsp.enable('pylsp')
 vim.lsp.enable('clangd')
 vim.lsp.enable('js')
+vim.lsp.enable('terraform')
 
 vim.diagnostic.config({
     float = true,

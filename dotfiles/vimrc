@@ -112,7 +112,12 @@ let g:NERDTreeMapHelp = ''
 let g:NERDTreeCustomOpenArgs = {'file': {'reuse': '', 'where': 'p', 'keepopen': 1}, 'dir': {}}
 let g:NERDTreeCascadeSingleChildDir=0
 let g:NERDTreeIgnore=[
+\     'node_modules',
+\     '.*\.swagger\.json',
 \     '.*\.pb\.go',
+\     '.*\.desc\.go',
+\     '.*\.log\.go',
+\     '.*\.protosrc',
 \     '.*\.pb\.gw\.go',
 \     '.*\.res\.go',
 \     '.*\.a$',
@@ -571,7 +576,7 @@ augroup vimrc
     " Set libstdc++ source files options
     autocmd BufRead,BufNewFile /usr/include/c++/*,/usr/include/x86_64-linux-gnu/c++/*,/usr/include/linux/* call SetLibStdCppOptions()
 
-    autocmd BufRead,BufNewFile *.tf set filetype=tf | setlocal indentexpr= | setlocal cindent
+    autocmd BufRead,BufNewFile *.tf set filetype=terraform | setlocal indentexpr= | setlocal cindent
     autocmd BufWinEnter */templates/*.tmpl set syntax=go
     autocmd BufWinEnter */templates/*.tmpl setlocal smartindent
 
@@ -580,7 +585,7 @@ augroup vimrc
 	autocmd BufWinEnter *.go setlocal noet
 
     autocmd BufEnter  *.go inoremap <buffer> <expr> <Space> MapSpace()
-    autocmd BufRead *.tfvars set filetype=tf
+    autocmd BufRead *.tfvars set filetype=terraform
     autocmd FileType nerdtree set relativenumber
     autocmd FileType nerdtree nnoremap <buffer> <nowait> <C-F> :NERDTreeFind **/
     autocmd FileType nerdtree nnoremap <buffer>          <A-t>  :call OpenTerminalFromNerdTree(0)<Cr>
@@ -589,12 +594,12 @@ augroup vimrc
     autocmd FileType nerdtree nnoremap <buffer>          <A-c> :call setreg('"', g:NERDTreeFileNode.GetSelected().path.str())<Cr>
     autocmd FileType nerdtree nunmap <buffer> :call
     autocmd FileType nerdtree nunmap <buffer> CD
-    autocmd FileType tf setlocal indentexpr=
-    autocmd FileType tf setlocal nocindent
-    autocmd FileType tf setlocal autoindent
-    autocmd FileType tf setlocal softtabstop=2
-    autocmd FileType tf setlocal tabstop=2
-    autocmd FileType tf setlocal shiftwidth=2
+    autocmd FileType terraform setlocal indentexpr=
+    autocmd FileType terraform setlocal nocindent
+    autocmd FileType terraform setlocal autoindent
+    autocmd FileType terraform setlocal softtabstop=2
+    autocmd FileType terraform setlocal tabstop=2
+    autocmd FileType terraform setlocal shiftwidth=2
     autocmd FileType qf setlocal foldmethod=manual
     " autocmd FileType qf call ReloadQuickFix()
     autocmd User NERDTreeNewRoot execute 'lcd' g:NERDTree.ForCurrentBuf().root.path.str()
@@ -603,7 +608,7 @@ augroup vimrc
     autocmd DirChanged * call NerdTreeSync(0, 'DirChanged', expand('<amatch>'))
     autocmd BufWritePost * call NerdTreeSync(0, 'BufWritePost', expand('<amatch>'))
     if has('nvim')
-        autocmd BufWritePre *.go :lua vim.lsp.buf.format({timeout_ms=500})
+        autocmd BufWritePre *.go,*.tf :lua vim.lsp.buf.format({timeout_ms=500})
     else
         autocmd BufWritePre *.go :YcmCompleter Format
     endif
