@@ -308,12 +308,36 @@ TerraformCfg = {
     },
 }
 
+YamlCfg = {
+    cmd = { "yaml-language-server", "--stdio" },
+    capabilities = capabilities,
+    filetypes = { "yaml" },
+    settings = {
+        yaml = {
+            -- Disable built-in schemaStore if using SchemaStore.nvim plugin
+            schemaStore = {
+                enable = false,
+                -- url = "...", -- Or specify a custom URL if not using the plugin
+            },
+            keyOrdering = false, -- Disable alphabetical key ordering
+            format = {
+                enable = true,
+            },
+            validate = true,
+            schemas = {
+                ["file://" .. arcadia_root .. "/devtools/schemas/public/a-yaml/ci/src/dot-a-yaml.yaml"] = "*a.yaml",
+            },
+        }
+    },
+}
+
 vim.lsp.config['gopls'] = Goplscfg
 vim.lsp.config['lua_ls'] = Lualscfg
 vim.lsp.config['pylsp'] = Pylspcfg
 vim.lsp.config['clangd'] = Clangdcfg
 vim.lsp.config['js'] = JSCfg
 vim.lsp.config['terraform'] = TerraformCfg
+vim.lsp.config['yaml'] = YamlCfg
 
 vim.lsp.enable('gopls')
 vim.lsp.enable('lua_ls')
@@ -321,6 +345,7 @@ vim.lsp.enable('pylsp')
 vim.lsp.enable('clangd')
 vim.lsp.enable('js')
 vim.lsp.enable('terraform')
+vim.lsp.enable('yaml')
 
 vim.diagnostic.config({
     float = true,
