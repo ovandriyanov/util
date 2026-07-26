@@ -37,3 +37,5 @@ require("codediff").setup({
         char_delete = "UserCodeDiffCharDelete",
     },
 })
+
+require("arcanum_review").setup()

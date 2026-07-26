@@ -40,6 +40,7 @@ Plug 'nvim-tree/nvim-web-devicons'
 Plug 'nvim-telescope/telescope.nvim'
 
 Plug 'esmuellert/codediff.nvim'
+Plug '/home/ovandriyanov/arc/arcadia/junk/ovandriyanov/nvim/arcanum-review'
 
 call plug#end()
 
