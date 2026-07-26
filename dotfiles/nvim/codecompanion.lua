@@ -7,7 +7,7 @@ code_companion.setup({
     strategies = {
         chat = {
             adapter = "yandex-anthropic",
-            model = "claude-sonnet-4-20250514",
+            model = "claude-opus-4-6",
         },
         inline = {
             adapter = "yandex-anthropic",
@@ -37,7 +37,7 @@ code_companion.setup({
             ['yandex-anthropic'] = function()
                 return require('codecompanion.adapters').extend('anthropic', {
                     name = 'yandex-claude',
-                    formatted_name = 'Claude (Yandex)',
+                    formatted_name = 'Claude (Yandex) v2',
                     url = 'https://api.eliza.yandex.net/raw/anthropic/v1/messages',
                     env = {
                         api_key = api_keys.eliza_api_key,

@@ -33,11 +33,13 @@ Plug 'olimorris/codecompanion.nvim'
 Plug 'ravitemer/codecompanion-history.nvim'
 
 " Telescope
-Plug 'BurntSushi/ripgrep'
+" Plug 'BurntSushi/ripgrep'
 Plug 'sharkdp/fd'
 Plug 'nvim-treesitter/nvim-treesitter'
 Plug 'nvim-tree/nvim-web-devicons'
 Plug 'nvim-telescope/telescope.nvim'
+
+Plug 'esmuellert/codediff.nvim'
 
 call plug#end()
 

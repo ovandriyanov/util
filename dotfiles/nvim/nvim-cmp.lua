@@ -121,10 +121,11 @@ local cloudia_root = os.getenv("CLOUDIA_ROOT") .. "/cloud/cloud-go"
 
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
 local default_diagnostic_handler = vim.lsp.handlers["textDocument/publishDiagnostics"]
+local default_semantic_tokens_handler = vim.lsp.handlers["textDocument/semanticTokens/full"]
 
-local debug_gopls = false
+local debug_gopls = true
 local gopls_args = debug_gopls and { "-logfile", "/tmp/gopls.log", "-rpc.trace" } or {}
-local arcadia_gopls_cmd = { "bash", "-c", "cd " .. arcadia_root .. " && exec " .. home .. "/.ya/tools/v4/gopls-linux/gopls" .. table.concat(gopls_args, ' ') }
+local arcadia_gopls_cmd = { "bash", "-c", "cd " .. arcadia_root .. " && exec " .. home .. "/.ya/tools/v4/gopls-linux/gopls " .. table.concat(gopls_args, ' ') }
 --local cloudia_gopls_cmd = { "bash", "-c", "cd " .. cloudia_root .. " && exec " .. home .. "/.ya/tools/v4/gopls-linux/gopls " .. table.concat(gopls_args, ' ') }
 local has_arcadia = arcadia_root and vim.fn.isdirectory(arcadia_root) == 1 and true or false
 local has_cloudia = cloudia_root and vim.fn.isdirectory(cloudia_root) == 1 and true or false
@@ -146,22 +147,23 @@ local gopls_options = {
         parameterNames         = true,
         rangeVariableTypes     = true,
     },
+    semanticTokens = false,
+    --["build.directoryFilters"] = {
+    --    "-/",
+    --    "+cloud",
+    --},
 }
 
 if has_arcadia then
     gopls_options['arcadiaIndexDirs'] = {
         arcadia_root .. "/cloud/dataplatform",
         arcadia_root .. "/transfer_manager",
-        --cloudia_root .. "/cloud/cloud-go/devtools/terraform-provider-ycp",
-        --cloudia_root .. "/cloud/cloud-go/cli",
     }
 end
 
 --if has_cloudia then
 --    gopls_options['arcadiaIndexDirs'] = {
---        --arcadia_root .. "/cloud/dataplatform",
---        --arcadia_root .. "/transfer_manager",
---        --cloudia_root .. "/cloud/cloud-go/cli/pkg/public/datatransfer",
+--        cloudia_root .. "/cloud/cloud-go/cli/pkg/public",
 --        cloudia_root .. "/cli",
 --        cloudia_root .. "/devtools/terraform-provider-ycp",
 --    }
@@ -174,6 +176,11 @@ Goplscfg = {
     root_dir            = gopls_root,
     single_file_support = true,
     init_options        = gopls_options,
+    on_attach = function(client, bufnr)
+        -- A workaround for a bug in https://github.com/esmuellert/codediff.nvim
+        -- Whenever unified diff view is toggled, gopls hangs due to empty file URI in the "textDocument/semanticTokens/full" request
+        client.server_capabilities.semanticTokensProvider = nil
+    end,
     handlers            = {
         ["$/progress"] = function(_, result, _)
             vim.print(result.value.message)
@@ -184,6 +191,14 @@ Goplscfg = {
             if result["uri"] == 'file://' .. vim.fn.expand('%:p') then
                 vim.diagnostic.setloclist({ open = false })
             end
+            return handler_res, handler_err
+        end,
+        ["textDocument/semanticTokens/full"] = function(err, result, ctx)
+            vim.cmd.echomsg('HELLO YOBA')
+            print(vim.inspect(err))
+            print(vim.inspect(result))
+            print(vim.inspect(ctx))
+            local handler_res, handler_err = default_semantic_tokens_handler(err, result, ctx)
             return handler_res, handler_err
         end,
     },
@@ -286,7 +301,7 @@ vim.lsp.config['js'] = JSCfg
 vim.lsp.enable('js')
 
 TerraformCfg = {
-    cmd = { "bash", "-c", "cd /home/ovandriyanov/arc/arcadia/cloud/dataplatform/connman/infra/terraform/modules/connman && exec terraform-ls serve --log-file " .. home .. "/terraform/terraform-ls.log" },
+    cmd = { "bash", "-c", "cd /home/ovandriyanov/arc/arcadia/cloud/dataplatform/datacatalog/infra/terraform && exec terraform-ls serve --log-file " .. home .. "/terraform/terraform-ls.log" },
     --cmd = {
     --    "bash", "-c",
     --    "cd /home/ovandriyanov/arc/arcadia/cloud/dataplatform/connman/infra/terraform/modules/connman && exec strace -f -s5000 -o /home/ovandriyanov/tfstrace -- terraform-ls serve --log-file " .. home .. "/terraform/terraform-ls.log",
@@ -323,13 +338,32 @@ YamlCfg = {
             format = {
                 enable = true,
             },
-            validate = true,
+            validate = false,
             schemas = {
-                ["file://" .. arcadia_root .. "/devtools/schemas/public/a-yaml/ci/src/dot-a-yaml.yaml"] = "*a.yaml",
+                ["file://" .. arcadia_root .. "/" .. "devtools/schemas/public/a-yaml/ci/src/a-yaml.yaml"] = "a.yaml",
+                ["file://" .. arcadia_root .. "/" .. "devtools/schemas/public/a-yaml/ci/src/dot-a-yaml.yaml"] = "*.a.yaml",
+            },
+            customTags = {
+                "!override",
+                "!evaluate",
+                "!unset",
+                "!merge-policy:override",
             },
         }
     },
 }
+
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "markdown",
+  callback = function()
+    -- Only apply to floating windows (hover)
+    if vim.fn.win_gettype() == "popup" or vim.api.nvim_win_get_config(0).relative ~= "" then
+      vim.wo.conceallevel = 0 -- Shows raw markdown characters
+      -- Optional: Clear highlights if they are distracting
+      -- vim.cmd("syntax clear") 
+    end
+  end,
+})
 
 vim.lsp.config['gopls'] = Goplscfg
 vim.lsp.config['lua_ls'] = Lualscfg

@@ -46,6 +46,10 @@ call setenv('NVIM_SOCKET', v:servername)
 set guicursor=n-v-c-sm:block,i-ci-ve:ver25,r-cr-o:hor20,t:block-blinkon0
 let &fillchars='vert:|,fold: ,eob:~'
 set foldopen-=search
+set nofsync
+set grepprg=grep
+set grepformat=%f:%l:%m,%f:%l%m,%f
+let g:signify_vcs_cmds = { 'arc': 'arc diff --git -U0 -w -- %f' }
 
 let s:grepfmt = '%f|%l col %c| %m'
 if       &errorformat !~# '^' . s:grepfmt . ',.*'
@@ -66,9 +70,9 @@ syntax enable
 " ##############################  Plugin settings  ############################# {{{
 " ##############################################################################
 
-if has('nvim')
-    set mouse=
-endif
+"if has('nvim')
+"    set mouse=
+"endif
 
 " C++11 syntax workaround
 let c_no_curly_error=1
@@ -499,10 +503,11 @@ nnoremap <C-i> <C-i>
 
 "   Enter command mode from terminal mode {{{
 if has('nvim')
-    tnoremap <A-Esc> <C-\><C-O>:
+    tnoremap <A-;> <C-\><C-O>:
 else
-    tnoremap <A-Esc> <C-^>:
+    tnoremap <A-;> <C-^>:
 endif
+nnoremap <A-;> :
 nnoremap <A-Esc> <Esc>
 inoremap <A-Esc> <Esc>
 vnoremap <A-Esc> <Esc>
@@ -586,6 +591,10 @@ augroup vimrc
 
     autocmd BufEnter  *.go inoremap <buffer> <expr> <Space> MapSpace()
     autocmd BufRead *.tfvars set filetype=terraform
+    "autocmd BufEnter * if expand('%') == '' && &buftype == ''
+    "    \ | echo "Entering an unnamed buffer"
+    "    \ | set ft=
+    "    \ | endif
     autocmd FileType nerdtree set relativenumber
     autocmd FileType nerdtree nnoremap <buffer> <nowait> <C-F> :NERDTreeFind **/
     autocmd FileType nerdtree nnoremap <buffer>          <A-t>  :call OpenTerminalFromNerdTree(0)<Cr>
@@ -601,6 +610,7 @@ augroup vimrc
     autocmd FileType terraform setlocal tabstop=2
     autocmd FileType terraform setlocal shiftwidth=2
     autocmd FileType qf setlocal foldmethod=manual
+    autocmd FileType yaml setlocal foldmethod=indent
     " autocmd FileType qf call ReloadQuickFix()
     autocmd User NERDTreeNewRoot execute 'lcd' g:NERDTree.ForCurrentBuf().root.path.str()
     autocmd User NERDTreeInit execute 'lcd' g:NERDTree.ForCurrentBuf().root.path.str()
@@ -638,7 +648,7 @@ augroup vimrc
     execute 'autocmd BufWritePost' g:olan_path_aliases_file 'unlet! g:olan_path_aliases'
 
     " autocmd QuickFixCmdPre * copen|execute 'lcd'  ProjectDir()
-    autocmd QuickFixCmdPre  * silent execute 'lcd'  $ARCADIA_ROOT
+    " autocmd QuickFixCmdPre  * silent execute 'lcd'  $ARCADIA_ROOT
     "autocmd QuickFixCmdPost * execute 'lcd'  $ARCADIA_ROOT
 augroup END
 
@@ -1340,7 +1350,7 @@ function! Grep(pattern, icase) " {{{
     endif
 
     let l:maybe_icase = a:icase ? 'i' : ''
-    silent execute 'grep -rI' . l:maybe_icase . ' "' . escape(a:pattern, '"\#') . '" ' . shellescape(ProjectDir())
+    silent execute 'grep -nrI' . l:maybe_icase . ' "' . escape(a:pattern, '"\#') . '" ' . shellescape(ProjectDir())
     if l:didsplit && len(getqflist()) == 0
         wincmd q
         wincmd q
