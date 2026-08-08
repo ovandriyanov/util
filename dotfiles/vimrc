@@ -1556,7 +1556,8 @@ function! EditFile(channel, file_path)
     let l:splitbelow = &splitbelow
     let &splitbelow = 1
     let l:terminal_window = win_getid()
-    execute trim(system('wc -l <' .. shellescape(a:file_path))) .. 'new'
+    let l:height = max([10, str2nr(trim(system('wc -l <' .. shellescape(a:file_path))))])
+    execute l:height .. 'new'
     let &splitbelow = l:splitbelow
 
     execute 'edit' a:file_path
