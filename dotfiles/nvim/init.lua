@@ -1,5 +1,90 @@
 local vimrc = vim.fn.stdpath("config") .. "/vimrc.vim"
 vim.cmd.source(vimrc)
+
+local function truncate_display_width(text, width, initial_column)
+    if width <= 0 then
+        return ""
+    end
+    if vim.fn.strdisplaywidth(text, initial_column) <= width then
+        return text
+    end
+
+    local result = ""
+    for length = 1, vim.fn.strchars(text) do
+        local prefix = vim.fn.strcharpart(text, 0, length)
+        if vim.fn.strdisplaywidth(prefix, initial_column) > width then
+            break
+        end
+        result = prefix
+    end
+    return result
+end
+
+local function drop_display_width(text, width, initial_column)
+    if width <= 0 then
+        return text
+    end
+
+    for length = 1, vim.fn.strchars(text) do
+        local prefix = vim.fn.strcharpart(text, 0, length)
+        if vim.fn.strdisplaywidth(prefix, initial_column) >= width then
+            return vim.fn.strcharpart(text, length)
+        end
+    end
+    return ""
+end
+
+local function yank_opencode_quote()
+    local visual_mode = vim.fn.mode()
+    local anchor = vim.fn.getpos("v")
+    local cursor = vim.fn.getpos(".")
+    local anchor_column = vim.fn.virtcol("v")
+    local cursor_column = vim.fn.virtcol(".")
+
+    local first_column = cursor_column
+    if anchor[2] < cursor[2] or (anchor[2] == cursor[2] and anchor[3] <= cursor[3]) then
+        first_column = anchor_column
+    end
+
+    vim.cmd.normal({ args = { "y" }, bang = true })
+    if vim.bo.buftype ~= "terminal" then
+        return
+    end
+
+    local window_info = vim.fn.getwininfo(vim.api.nvim_get_current_win())[1]
+    local terminal_width = vim.api.nvim_win_get_width(0) - window_info.textoff
+    local content_width = terminal_width
+    if terminal_width > 120 then
+        content_width = terminal_width - 42
+    end
+
+    local lines = vim.fn.getreg('"', 1, 1)
+    local register_type = vim.fn.getregtype('"')
+    local block_mode = string.char(22)
+    for index, line in ipairs(lines) do
+        local start_column = 1
+        if visual_mode == "v" and index == 1 then
+            start_column = first_column
+        elseif visual_mode == block_mode then
+            start_column = math.min(anchor_column, cursor_column)
+        end
+
+        local available_width = content_width - start_column + 1
+        line = truncate_display_width(line, available_width, start_column - 1)
+        line = drop_display_width(line, math.max(0, 6 - start_column), start_column - 1)
+        line = line:gsub("%s+$", "")
+        lines[index] = line == "" and ">" or "> " .. line
+    end
+
+    vim.fn.setreg("0", lines, register_type)
+    vim.fn.setreg('"', lines, register_type)
+end
+
+vim.keymap.set("x", "Y", yank_opencode_quote, {
+    desc = "Yank an OpenCode quote",
+    silent = true,
+})
+
 vim.cmd("highlight clear DiagnosticUnderlineError")
 vim.cmd("highlight DiagnosticUnderlineError guibg=#a00000")
 vim.cmd("highlight clear DiagnosticUnderlineWarn")
