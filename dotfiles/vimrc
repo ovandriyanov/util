@@ -269,11 +269,6 @@ nnoremap            <Right>          :cn<cr>
 nnoremap            <Left>           :cp<cr>
 " }}}
 
-" Buffer switching {{{
-nnoremap            <C-Right>       :bn<cr>
-nnoremap            <C-Left>        :bp<cr>
-" }}}
-
 " File navigation {{{
 nnoremap            gf              :call FindFileReuseWindow(0, 0, 1)<cr>
 nnoremap            <c-w>f          :call FindFileReuseWindow(0, 0, 0)<cr>
