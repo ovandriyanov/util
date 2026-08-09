@@ -321,7 +321,7 @@ nnoremap <C-W>S :Scratch<Cr>
 " }}}
 
 " URL opening (_G_o _B_rowser) {{{
-vnoremap gb "zy:silent execute '!xdg-open >/dev/null 2>&1' shellescape(getreg('z')) \| redraw!<Cr>
+vnoremap gb "zy:silent call system('xdg-open ' . shellescape(trim(getreg('z'))) . ' >/dev/null 2>&1') \| redraw!<Cr>
 " }}}
 
 " }}}
