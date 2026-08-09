@@ -231,7 +231,11 @@ endif
 
 " NERDTree {{{
 nnoremap <expr>     <Cr>          NerdTreeFindExpr('')
-tnoremap <expr>     <A-Cr>        NerdTreeFindExpr("\<C-^>")
+if has('nvim')
+    tnoremap <expr> <A-Cr>        NerdTreeFindExpr("\<C-\>\<C-N>")
+else
+    tnoremap <expr> <A-Cr>        NerdTreeFindExpr("\<C-^>")
+endif
 nnoremap            <A-C-Cr>      :NERDTreeFocus<Cr>
 tnoremap            <A-C-Cr> <C-^>:NERDTreeFocus<Cr>
 
