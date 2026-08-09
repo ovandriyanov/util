@@ -400,20 +400,20 @@ function M.setup()
     api.nvim_create_user_command("PickHiddenBuffers", function()
         M.pick({ scope = "hidden" })
     end, { desc = "Pick a buffer without a normal window" })
-    vim.keymap.set("n", "<leader>ba", "<Cmd>PickBuffers<CR>", {
-        desc = "Pick any buffer",
+    vim.keymap.set("n", "gba", "<Cmd>PickBuffers<CR>", {
+        desc = "Go to buffer (all)",
         silent = true,
     })
-    vim.keymap.set("n", "<leader>bb", "<Cmd>PickShownBuffers<CR>", {
-        desc = "Pick shown buffer",
+    vim.keymap.set("n", "gbb", "<Cmd>PickShownBuffers<CR>", {
+        desc = "Go to shown buffer",
         silent = true,
     })
-    vim.keymap.set("n", "<leader>bH", "<Cmd>PickProtectedHiddenBuffers<CR>", {
-        desc = "Pick protected hidden buffer",
+    vim.keymap.set("n", "gbH", "<Cmd>PickProtectedHiddenBuffers<CR>", {
+        desc = "Go to protected hidden buffer",
         silent = true,
     })
-    vim.keymap.set("n", "<leader>bh", "<Cmd>PickHiddenBuffers<CR>", {
-        desc = "Pick hidden buffer",
+    vim.keymap.set("n", "gbh", "<Cmd>PickHiddenBuffers<CR>", {
+        desc = "Go to hidden buffer",
         silent = true,
     })
     configured = true
