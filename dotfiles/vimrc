@@ -602,7 +602,7 @@ augroup vimrc
     autocmd FileType nerdtree nnoremap <buffer> <nowait> <C-F> :NERDTreeFind **/
     autocmd FileType nerdtree nnoremap <buffer>          <A-t>  :call OpenTerminalFromNerdTree(0)<Cr>
     autocmd FileType nerdtree nnoremap <buffer>          <A-S-t> :call OpenTerminalFromNerdTree(1)<Cr>
-    autocmd FileType nerdtree nnoremap <buffer>          <C-c> :call setreg('"', g:NERDTreeFileNode.GetSelected().path.str())<Cr>
+    autocmd FileType nerdtree nnoremap <buffer>          <C-c> :call setreg('+', g:NERDTreeFileNode.GetSelected().path.str())<Cr>
     autocmd FileType nerdtree nnoremap <buffer>          <A-c> :call setreg('"', g:NERDTreeFileNode.GetSelected().path.str())<Cr>
     autocmd FileType nerdtree nunmap <buffer> :call
     autocmd FileType nerdtree nunmap <buffer> CD
