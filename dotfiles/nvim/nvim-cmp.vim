@@ -40,7 +40,7 @@ Plug 'nvim-tree/nvim-web-devicons'
 Plug 'nvim-telescope/telescope.nvim'
 
 Plug 'esmuellert/codediff.nvim'
-Plug '/home/ovandriyanov/arc/arcadia/junk/ovandriyanov/nvim/arcanum-review'
+execute "Plug '" . expand('$ARCADIA_TOOLING_ROOT/junk/ovandriyanov/nvim/arcanum-review') . "'"
 Plug 'nanozuki/tabby.nvim', { 'tag': 'v2.8.1' }
 
 call plug#end()

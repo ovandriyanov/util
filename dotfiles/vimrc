@@ -22,6 +22,8 @@ set nocompatible
 if !has('nvim')
     set noesckeys
     set clipboard=exclude:cons\|linux
+else
+    let &path .= ',' . $HOME
 endif
 set nosmartindent
 set number

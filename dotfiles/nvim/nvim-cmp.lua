@@ -117,21 +117,32 @@ cmp.setup.cmdline(':', {
 
 local home = os.getenv("HOME")
 local arcadia_root = os.getenv("ARCADIA_ROOT")
-local cloudia_root = os.getenv("CLOUDIA_ROOT") .. "/cloud/cloud-go"
+local cloudia_base = os.getenv("CLOUDIA_ROOT")
+local cloudia_root = cloudia_base and cloudia_base .. "/cloud/cloud-go" or nil
 
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
 local default_diagnostic_handler = vim.lsp.handlers["textDocument/publishDiagnostics"]
 local default_semantic_tokens_handler = vim.lsp.handlers["textDocument/semanticTokens/full"]
 
 local debug_gopls = true
-local gopls_args = debug_gopls and { "-logfile", "/tmp/gopls.log", "-rpc.trace" } or {}
-local arcadia_gopls_cmd = { "bash", "-c", "cd " .. arcadia_root .. " && exec " .. home .. "/.ya/tools/v4/gopls-linux/gopls " .. table.concat(gopls_args, ' ') }
---local cloudia_gopls_cmd = { "bash", "-c", "cd " .. cloudia_root .. " && exec " .. home .. "/.ya/tools/v4/gopls-linux/gopls " .. table.concat(gopls_args, ' ') }
 local has_arcadia = arcadia_root and vim.fn.isdirectory(arcadia_root) == 1 and true or false
 local has_cloudia = cloudia_root and vim.fn.isdirectory(cloudia_root) == 1 and true or false
-local gopls_cmd = has_arcadia and arcadia_gopls_cmd or { "gopls" }
+local gopls_args = debug_gopls and { "-logfile", "/tmp/gopls-nvim-" .. vim.fn.getpid() .. ".log", "-rpc.trace" } or {}
+local gopls_cmd = { "gopls" }
+if has_arcadia then
+    local command = {
+        "cd",
+        vim.fn.shellescape(arcadia_root),
+        "&&",
+        "exec",
+        vim.fn.shellescape(home .. "/.ya/tools/v4/gopls-linux/gopls"),
+    }
+    for _, argument in ipairs(gopls_args) do
+        table.insert(command, vim.fn.shellescape(argument))
+    end
+    gopls_cmd = { "bash", "-c", table.concat(command, " ") }
+end
 local gopls_root = has_arcadia and arcadia_root or home .. '/github/ovandriyanov/test'
---local gopls_cmd = has_cloudia and cloudia_gopls_cmd or { "gopls" }
 --local gopls_root = has_cloudia and cloudia_root or home .. '/github/ovandriyanov/test'
 
 local gopls_options = {
@@ -301,20 +312,13 @@ vim.lsp.config['js'] = JSCfg
 vim.lsp.enable('js')
 
 TerraformCfg = {
-    cmd = { "bash", "-c", "cd /home/ovandriyanov/arc/arcadia/cloud/dataplatform/datacatalog/infra/terraform && exec terraform-ls serve --log-file " .. home .. "/terraform/terraform-ls.log" },
-    --cmd = {
-    --    "bash", "-c",
-    --    "cd /home/ovandriyanov/arc/arcadia/cloud/dataplatform/connman/infra/terraform/modules/connman && exec strace -f -s5000 -o /home/ovandriyanov/tfstrace -- terraform-ls serve --log-file " .. home .. "/terraform/terraform-ls.log",
-    --},
-    --root_dir = "/home/ovandriyanov/arc/arcadia/transfer_manager/ci/terraform",
-    --root_dir = "/home/ovandriyanov/arc/arcadia/cloud/dataplatform/connman/infra/terraform/modules/connman",
-    --root_dir = function(bufnr, on_dir)
-    --    local path = vim.api.nvim_buf_get_name(bufnr)
-    --    print('PATH: ' .. path)
-    --    local expanded = vim.fn.expand(path .. ":h")
-    --    print('EXPANDED: ' .. expanded)
-    --    on_dir(expanded)
-    --end,
+    cmd = {
+        "bash",
+        "-c",
+        "cd " .. vim.fn.shellescape(arcadia_root .. "/cloud/dataplatform/datacatalog/infra/terraform")
+            .. " && exec terraform-ls serve --log-file "
+            .. vim.fn.shellescape(home .. "/terraform/terraform-ls-" .. vim.fn.getpid() .. ".log"),
+    },
     root_markers = {".terraform"},
     capabilities = capabilities,
     filetypes = { "tf", "terraform" },
