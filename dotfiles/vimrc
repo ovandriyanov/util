@@ -456,7 +456,7 @@ if has('nvim')
     tnoremap <A-b>   <C-\><C-O><Cmd>tabnew<Cr><Esc>
     tnoremap <A-q>   <C-\><C-O>:q<Cr>
     tnoremap <A-S-q>  <C-\><C-O>:tabclose<Cr>
-    tnoremap <A-d>   <C-\><C-O>:bd!<Cr>
+    tnoremap <A-d>   <Cmd>call DeleteCurrentTerminalBuffer()<Cr>
     tnoremap <A-S-d>  <C-\><C-O>:call DropTab()<Cr>
     tnoremap <A-o>   <C-\><C-O>:call Only()<Cr>
     tnoremap <A-S-o>  <C-\><C-O>:only<Cr>
@@ -468,7 +468,7 @@ else
     tnoremap <A-b>   <C-^>:tabnew<Cr>
     tnoremap <A-q>   <C-^>:q<Cr>
     tnoremap <A-S-q>  <C-^>:tabclose<Cr>
-    tnoremap <A-d>   <C-^>:bd!<Cr>
+    tnoremap <A-d>   <C-^>N:call DeleteCurrentTerminalBuffer()<Cr>
     tnoremap <A-S-d>  <C-^>:call DropTab()<Cr>
     tnoremap <A-o>   <C-^>:call Only()<Cr>
     tnoremap <A-S-o>  <C-^>:only<Cr>
@@ -632,7 +632,7 @@ augroup vimrc
         autocmd TermOpen * setlocal nonumber relativenumber numberwidth=4 statuscolumn=%=
         autocmd TermEnter * setlocal statuscolumn=%=
         autocmd TermLeave * execute get(b:, 'desired_mode', '') == 'n' ? 'setlocal statuscolumn=%=%l\ ' : ''
-        autocmd TermClose term://* close!
+        autocmd TermClose term://* call CloseTerminalWindows(expand('<abuf>'))
     else
         autocmd TerminalOpen * call NerdTreeSync(1, 'TerminalOpen', expand('<amatch>'))
         autocmd TerminalOpen * setlocal scrolloff=0
@@ -1389,6 +1389,20 @@ endfunction " }}}
 function! DropTab() " {{{
     for l:i in range(winnr('$'))
         execute 'bd!' winbufnr(1)
+    endfor
+endfunction " }}}
+
+function! DeleteCurrentTerminalBuffer() abort " {{{
+    let l:terminalbuf = bufnr()
+    if winnr('$') > 1
+        close!
+    endif
+    execute 'bdelete!' l:terminalbuf
+endfunction " }}}
+
+function! CloseTerminalWindows(bufnr) abort " {{{
+    for l:winid in win_findbuf(str2nr(a:bufnr))
+        call win_execute(l:winid, 'if winnr("$") > 1 | close! | endif')
     endfor
 endfunction " }}}
 
