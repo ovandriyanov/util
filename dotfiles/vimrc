@@ -275,12 +275,14 @@ nnoremap            <C-Left>        :bp<cr>
 " }}}
 
 " File navigation {{{
-nnoremap            <c-w>f          :call FindFileReuseWindow(0)<cr>
+nnoremap            <c-w>f          :call FindFileReuseWindow(0, 0)<cr>
+nnoremap            <c-w>gf         :call FindFileReuseWindow(0, 1)<cr>
 " TODO: implement
 nnoremap            <c-w>F          :vertical wincmd F<cr>
 " }}}
 
-vnoremap            <c-w>f          :call FindFileReuseWindow(1)<cr> {{{
+vnoremap            <c-w>f          :<C-u>call FindFileReuseWindow(1, 0)<cr>
+vnoremap            <c-w>gf         :<C-u>call FindFileReuseWindow(1, 1)<cr>
 " TODO: implement
 " vnoremap <c-w>F :<c-u>vertical wincmd F<cr>
 " }}}
@@ -809,12 +811,27 @@ function! OpenOrReuseWindow() " {{{
     endfor
 endfunction " }}}
 
-function! FindFileReuseWindow(visual) " {{{
+function! FindFileReuseWindow(visual, newtab) " {{{
     if a:visual
         norm gv"zy
         let l:cfile = getreg('z')
     else
-        let l:cfile = expand('<cfile>')
+        let l:isfname = &isfname
+        try
+            set isfname+=:
+            let l:cfile = expand('<cfile>')
+        finally
+            let &isfname = l:isfname
+        endtry
+    endif
+    let l:cfile = trim(l:cfile)
+
+    let l:location = matchlist(l:cfile, '^\(.*\):\([0-9]\+\)$')
+    if empty(l:location)
+        let l:targetline = 0
+    else
+        let l:cfile = l:location[1]
+        let l:targetline = str2nr(l:location[2])
     endif
 
     let l:includeexpr = substitute(&l:includeexpr, 'v:fname', 'l:cfile', '')
@@ -837,14 +854,23 @@ function! FindFileReuseWindow(visual) " {{{
         endif
     endif
 
-    let l:oldwinnr = winnr()
-    let l:newwinnr = OpenOrReuseWindow()
-    if getcwd(l:oldwinnr) !=# getcwd(l:newwinnr)
+    if a:newtab
         let l:path = fnamemodify(l:path, ':p')
+        execute 'tabedit' fnameescape(l:path)
+    else
+        let l:oldwinnr = winnr()
+        let l:newwinnr = OpenOrReuseWindow()
+        if getcwd(l:oldwinnr) !=# getcwd(l:newwinnr)
+            let l:path = fnamemodify(l:path, ':p')
+        endif
+
+        call win_gotoid(win_getid(l:newwinnr))
+        execute 'edit' fnameescape(l:path)
     endif
 
-    call win_gotoid(win_getid(l:newwinnr))
-    exe 'edit' l:path
+    if l:targetline > 0
+        call cursor(l:targetline, 1)
+    endif
 endfunction " }}}
 
 function! JumpToPrevFile() " {{{
