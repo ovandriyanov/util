@@ -755,7 +755,7 @@ function M.setup()
     end
     configured = true
 
-    vim.opt.showtabline = 1
+    vim.opt.showtabline = 2
     vim.opt.termguicolors = true
     vim.opt.sessionoptions:append("globals")
 
