@@ -5,6 +5,7 @@ local M = {}
 
 local api = vim.api
 local configured = false
+local TERMINAL_GLYPH = ""
 
 local open_commands = {
     split = "split",
@@ -387,13 +388,13 @@ function M.pick(opts)
                 { remaining = true },
             },
         })
-        picker_entry.terminal_label = terminal_buffer_label(entry.bufnr)
+        picker_entry.terminal_label = "term " .. terminal_buffer_label(entry.bufnr)
         picker_entry.ordinal = entry.bufnr .. " : " .. picker_entry.terminal_label
         picker_entry.display = function(display_entry)
             return terminal_displayer({
                 { display_entry.bufnr, "TelescopeResultsNumber" },
                 { display_entry.indicator, "TelescopeResultsComment" },
-                display_entry.terminal_label .. ":" .. display_entry.lnum,
+                TERMINAL_GLYPH .. " " .. display_entry.terminal_label .. ":" .. display_entry.lnum,
             })
         end
         return picker_entry
