@@ -1,6 +1,8 @@
 local vimrc = vim.fn.stdpath("config") .. "/vimrc.vim"
 vim.cmd.source(vimrc)
 dofile(vim.fn.stdpath("config") .. "/tabline.lua")
+require("user.telescope_buffers").setup()
+require("user.terminal_mode").setup()
 
 local function truncate_display_width(text, width, initial_column)
     if width <= 0 then
