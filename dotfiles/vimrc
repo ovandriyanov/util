@@ -462,6 +462,8 @@ if has('nvim')
     tnoremap <A-S-d>  <C-\><C-O>:call DropTab()<Cr>
     tnoremap <A-o>   <C-\><C-O>:call Only()<Cr>
     tnoremap <A-S-o>  <C-\><C-O>:only<Cr>
+    tnoremap <A-v>   <C-\><C-O><C-w>v
+    tnoremap <A-s>   <C-\><C-O><C-w>s
     tnoremap <A-C-d>  <C-\><C-O>:DHidden<Cr>
     tnoremap <A-C-S-d> <C-\><C-O>:DHidden!<Cr>
 else
@@ -474,6 +476,8 @@ else
     tnoremap <A-S-d>  <C-^>:call DropTab()<Cr>
     tnoremap <A-o>   <C-^>:call Only()<Cr>
     tnoremap <A-S-o>  <C-^>:only<Cr>
+    tnoremap <A-v>   <C-^>v
+    tnoremap <A-s>   <C-^>s
     tnoremap <A-C-d>  <C-^>:DHidden<Cr>
     tnoremap <A-C-S-d> <C-^>:DHidden!<Cr>
 endif
