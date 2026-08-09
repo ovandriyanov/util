@@ -456,6 +456,12 @@ test("setup is idempotent without loading Telescope", function()
     expect_equal(vim.fn.maparg("gbb", "n"), "<Cmd>PickShownBuffers<CR>", "shown-buffers mapping")
     expect_equal(vim.fn.maparg("gbH", "n"), "<Cmd>PickProtectedHiddenBuffers<CR>", "protected mapping")
     expect_equal(vim.fn.maparg("gbh", "n"), "<Cmd>PickHiddenBuffers<CR>", "hidden-buffers mapping")
+    expect(vim.fn.maparg("<M-g>ba", "t"):find("PickBuffers", 1, true) ~= nil, "terminal all-buffers mapping")
+    expect(vim.fn.maparg("<M-g>bb", "t"):find("PickShownBuffers", 1, true) ~= nil, "terminal shown mapping")
+    expect(vim.fn.maparg("<M-g>bH", "t"):find("PickProtectedHiddenBuffers", 1, true) ~= nil,
+        "terminal protected mapping")
+    expect(vim.fn.maparg("<M-g>bh", "t"):find("PickHiddenBuffers", 1, true) ~= nil,
+        "terminal hidden-buffers mapping")
 end)
 
 local completed = 0

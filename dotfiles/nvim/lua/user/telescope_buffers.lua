@@ -39,6 +39,34 @@ local function buffer_option(bufnr, name)
     return value
 end
 
+local function clean_terminal_text(value)
+    if type(value) ~= "string" then
+        return nil
+    end
+    local text = value:gsub("%c", " "):gsub("%s+", " "):match("^%s*(.-)%s*$")
+    return text ~= "" and text or nil
+end
+
+local function terminal_buffer_label(bufnr)
+    local ok_title, title = pcall(api.nvim_buf_get_var, bufnr, "term_title")
+    title = ok_title and clean_terminal_text(title) or nil
+    title = title or "Terminal"
+
+    local ok_name, name = pcall(api.nvim_buf_get_name, bufnr)
+    local cwd = ok_name and name:match("^term://(.-)//%d+:") or nil
+    cwd = clean_terminal_text(cwd)
+    if cwd == nil then
+        return title
+    end
+
+    local ok_shorten, short_cwd = pcall(vim.fn.fnamemodify, cwd, ":~")
+    short_cwd = ok_shorten and clean_terminal_text(short_cwd) or cwd
+    if short_cwd == nil or title:find(cwd, 1, true) or title:find(short_cwd, 1, true) then
+        return title
+    end
+    return title .. " | " .. short_cwd
+end
+
 local function eligible_window(winid, bufnr)
     if not api.nvim_win_is_valid(winid) then
         return false
@@ -339,13 +367,36 @@ function M.pick(opts)
         prompt_title = scope_config.prompt_title,
     }
     local default_entry_maker
+    local terminal_displayer
     picker_opts.entry_maker = function(entry)
         if type(entry) ~= "table" or not M.should_include_buffer(entry.bufnr, scope) then
             return nil
         end
         default_entry_maker = default_entry_maker
             or require("telescope.make_entry").gen_from_buffer(picker_opts)
-        return default_entry_maker(entry)
+        local picker_entry = default_entry_maker(entry)
+        if buffer_option(entry.bufnr, "buftype") ~= "terminal" then
+            return picker_entry
+        end
+
+        terminal_displayer = terminal_displayer or require("telescope.pickers.entry_display").create({
+            separator = " ",
+            items = {
+                { width = picker_opts.bufnr_width },
+                { width = 4 },
+                { remaining = true },
+            },
+        })
+        picker_entry.terminal_label = terminal_buffer_label(entry.bufnr)
+        picker_entry.ordinal = entry.bufnr .. " : " .. picker_entry.terminal_label
+        picker_entry.display = function(display_entry)
+            return terminal_displayer({
+                { display_entry.bufnr, "TelescopeResultsNumber" },
+                { display_entry.indicator, "TelescopeResultsComment" },
+                display_entry.terminal_label .. ":" .. display_entry.lnum,
+            })
+        end
+        return picker_entry
     end
     picker_opts.attach_mappings = function(prompt_bufnr, map)
         local actions = require("telescope.actions")
@@ -413,6 +464,22 @@ function M.setup()
         silent = true,
     })
     vim.keymap.set("n", "gbh", "<Cmd>PickHiddenBuffers<CR>", {
+        desc = "Go to hidden buffer",
+        silent = true,
+    })
+    vim.keymap.set("t", "<M-g>ba", "<C-\\><C-N><Cmd>PickBuffers<CR>", {
+        desc = "Go to buffer (all)",
+        silent = true,
+    })
+    vim.keymap.set("t", "<M-g>bb", "<C-\\><C-N><Cmd>PickShownBuffers<CR>", {
+        desc = "Go to shown buffer",
+        silent = true,
+    })
+    vim.keymap.set("t", "<M-g>bH", "<C-\\><C-N><Cmd>PickProtectedHiddenBuffers<CR>", {
+        desc = "Go to protected hidden buffer",
+        silent = true,
+    })
+    vim.keymap.set("t", "<M-g>bh", "<C-\\><C-N><Cmd>PickHiddenBuffers<CR>", {
         desc = "Go to hidden buffer",
         silent = true,
     })
