@@ -1,5 +1,6 @@
 local vimrc = vim.fn.stdpath("config") .. "/vimrc.vim"
 vim.cmd.source(vimrc)
+dofile(vim.fn.stdpath("config") .. "/tabline.lua")
 
 local function truncate_display_width(text, width, initial_column)
     if width <= 0 then
