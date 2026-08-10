@@ -2,6 +2,19 @@
 local cmp = require 'cmp'
 local luasnip = require("luasnip")
 
+local buffer_source = {
+    name = 'buffer',
+    option = {
+        get_bufnrs = function()
+            local bufnr = vim.api.nvim_get_current_buf()
+            if vim.bo[bufnr].buftype == 'terminal' then
+                return {}
+            end
+            return { bufnr }
+        end,
+    },
+}
+
 require("luasnip.loaders.from_vscode").lazy_load()
 
 cmp.setup({
@@ -81,7 +94,7 @@ cmp.setup({
         -- { name = 'ultisnips' }, -- For ultisnips users.
         -- { name = 'snippy' }, -- For snippy users.
     }, {
-        { name = 'buffer' },
+        buffer_source,
     })
 })
 
@@ -100,7 +113,7 @@ equire("cmp_git").setup() ]] --
 cmp.setup.cmdline({ '/', '?' }, {
     mapping = cmp.mapping.preset.cmdline(),
     sources = {
-        { name = 'buffer' }
+        buffer_source,
     }
 })
 
