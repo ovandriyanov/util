@@ -37,6 +37,22 @@ local function drop_display_width(text, width, initial_column)
     return ""
 end
 
+local function strip_opencode_scrollbar(text, start_column, content_width)
+    text = text:gsub("%s+$", "")
+    local length = vim.fn.strchars(text)
+    if length == 0 then
+        return text
+    end
+
+    local end_column = start_column + vim.fn.strdisplaywidth(text, start_column - 1) - 1
+    local last_character = vim.fn.strcharpart(text, length - 1, 1)
+    local codepoint = vim.fn.char2nr(last_character)
+    if end_column == content_width - 2 and codepoint >= 0x2580 and codepoint <= 0x259f then
+        return vim.fn.strcharpart(text, 0, length - 1):gsub("%s+$", "")
+    end
+    return text
+end
+
 local function yank_opencode_quote()
     local visual_mode = vim.fn.mode()
     local anchor = vim.fn.getpos("v")
@@ -74,6 +90,7 @@ local function yank_opencode_quote()
 
         local available_width = content_width - start_column + 1
         line = truncate_display_width(line, available_width, start_column - 1)
+        line = strip_opencode_scrollbar(line, start_column, content_width)
         line = drop_display_width(line, math.max(0, 6 - start_column), start_column - 1)
         line = line:gsub("%s+$", "")
         lines[index] = line == "" and ">" or "> " .. line
