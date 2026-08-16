@@ -51,7 +51,11 @@ set foldopen-=search
 set nofsync
 set grepprg=grep
 set grepformat=%f:%l:%m,%f:%l%m,%f
-let g:signify_vcs_cmds = { 'arc': 'arc diff --git -U0 -w -- %f' }
+let g:signify_vcs_cmds = extend(
+    \ get(g:, 'signify_vcs_cmds', {}),
+    \ {'arc': 'arc diff --git -U0 -w -- %f'},
+    \ 'force'
+    \)
 
 let s:grepfmt = '%f|%l col %c| %m'
 if       &errorformat !~# '^' . s:grepfmt . ',.*'
