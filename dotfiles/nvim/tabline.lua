@@ -415,6 +415,9 @@ local function terminal_is_opencode(bufnr)
         return true
     end
 
+    -- Process-tree detection is disabled because these synchronous calls can
+    -- block tabline rendering when terminals have large process trees.
+    --[[
     local now = vim.uv.hrtime() / 1000000
     local cached = process_cache[bufnr]
     if cached ~= nil and now - cached.checked_at < PROCESS_CACHE_MILLISECONDS then
@@ -434,6 +437,8 @@ local function terminal_is_opencode(bufnr)
         result = result,
     }
     return result
+    ]]
+    return false
 end
 
 local function build_tab_context(tabid, number, current_tab)

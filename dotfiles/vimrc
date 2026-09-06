@@ -183,7 +183,7 @@ command! VScratch vnew | set bt=nofile
 command! TScratch tabnew | set bt=nofile
 command! -range=% Cgetbuffer call Cbuffer('cgetbuffer', <line1>, <line2>)
 command! -range=% Cbuffer call Cbuffer('cbuffer', <line1>, <line2>)
-command! Arel Yank !arel %
+command! Arel call YankArel()
 command! Include call Include()
 command! Break call Break()
 command! Xrestore call Xrestore()
@@ -1048,6 +1048,17 @@ function! Arel(filename) abort " {{{
         throw 'arel: ' . l:output
     endif
     return l:output[:-2]
+endfunction " }}}
+
+function! YankArel() abort " {{{
+    if &filetype ==# 'nerdtree'
+        let l:filename = g:NERDTreeFileNode.GetSelected().path.str()
+    else
+        let l:filename = expand('%:p')
+    endif
+    let l:path = Arel(l:filename)
+    call setreg('"', l:path)
+    call setreg('+', l:path)
 endfunction " }}}
 
 function! Tapi_FillQuickfixWindow(buffer, logfile) " {{{
