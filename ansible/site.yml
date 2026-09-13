@@ -1,0 +1,7 @@
+---
+- name: Provision personal workstation base
+  hosts: all
+  gather_facts: true
+
+  roles:
+    - workstation_base

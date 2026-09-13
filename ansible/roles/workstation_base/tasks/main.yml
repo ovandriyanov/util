@@ -1,0 +1,493 @@
+---
+- name: Validate target platform
+  ansible.builtin.assert:
+    that:
+      - ansible_system == 'Linux'
+      - ansible_os_family in workstation_build_packages
+      - ansible_architecture in zig_platforms
+      - ansible_architecture in chezmoi_platforms
+      - workstation_user == ansible_user_id
+    fail_msg: >-
+      The base layer supports x86_64 and aarch64 Linux in the Debian, RedHat,
+      and Archlinux OS families. Connect as the user whose home is being
+      provisioned instead of becoming that user.
+
+- name: Configure apt package preferences
+  become: true
+  ansible.builtin.template:
+    src: apt-preferences.j2
+    dest: "{{ workstation_apt_preferences_file }}"
+    mode: '0644'
+  when:
+    - ansible_os_family == 'Debian'
+    - workstation_apt_preferences | length > 0
+  register: workstation_apt_preferences_configured
+  tags: packages
+
+- name: Remove unused apt package preferences
+  become: true
+  ansible.builtin.file:
+    path: "{{ workstation_apt_preferences_file }}"
+    state: absent
+  when:
+    - ansible_os_family == 'Debian'
+    - workstation_apt_preferences | length == 0
+  register: workstation_apt_preferences_removed
+  tags: packages
+
+- name: Refresh apt package metadata
+  become: true
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 3600
+  when: ansible_os_family == 'Debian'
+  tags: packages
+
+- name: Install workstation build dependencies
+  become: true
+  ansible.builtin.package:
+    name: "{{ workstation_build_packages[ansible_os_family] }}"
+    state: present
+  when: >-
+    ansible_os_family != 'Debian'
+    or not ansible_check_mode
+    or not (workstation_apt_preferences_configured.changed
+            or workstation_apt_preferences_removed.changed)
+  tags: packages
+
+- name: Create SSH directory
+  ansible.builtin.file:
+    path: "{{ workstation_home }}/.ssh"
+    state: directory
+    mode: '0700'
+
+- name: Create user directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0755'
+  loop:
+    - "{{ workstation_github_root }}"
+    - "{{ workstation_home }}/.cache/workstation/downloads"
+    - "{{ workstation_home }}/.local/opt/zig"
+    - "{{ workstation_home }}/.local/opt/neovim"
+    - "{{ workstation_home }}/.local/opt/chezmoi"
+    - "{{ workstation_home }}/bin"
+    - "{{ chezmoi_config_dir }}"
+    - "{{ chezmoi_cache_dir }}"
+    - "{{ chezmoi_state_dir }}"
+    - "{{ neovim_build_root }}"
+
+- name: Trust GitHub SSH host keys
+  ansible.builtin.known_hosts:
+    path: "{{ workstation_home }}/.ssh/known_hosts"
+    name: github.com
+    key: "{{ item }}"
+    state: present
+  loop: "{{ workstation_github_host_keys }}"
+
+- name: Inspect workstation repository path
+  ansible.builtin.stat:
+    path: "{{ workstation_repo_dir }}"
+  register: workstation_repo_path
+
+- name: Inspect workstation Git metadata
+  ansible.builtin.stat:
+    path: "{{ workstation_repo_dir }}/.git"
+  register: workstation_repo_git
+
+- name: Refuse to replace a non-Git workstation directory
+  ansible.builtin.assert:
+    that:
+      - not workstation_repo_path.stat.exists or workstation_repo_git.stat.exists
+    fail_msg: "{{ workstation_repo_dir }} exists but is not a Git checkout"
+
+- name: Clone writable workstation repository
+  ansible.builtin.git:
+    repo: "{{ workstation_repo_url }}"
+    dest: "{{ workstation_repo_dir }}"
+    version: "{{ workstation_repo_version }}"
+    update: false
+  when:
+    - not workstation_repo_git.stat.exists
+    - not ansible_check_mode
+
+- name: Read workstation origin URL  # noqa command-instead-of-module
+  ansible.builtin.command:
+    argv:
+      - git
+      - -C
+      - "{{ workstation_repo_dir }}"
+      - remote
+      - get-url
+      - origin
+  register: workstation_origin
+  check_mode: false
+  changed_when: false
+  when: workstation_repo_git.stat.exists or not ansible_check_mode
+
+- name: Verify workstation repository identity
+  ansible.builtin.assert:
+    that: workstation_origin.stdout in workstation_repo_allowed_urls
+    fail_msg: >-
+      Refusing to change the origin of unexpected repository
+      {{ workstation_repo_dir }} ({{ workstation_origin.stdout }})
+  when: workstation_repo_git.stat.exists or not ansible_check_mode
+
+- name: Set workstation origin to writable fork  # noqa command-instead-of-module
+  ansible.builtin.command:
+    argv:
+      - git
+      - -C
+      - "{{ workstation_repo_dir }}"
+      - remote
+      - set-url
+      - origin
+      - "{{ workstation_repo_url }}"
+  changed_when: true
+  when:
+    - workstation_repo_git.stat.exists or not ansible_check_mode
+    - workstation_origin.stdout != workstation_repo_url
+
+- name: Inspect Neovim repository path
+  ansible.builtin.stat:
+    path: "{{ neovim_repo_dir }}"
+  register: neovim_repo_path
+
+- name: Inspect Neovim Git metadata
+  ansible.builtin.stat:
+    path: "{{ neovim_repo_dir }}/.git"
+  register: neovim_repo_git
+
+- name: Refuse to replace a non-Git Neovim directory
+  ansible.builtin.assert:
+    that:
+      - not neovim_repo_path.stat.exists or neovim_repo_git.stat.exists
+    fail_msg: "{{ neovim_repo_dir }} exists but is not a Git checkout"
+
+- name: Clone writable Neovim repository
+  ansible.builtin.git:
+    repo: "{{ neovim_repo_url }}"
+    dest: "{{ neovim_repo_dir }}"
+    version: "{{ neovim_branch }}"
+    update: false
+  when:
+    - not neovim_repo_git.stat.exists
+    - not ansible_check_mode
+
+- name: Read Neovim origin URL  # noqa command-instead-of-module
+  ansible.builtin.command:
+    argv:
+      - git
+      - -C
+      - "{{ neovim_repo_dir }}"
+      - remote
+      - get-url
+      - origin
+  register: neovim_origin
+  check_mode: false
+  changed_when: false
+  when: neovim_repo_git.stat.exists or not ansible_check_mode
+
+- name: Verify Neovim repository identity
+  ansible.builtin.assert:
+    that: neovim_origin.stdout in neovim_repo_allowed_urls
+    fail_msg: >-
+      Refusing to change the origin of unexpected repository
+      {{ neovim_repo_dir }} ({{ neovim_origin.stdout }})
+  when: neovim_repo_git.stat.exists or not ansible_check_mode
+
+- name: Set Neovim origin to writable fork  # noqa command-instead-of-module
+  ansible.builtin.command:
+    argv:
+      - git
+      - -C
+      - "{{ neovim_repo_dir }}"
+      - remote
+      - set-url
+      - origin
+      - "{{ neovim_repo_url }}"
+  changed_when: true
+  when:
+    - neovim_repo_git.stat.exists or not ansible_check_mode
+    - neovim_origin.stdout != neovim_repo_url
+
+- name: Read Neovim upstream URL  # noqa command-instead-of-module
+  ansible.builtin.command:
+    argv:
+      - git
+      - -C
+      - "{{ neovim_repo_dir }}"
+      - remote
+      - get-url
+      - upstream
+  register: neovim_upstream
+  check_mode: false
+  changed_when: false
+  failed_when: false
+  when: neovim_repo_git.stat.exists or not ansible_check_mode
+
+- name: Add Neovim upstream remote  # noqa command-instead-of-module
+  ansible.builtin.command:
+    argv:
+      - git
+      - -C
+      - "{{ neovim_repo_dir }}"
+      - remote
+      - add
+      - upstream
+      - "{{ neovim_upstream_url }}"
+  changed_when: true
+  when:
+    - neovim_repo_git.stat.exists or not ansible_check_mode
+    - neovim_upstream.rc != 0
+
+- name: Update Neovim upstream remote  # noqa command-instead-of-module
+  ansible.builtin.command:
+    argv:
+      - git
+      - -C
+      - "{{ neovim_repo_dir }}"
+      - remote
+      - set-url
+      - upstream
+      - "{{ neovim_upstream_url }}"
+  changed_when: true
+  when:
+    - neovim_repo_git.stat.exists or not ansible_check_mode
+    - neovim_upstream.rc == 0
+    - neovim_upstream.stdout != neovim_upstream_url
+
+- name: Fetch Neovim fork refs without changing the working tree  # noqa command-instead-of-module
+  ansible.builtin.command:
+    argv:
+      - git
+      - -C
+      - "{{ neovim_repo_dir }}"
+      - fetch
+      - --prune
+      - origin
+  changed_when: false
+
+- name: Verify pinned Neovim commit is available  # noqa command-instead-of-module
+  ansible.builtin.command:
+    argv:
+      - git
+      - -C
+      - "{{ neovim_repo_dir }}"
+      - cat-file
+      - -e
+      - "{{ neovim_commit }}^{commit}"
+  changed_when: false
+
+- name: Download Zig
+  ansible.builtin.get_url:
+    url: "{{ zig_download_url }}"
+    dest: "{{ zig_archive_path }}"
+    checksum: "sha256:{{ zig_platform.checksum }}"
+    mode: '0644'
+  when: not ansible_check_mode
+
+- name: Install Zig
+  ansible.builtin.unarchive:
+    src: "{{ zig_archive_path }}"
+    dest: "{{ workstation_home }}/.local/opt/zig"
+    remote_src: true
+    creates: "{{ zig_executable }}"
+  when: not ansible_check_mode
+
+- name: Download chezmoi
+  ansible.builtin.get_url:
+    url: "{{ chezmoi_download_url }}"
+    dest: "{{ chezmoi_archive_path }}"
+    checksum: "sha256:{{ chezmoi_platform.checksum }}"
+    mode: '0644'
+  when: not ansible_check_mode
+
+- name: Create chezmoi installation directory
+  ansible.builtin.file:
+    path: "{{ chezmoi_install_dir }}"
+    state: directory
+    mode: '0755'
+
+- name: Install chezmoi
+  ansible.builtin.unarchive:
+    src: "{{ chezmoi_archive_path }}"
+    dest: "{{ chezmoi_install_dir }}"
+    remote_src: true
+    creates: "{{ chezmoi_executable }}"
+  when: not ansible_check_mode
+
+- name: Link chezmoi into user bin directory
+  ansible.builtin.file:
+    src: "{{ chezmoi_executable }}"
+    dest: "{{ workstation_home }}/bin/chezmoi"
+    state: link
+    force: true
+  when: not ansible_check_mode
+
+- name: Check installed Neovim build
+  ansible.builtin.stat:
+    path: "{{ neovim_install_marker }}"
+  register: neovim_marker
+
+- name: Check installed Neovim executable
+  ansible.builtin.stat:
+    path: "{{ neovim_install_dir }}/bin/nvim"
+  register: neovim_executable
+
+- name: Decide whether Neovim must be built
+  ansible.builtin.set_fact:
+    neovim_build_required: >-
+      {{ not neovim_marker.stat.exists or not neovim_executable.stat.exists }}
+
+- name: Prune stale Neovim worktrees  # noqa command-instead-of-module
+  ansible.builtin.command:
+    argv:
+      - git
+      - -C
+      - "{{ neovim_repo_dir }}"
+      - worktree
+      - prune
+  changed_when: false
+  when:
+    - neovim_build_required
+    - not ansible_check_mode
+
+- name: Create detached Neovim build worktree  # noqa command-instead-of-module
+  ansible.builtin.command:
+    argv:
+      - git
+      - -C
+      - "{{ neovim_repo_dir }}"
+      - worktree
+      - add
+      - --detach
+      - "{{ neovim_worktree_dir }}"
+      - "{{ neovim_commit }}"
+    creates: "{{ neovim_worktree_dir }}/.git"
+  when:
+    - neovim_build_required
+    - not ansible_check_mode
+
+- name: Verify detached Neovim worktree revision  # noqa command-instead-of-module
+  ansible.builtin.command:
+    argv:
+      - git
+      - -C
+      - "{{ neovim_worktree_dir }}"
+      - rev-parse
+      - HEAD
+  register: neovim_worktree_head
+  changed_when: false
+  failed_when: neovim_worktree_head.stdout != neovim_commit
+  when:
+    - neovim_build_required
+    - not ansible_check_mode
+
+- name: Build Neovim release
+  ansible.builtin.command:
+    argv:
+      - make
+      - CMAKE_BUILD_TYPE=Release
+    chdir: "{{ neovim_worktree_dir }}"
+  environment:
+    PATH: "{{ zig_install_dir }}:{{ ansible_env.PATH }}"
+    CMAKE_BUILD_PARALLEL_LEVEL: "{{ neovim_make_jobs }}"
+  changed_when: true
+  when:
+    - neovim_build_required
+    - not ansible_check_mode
+
+- name: Create versioned Neovim installation directory
+  ansible.builtin.file:
+    path: "{{ neovim_install_dir }}"
+    state: directory
+    mode: '0755'
+  when: neovim_build_required
+
+- name: Install Neovim release
+  ansible.builtin.command:
+    argv:
+      - cmake
+      - --install
+      - build
+      - --prefix
+      - "{{ neovim_install_dir }}"
+    chdir: "{{ neovim_worktree_dir }}"
+  changed_when: true
+  when:
+    - neovim_build_required
+    - not ansible_check_mode
+
+- name: Link Neovim into user bin directory
+  ansible.builtin.file:
+    src: "{{ neovim_install_dir }}/bin/nvim"
+    dest: "{{ workstation_home }}/bin/nvim"
+    state: link
+    force: true
+  when: not ansible_check_mode
+
+- name: Verify Neovim version
+  ansible.builtin.command:
+    argv:
+      - "{{ neovim_install_dir }}/bin/nvim"
+      - --version
+  register: neovim_version_output
+  changed_when: false
+  failed_when: neovim_expected_version not in neovim_version_output.stdout
+  when: not ansible_check_mode
+
+- name: Smoke test embedded terminal
+  ansible.builtin.command:
+    argv:
+      - "{{ neovim_install_dir }}/bin/nvim"
+      - --clean
+      - --headless
+      - +terminal printf ghostty-smoke
+      - +sleep 200m
+      - "+call assert_match('ghostty-smoke', getline(1))"
+      - "+if len(v:errors) | cquit | endif"
+      - +qa
+  changed_when: false
+  when: not ansible_check_mode
+
+- name: Record installed Neovim commit
+  ansible.builtin.copy:
+    content: "{{ neovim_commit }}\n"
+    dest: "{{ neovim_install_marker }}"
+    mode: '0644'
+  when:
+    - neovim_build_required
+    - not ansible_check_mode
+
+- name: Configure independent base chezmoi state
+  ansible.builtin.template:
+    src: chezmoi-base.toml.j2
+    dest: "{{ chezmoi_config_file }}"
+    mode: '0600'
+  when: not ansible_check_mode
+
+- name: Inspect base chezmoi changes
+  ansible.builtin.command:
+    argv:
+      - "{{ chezmoi_executable }}"
+      - --config
+      - "{{ chezmoi_config_file }}"
+      - --no-tty
+      - diff
+  register: chezmoi_diff
+  changed_when: false
+  when: not ansible_check_mode
+
+- name: Apply base chezmoi state
+  ansible.builtin.command:
+    argv:
+      - "{{ chezmoi_executable }}"
+      - --config
+      - "{{ chezmoi_config_file }}"
+      - --no-tty
+      - --force
+      - apply
+  changed_when: chezmoi_diff.stdout | length > 0
+  when: not ansible_check_mode

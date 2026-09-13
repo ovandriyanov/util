@@ -1,0 +1,117 @@
+---
+workstation_user: "{{ ansible_user_id }}"
+workstation_home: "{{ ansible_env.HOME }}"
+
+workstation_github_root: "{{ workstation_home }}/github/ovandriyanov"
+workstation_repo_url: git@github.com:ovandriyanov/workstation.git
+workstation_repo_dir: "{{ workstation_github_root }}/workstation"
+workstation_repo_version: master
+workstation_repo_allowed_urls:
+  - "{{ workstation_repo_url }}"
+  - git@github.com:ovandriyanov/workstation
+  - https://github.com/ovandriyanov/workstation.git
+  - https://github.com/ovandriyanov/workstation
+workstation_github_host_keys:
+# yamllint disable rule:line-length
+  - github.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl
+  - github.com ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBEmKSENjQEezOmxkZMy7opKgwFB9nkt5YRrYMjNuG5N87uRgg6CLrbo5wAdT/y6v0mKV0U2w0WZ2YB/++Tpockg=
+  - github.com ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCj7ndNxQowgcQnjshcLrqPEiiphnt+VTTvDP6mHBL9j1aNUkY4Ue1gvwnGLVlOhGeYrnZaMgRK6+PKCUXaDbC7qtbW8gIkhL7aGCsOr/C56SJMy/BCZfxd1nWzAOxSDPgVsmerOBYfNqltV9/hWCqBywINIR+5dIg6JTJ72pcEpEjcYgXkE2YEFXV1JHnsKgbLWNlhScqb2UmyRkQyytRLtL+38TGxkxCflmO+5Z8CSSNY7GidjMIZ7Q4zMjA2n1nGrlTDkzwDCsw+wqFPGQA179cnfGWOWRVruj16z6XyvxvjJwbz0wQZ75XK5tKSb7FNyeIEs4TT4jk+S4dhPeAUC5y+bDYirYgM4GC7uEnztnZyaVWQ7B381AK4Qdrwt51ZqExKbQpTUNn+EjqoTwvqNj4kqx5QUCI0ThS/YkOxJCXmPUWZbhjpCg56i+2aB6CmK2JGhn57K5mj0MNdBXA4/WnwH6XoPWJzK5Nyu2zB3nAZp+S5hpQs+p1vN1/wsjk=
+# yamllint enable rule:line-length
+
+neovim_repo_url: git@github.com:ovandriyanov/neovim.git
+neovim_upstream_url: git@github.com:neovim/neovim.git
+neovim_repo_dir: "{{ workstation_github_root }}/neovim"
+neovim_repo_allowed_urls:
+  - "{{ neovim_repo_url }}"
+  - git@github.com:ovandriyanov/neovim
+  - https://github.com/ovandriyanov/neovim.git
+  - https://github.com/ovandriyanov/neovim
+neovim_branch: custom/ghostty-v0.12.4
+neovim_commit: d4938a454f6bc4342d11e89bc54e46a7f188b758
+neovim_expected_version: NVIM v0.12.4
+neovim_build_root: "{{ workstation_home }}/.cache/workstation/neovim/{{ neovim_commit }}"
+neovim_worktree_dir: "{{ neovim_build_root }}/source"
+neovim_install_dir: "{{ workstation_home }}/.local/opt/neovim/{{ neovim_commit }}"
+neovim_install_marker: "{{ neovim_install_dir }}/.workstation-commit"
+neovim_make_jobs: "{{ ansible_processor_vcpus | default(ansible_processor_count) | default(1) }}"
+
+zig_version: 0.16.0
+zig_platforms:
+  x86_64:
+    archive_arch: x86_64
+    checksum: 70e49664a74374b48b51e6f3fdfbf437f6395d42509050588bd49abe52ba3d00
+  aarch64:
+    archive_arch: aarch64
+    checksum: ea4b09bfb22ec6f6c6ceac57ab63efb6b46e17ab08d21f69f3a48b38e1534f17
+zig_platform: "{{ zig_platforms[ansible_architecture] }}"
+zig_archive_name: "zig-{{ zig_platform.archive_arch }}-linux-{{ zig_version }}.tar.xz"
+zig_download_url: "https://ziglang.org/download/{{ zig_version }}/{{ zig_archive_name }}"
+zig_archive_path: "{{ workstation_home }}/.cache/workstation/downloads/{{ zig_archive_name }}"
+zig_install_dir: "{{ workstation_home }}/.local/opt/zig/zig-{{ zig_platform.archive_arch }}-linux-{{ zig_version }}"
+zig_executable: "{{ zig_install_dir }}/zig"
+
+chezmoi_version: 2.72.1
+chezmoi_platforms:
+  x86_64:
+    archive_arch: amd64
+    checksum: 9f97d32caca166e5c92160ec3a9325519809c38963121cef38173142065c981f
+  aarch64:
+    archive_arch: arm64
+    checksum: 75508ef41216b6d64f3145986b751729d7f92d09c6bad77d51cf2895ab35a508
+chezmoi_platform: "{{ chezmoi_platforms[ansible_architecture] }}"
+chezmoi_archive_name: "chezmoi_{{ chezmoi_version }}_linux_{{ chezmoi_platform.archive_arch }}.tar.gz"
+chezmoi_download_url: "https://github.com/twpayne/chezmoi/releases/download/v{{ chezmoi_version }}/{{ chezmoi_archive_name }}"
+chezmoi_archive_path: "{{ workstation_home }}/.cache/workstation/downloads/{{ chezmoi_archive_name }}"
+chezmoi_install_dir: "{{ workstation_home }}/.local/opt/chezmoi/{{ chezmoi_version }}"
+chezmoi_executable: "{{ chezmoi_install_dir }}/chezmoi"
+chezmoi_config_dir: "{{ workstation_home }}/.config/chezmoi"
+chezmoi_config_file: "{{ chezmoi_config_dir }}/base.toml"
+chezmoi_cache_dir: "{{ workstation_home }}/.cache/chezmoi/base"
+chezmoi_state_dir: "{{ workstation_home }}/.local/state/chezmoi"
+chezmoi_state_file: "{{ chezmoi_state_dir }}/base.boltdb"
+
+workstation_build_packages:
+  Debian:
+    - autoconf
+    - automake
+    - build-essential
+    - ca-certificates
+    - cmake
+    - curl
+    - gettext
+    - git
+    - libtool-bin
+    - pkg-config
+    - unzip
+    - xz-utils
+  RedHat:
+    - autoconf
+    - automake
+    - ca-certificates
+    - cmake
+    - curl
+    - gcc
+    - gcc-c++
+    - gettext
+    - git
+    - libtool
+    - make
+    - pkgconf-pkg-config
+    - unzip
+    - xz
+  Archlinux:
+    - autoconf
+    - automake
+    - base-devel
+    - ca-certificates
+    - cmake
+    - curl
+    - gettext
+    - git
+    - libtool
+    - pkgconf
+    - unzip
+    - xz
+
+workstation_apt_preferences: []
+workstation_apt_preferences_file: /etc/apt/preferences.d/workstation-base

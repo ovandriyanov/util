@@ -1,0 +1,8 @@
+set nocompatible
+set number
+set expandtab
+set shiftwidth=4
+set tabstop=4
+
+syntax enable
+filetype plugin indent on

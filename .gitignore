@@ -13,3 +13,4 @@ opencode.jsonc
 .claude
 .codex
 .agents/
+.venv/

@@ -1,1 +1,7 @@
-Here are useful scripts, configuration files, etc. shared between home and work computers.
+Declarative setup for my personal Linux workstations using Ansible and chezmoi.
+
+The public base layer lives in this repository. Additional extensions and
+dotfiles can be maintained separately and import `ansible/site.yml` before
+applying their own layer.
+
+See `ansible/README.md` for provisioning instructions.
