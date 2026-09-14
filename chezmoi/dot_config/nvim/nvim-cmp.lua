@@ -128,7 +128,9 @@ cmp.setup.cmdline(':', {
     matching = { disallow_symbol_nonprefix_matching = false }
 })
 
-if os.getenv("NVIM_DISABLE_LSP") == "1" then
+local disable_lsp = os.getenv("NVIM_DISABLE_LSP") == "1"
+local gopls_via_qssh = os.getenv("NVIM_GOPLS_VIA_QSSH") == "1"
+if disable_lsp and not gopls_via_qssh then
     return
 end
 
@@ -151,7 +153,26 @@ local gopls_args = debug_gopls and { "-logfile", "/tmp/gopls-nvim-" .. vim.fn.ge
 local gopls_cmd = { "gopls" }
 local arcadia_gopls = home .. "/.ya/tools/v4/gopls-linux/gopls"
 local has_gopls = vim.fn.executable("gopls") == 1
-if has_arcadia and vim.fn.executable(arcadia_gopls) == 1 then
+if gopls_via_qssh then
+    local remote_arcadia_root = os.getenv("REMOTE_ARCADIA_ROOT")
+    has_gopls = remote_arcadia_root ~= nil
+        and remote_arcadia_root ~= ""
+        and vim.fn.executable(remote_arcadia_root .. "/ya") == 1
+        and vim.fn.executable("qssh") == 1
+    local command = {
+        "cd",
+        vim.fn.shellescape(remote_arcadia_root or ""),
+        "&&",
+        "exec",
+        vim.fn.shellescape((remote_arcadia_root or "") .. "/ya"),
+        "tool",
+        "gopls",
+    }
+    for _, argument in ipairs(gopls_args) do
+        table.insert(command, vim.fn.shellescape(argument))
+    end
+    gopls_cmd = { "qssh", "-c", table.concat(command, " ") }
+elseif has_arcadia and vim.fn.executable(arcadia_gopls) == 1 then
     local command = {
         "cd",
         vim.fn.shellescape(arcadia_root),
@@ -400,12 +421,14 @@ vim.lsp.config['terraform'] = TerraformCfg
 vim.lsp.config['yaml'] = YamlCfg
 
 if has_gopls then vim.lsp.enable('gopls') end
-if vim.fn.executable(Lualscfg.cmd[1]) == 1 then vim.lsp.enable('lua_ls') end
-if vim.fn.executable(Pylspcfg.cmd[1]) == 1 then vim.lsp.enable('pylsp') end
-if vim.fn.executable(Clangdcfg.cmd[1]) == 1 then vim.lsp.enable('clangd') end
-if vim.fn.executable(JSCfg.cmd[1]) == 1 then vim.lsp.enable('js') end
-if vim.fn.executable('terraform-ls') == 1 then vim.lsp.enable('terraform') end
-if vim.fn.executable(YamlCfg.cmd[1]) == 1 then vim.lsp.enable('yaml') end
+if not disable_lsp then
+    if vim.fn.executable(Lualscfg.cmd[1]) == 1 then vim.lsp.enable('lua_ls') end
+    if vim.fn.executable(Pylspcfg.cmd[1]) == 1 then vim.lsp.enable('pylsp') end
+    if vim.fn.executable(Clangdcfg.cmd[1]) == 1 then vim.lsp.enable('clangd') end
+    if vim.fn.executable(JSCfg.cmd[1]) == 1 then vim.lsp.enable('js') end
+    if vim.fn.executable('terraform-ls') == 1 then vim.lsp.enable('terraform') end
+    if vim.fn.executable(YamlCfg.cmd[1]) == 1 then vim.lsp.enable('yaml') end
+end
 
 vim.diagnostic.config({
     float = true,
