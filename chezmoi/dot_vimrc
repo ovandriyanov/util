@@ -446,7 +446,7 @@ endif
 
 "   Closing and opening windows {{{
 if has('nvim')
-    nnoremap <A-t> :new<Cr>:WorkstationTerminal<Cr>i
+    nnoremap <A-t> :new<Cr>:terminal<Cr>i
 else
     nnoremap <A-t> :terminal<Cr><C-^>:set nowinfixwidth<Cr>
 endif
@@ -466,7 +466,7 @@ nnoremap <A-s> <C-w>s
 nnoremap <A-C-d> :DHidden<Cr>
 nnoremap <A-C-S-d> :DHidden!<Cr>
 if has('nvim')
-    tnoremap <A-t>   <C-\><C-O>:new<Cr><Esc>:WorkstationTerminal<Cr>i
+    tnoremap <A-t>   <C-\><C-O>:new<Cr><Esc>:terminal<Cr>i
     tnoremap <A-n>   <C-\><C-O>:rightbelow new<Cr><Esc>
     tnoremap <A-b>   <C-\><C-O><Cmd>tabnew<Cr><Esc>
     tnoremap <A-q>   <C-\><C-O>:q<Cr>
@@ -1248,7 +1248,7 @@ function! OpenTerminalFromNerdTree(shift) abort " {{{
         if !l:use_current_window
             new
         endif
-        execute 'WorkstationTerminal' fnameescape(l:termpath)
+        execute 'terminal /bin/bash -c "cd ' . l:termpath . ' && exec ' . &shell . '"'
         let b:from_nerd_tree = 1
         startinsert
     else
