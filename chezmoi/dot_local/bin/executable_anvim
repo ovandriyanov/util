@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+case $# in
+    0)
+        target="$(ya tool arc-wt cd)"
+        ;;
+    1)
+        target="$(ya tool arc-wt cd "$1")"
+        ;;
+    *)
+        printf 'usage: anvim [BRANCH]\n' >&2
+        exit 2
+        ;;
+esac
+
+cd -- "$target"
+
+ARCADIA_ROOT="$(arc root)"
+export ARCADIA_ROOT
+export PATH="$ARCADIA_ROOT:$PATH"
+
+exec "$HOME/bin/nvim"
