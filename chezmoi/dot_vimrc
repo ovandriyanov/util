@@ -1,8 +1,1670 @@
-set nocompatible
-set number
+" ##############################################################################
+" ################################  Vim options  ############################### {{{
+" ##############################################################################
+
+if empty($ARCADIA_ROOT)
+    let $ARCADIA_ROOT = expand('$HOME/arc/tooling')
+endif
+if empty($ARCADIA_TOOLING_ROOT)
+    let $ARCADIA_TOOLING_ROOT = $ARCADIA_ROOT
+endif
+
+set nowrap
+set incsearch
+set backspace=indent,eol,start
+set diffopt+=vertical
 set expandtab
+set exrc
+set foldcolumn=0
+set formatoptions=cq
+set hidden
+set hlsearch
+set ignorecase
+set langmap=ЙQ,ЦW,УE,КR,ЕT,НY,ГU,ШI,ЩO,ЗP,Х[,Ъ],ФA,ЫS,ВD,АF,ПG,РH,ОJ,ЛK,ДL,Ж\\;,Э',ЯZ
+set langmap+=ЧX,СC,МV,ИB,ТN,ЬM,Б\\,,Ю.,йq,цw,уe,кr,еt,нy,гu,шi,щo,зp,х[,ъ],фa,ыs,вd
+set langmap+=аf,пg,рh,оj,лk,дl,ж\\;,э',яz,чx,сc,мv,иb,тn,ьm,б\\,,ю.,"@,№#,;$,:^,?&
+set lazyredraw
+set noautoindent
+set nocompatible
+if !has('nvim')
+    set noesckeys
+    set clipboard=exclude:cons\|linux
+else
+    let &path .= ',' . $HOME
+endif
+set nosmartindent
+set number
+set relativenumber
+set ruler
+if isdirectory(expand('~/.vim/bundle/dbext.vim'))
+    set runtimepath+=~/.vim/bundle/dbext.vim/
+endif
+set secure
 set shiftwidth=4
+set showcmd
+set softtabstop=4
+set splitright
+set t_ut=
 set tabstop=4
+set ttimeoutlen=0
+set wildmenu
+set shell=/usr/bin/bash\ -O\ globstar
+set foldmethod=marker
+set completeopt=popup,menuone
+set scrolloff=10
+set nostartofline
+call setenv('NVIM_SOCKET', v:servername)
+set guicursor=n-v-c-sm:block,i-ci-ve:ver25,r-cr-o:hor20,t:block-blinkon0
+let &fillchars='vert:|,fold: ,eob:~'
+set foldopen-=search
+set nofsync
+set grepprg=grep
+set grepformat=%f:%l:%m,%f:%l%m,%f
+let g:signify_vcs_cmds = extend(
+    \ get(g:, 'signify_vcs_cmds', {}),
+    \ {'arc': 'arc diff --git -U0 -w -- %f'},
+    \ 'force'
+    \)
+
+let s:grepfmt = '%f|%l col %c| %m'
+if       &errorformat !~# '^' . s:grepfmt . ',.*'
+    \ && &errorformat !~# ',' . s:grepfmt . ',.*'
+    let &errorformat = s:grepfmt . ',' . &errorformat
+endif
+
+" Konsole does not seem to support Xterm escape sequences for changing cursor shape - disable it
+set t_SH=
+
+" Terminator seems to have trouble with these
+set t_TI=
+set t_TE=
 
 syntax enable
-filetype plugin indent on
+
+" ############################################################################## }}}
+" ##############################  Plugin settings  ############################# {{{
+" ##############################################################################
+
+"if has('nvim')
+"    set mouse=
+"endif
+
+" C++11 syntax workaround
+let c_no_curly_error=1
+
+" Netrw settings
+let g:netrw_bufsettings = 'noma nomod rnu nobl nowrap ro'
+let g:netrw_keepdir = 0
+let g:netrw_list_hide = ".*.swp"
+let g:netrw_preview = 1 " Vertical preview window
+
+" YouCompleteMe settings
+let g:ycm_always_populate_location_list = 1
+let g:ycm_confirm_extra_conf = 0
+let g:ycm_global_ycm_extra_conf = expand('~/git/ovandriyanov/util/kernel_ycm_extra_conf.py')
+let g:ycm_clangd_args=['--header-insertion=never', '--query-driver=/home/ovandriyanov/.ya/tools/v4/7599469156/bin/clang++']
+let g:ycm_clangd_binary_path=expand('~/tmp/clangd/clangd_18.1.3/bin/clangd')
+let g:ycm_auto_hover=''
+let g:ycm_max_diagnostics_to_display = 10
+let g:ycm_add_preview_to_completeopt = 0
+let g:ycm_key_invoke_completion = '<C-Space>'
+let g:ycm_gopls_binary_path = expand('~/tmp/gopls')
+let g:ycm_gopls_args = ['-logfile', '/home/ovandriyanov/tmp/gopls-vim.log', '-rpc.trace']
+"let g:ycm_gopls_binary_path = expand('/home/ovandriyanov/github/golang/tools/gopls/gopls')
+"let g:ycm_gopls_binary_path = expand('/home/ovandriyanov/.vim/bundle/YouCompleteMe/third_party/ycmd/third_party/go/bin/gopls')
+let g:ycm_update_diagnostics_in_insert_mode = 0
+let g:ycm_echo_current_diagnostic = 0
+" let g:ycm_autoclose_preview_window_after_insertion = 1
+
+" AutoPairs settings
+let g:AutoPairsMapCR = 0
+let g:AutoPairsMapSpace = 0
+let g:AutoPairsMultilineClose = 0
+let g:AutoPairsShortcutFastWrap = '<C-e>'
+let g:AutoPairsShortcutJump = ''
+"let g:AutoPairsShortcutJump = '<C-n>'
+let g:AutoPairsShortcutToggle = ''
+
+" NERDTree settings
+let g:loaded_netrwPlugin = 1
+let g:NERDTreeMapHelp = ''
+let g:NERDTreeCustomOpenArgs = {'file': {'reuse': '', 'where': 'p', 'keepopen': 1}, 'dir': {}}
+let g:NERDTreeCascadeSingleChildDir=0
+let g:NERDTreeIgnore=[
+\     'node_modules',
+\     '.*\.swagger\.json',
+\     '.*\.pb\.go',
+\     '.*\.desc\.go',
+\     '.*\.log\.go',
+\     '.*\.protosrc',
+\     '.*\.pb\.gw\.go',
+\     '.*\.res\.go',
+\     '.*\.a$',
+\     '.*\.vld\.go',
+\     '.*\.yc\.go',
+\     '.*\.oneof\.go$',
+\     '.*\.convert\.go$',
+\     '.*\.status\.go$',
+\     '.*\.comments\.go$',
+\     '.*\.jar$',
+\     '.*\.dynform.json$',
+\     '^descriptors.go$',
+\     'test-results',
+\ ]
+" let g:NERDTreeChDirMode = 3
+
+" Fugitive settings
+cnoreabbrev <expr> Gstatus ((getcmdtype() ==# ':' && getcmdline() ==# 'Gstatus') ? 'aboveleft Gstatus' : 'Gstatus')
+
+" My settings
+let g:olan_path_aliases_file = expand('~/.vim/path_aliases')
+
+" ############################################################################## }}}
+" ##############################  Custom commands  ############################# {{{
+" ##############################################################################
+
+command! Vrc exe 'edit' resolve(expand('~/.vimrc'))
+command! TVrc tabnew | exe 'edit' resolve(expand('~/.vimrc'))
+command! VVrc vsplit | exe 'edit' resolve(expand('~/.vimrc'))
+command! SVrc split | exe 'edit' resolve(expand('~/.vimrc'))
+command! Explore e .
+command! SExplore split | e .
+command! Ve vsplit | e .
+command! StripTrailingWhitespace %s/\s\+$//e
+command! -count=1 PadDown call Pad(<count>)
+command! -count=1 PadUp call Pad(-<count>)
+command! -bang DHidden call DeleteHiddenBuffers('<bang>')
+command! -nargs=1 Yank call Yank('<args>')
+command! -nargs=1 -complete=customlist,CompleteFileAliases C call OpenFileByAlias('<args>', '')
+command! -nargs=1 -complete=customlist,CompleteFileAliases Sc call OpenFileByAlias('<args>', 'split')
+command! -nargs=1 -complete=customlist,CompleteFileAliases Vc call OpenFileByAlias('<args>', 'vsplit')
+command! -nargs=1 -complete=customlist,CompleteFileAliases Tc call OpenFileByAlias('<args>', 'tabnew')
+command! TTerminal tabnew | terminal ++curwin
+command! VTerminal vertical terminal
+command! STerminal terminal
+command! CTerminal terminal ++curwin
+command! MTerminal split | resize 10 | set winfixheight | terminal ++curwin
+command! -bang -range -nargs=1 -complete=shellcmd Xargs call Xargs('<args>', '<bang>' == '!')
+command! -range Aopen call Aopen(<line1>, <line2>, 0)
+command! -bar -range AopenCurrent call Aopen(<line1>, <line2>, 1)
+command! Scratch new | set bt=nofile
+command! VScratch vnew | set bt=nofile
+command! TScratch tabnew | set bt=nofile
+command! -range=% Cgetbuffer call Cbuffer('cgetbuffer', <line1>, <line2>)
+command! -range=% Cbuffer call Cbuffer('cbuffer', <line1>, <line2>)
+command! Arel call YankArel()
+command! Include call Include()
+command! Break call Break()
+command! Xrestore call Xrestore()
+command! -range Htonl call Htonl()
+
+" ############################################################################## }}}
+" ##############################  Custom mappings  ############################# {{{
+" ##############################################################################
+
+vnoremap Y y
+nnoremap co :colder<Cr>
+nnoremap cO :cnewer<Cr>
+nnoremap <silent> <Plug>NCFJ :call NextClosedFold('j')<Cr>:call repeat#set("\<Plug>NCFJ")<Cr>
+nnoremap <silent> <Plug>NCFK :call NextClosedFold('k')<Cr>:call repeat#set("\<Plug>NCFK")<Cr>
+nmap zj <Plug>NCFJ
+nmap zk <Plug>NCFK
+" QtCreator-like bindings {{{
+nnoremap            <F2>            :YcmCompleter GoTo <cr>
+nnoremap            <S-F2>          :YcmCompleter GoToDeclaration <cr>
+nnoremap            <F4>            :silent! A <cr>
+nnoremap            <F6>            :vsplit <cr>:YcmCompleter GoTo <cr>
+nnoremap            <F8>            :silent! AV <cr>
+" }}}
+
+" YouCompleteMe {{{
+nnoremap            <Tab>           <Nop>
+if has('nvim')
+    nnoremap            <Tab><Space>    :lua vim.lsp.buf.definition()<Cr>
+    nnoremap            <Tab>t          :lua vim.lsp.buf.hover()<Cr>
+    nnoremap            <Tab>gt         :lua vim.lsp.buf.type_definition()<Cr>
+    nnoremap            <Tab>i          :lua vim.lsp.buf.implementation()<Cr>
+    nnoremap            <Tab>r          "zyiw:lua vim.lsp.buf.rename('<C-r>z')<Left><Left>
+    nnoremap            <Tab>u          :lua vim.lsp.buf.references()<Cr>
+    nnoremap            <Tab>d          :lua vim.diagnostic.setloclist()<Cr>
+    nnoremap            <Tab>h          :lua vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())<Cr>
+    nnoremap            <Tab>s          :lua vim.lsp.buf.document_symbol()<Cr>
+    nnoremap            <Tab>w          :lua vim.lsp.buf.workspace_symbol()<Cr>
+else
+    nnoremap            <Tab><Space>    :call GoTo()<Cr>
+    nnoremap            <Tab>t          :YcmCompleter GetType<Cr>
+    nnoremap            <Tab>gt         :YcmCompleter GoToType<Cr>
+    nnoremap            <Tab>i          :call GoToImplementation()<Cr>
+    nnoremap            <Tab>x          :YcmCompleter FixIt<Cr>
+    nnoremap            <Tab>r          "zyiw:call RefactorRename('<C-r>z')<Left><Left>
+    nnoremap            <Tab>h          :YcmCompleter GetDoc<Cr>
+    nnoremap            <Tab>f          :YcmCompleter Format<Cr>
+    nnoremap            <Tab>u          :call GoToReferences()<Cr>
+    nnoremap            <Tab>d          :call Diags()<Cr>
+endif
+" }}}
+
+" NERDTree {{{
+nnoremap <expr>     <Cr>          NerdTreeFindExpr('')
+if has('nvim')
+    tnoremap <expr> <A-Cr>        NerdTreeFindExpr("\<C-\>\<C-N>")
+else
+    tnoremap <expr> <A-Cr>        NerdTreeFindExpr("\<C-^>")
+endif
+nnoremap            <A-C-Cr>      :NERDTreeFocus<Cr>
+tnoremap            <A-C-Cr> <C-^>:NERDTreeFocus<Cr>
+
+" }}}
+
+" Highlight word under cursor {{{
+nnoremap            <space>         :set hls \| call setreg('/', '\<' . expand('<cword>') . '\>')<Cr>
+vnoremap            <space>         "zy:set hls \| call setreg('/', '\V' ..  escape(getreg('z'), '/\'))<Cr>
+vnoremap            \<space>        "zy:set hls \| call setreg('/', '\<' . getreg('z') . '\>')<Cr>
+" }}}
+
+" Visual mode search {{{
+vnoremap            *               "zy/\V<c-r>=escape(getreg('z'), '/')<cr><cr>
+vnoremap            #               "zy`<?\V<c-r>=escape(getreg('z'), '/')<cr><cr>
+vnoremap            <Leader>*       "zy/\V\<<c-r>=escape(getreg('z'), '/')<cr>\><cr>
+vnoremap            <leader>#       "zy`<?\V\<<c-r>=escape(getreg('z'), '/')<cr>\><cr>
+" }}}
+
+" Command line register escaping {{{
+cnoremap            <c-r>\"         <c-r>=escape(getreg('"'), '/')<cr>
+cnoremap            <c-r>\+         <c-r>=escape(getreg('+'), '/')<cr>
+" }}}
+
+" Padding {{{
+nnoremap            <silent>        <Plug>BreakAndPadComma :<c-U>call BreakAndPad(',', v:count1)<cr>:call repeat#set("\<Plug>BreakAndPadComma")<cr>
+nmap                <C-p>,          <Plug>BreakAndPadComma
+" }}}
+
+" Error navigation {{{
+nnoremap            <Right>          :cn<cr>
+nnoremap            <Left>           :cp<cr>
+" }}}
+
+" File navigation {{{
+nnoremap            gf              :call FindFileReuseWindow(0, 0, 1)<cr>
+nnoremap            <c-w>f          :call FindFileReuseWindow(0, 0, 0)<cr>
+nnoremap            <c-w>gf         :call FindFileReuseWindow(0, 1, 0)<cr>
+" TODO: implement
+nnoremap            <c-w>F          :vertical wincmd F<cr>
+" }}}
+
+vnoremap            gf              :<C-u>call FindFileReuseWindow(1, 0, 1)<cr>
+vnoremap            <c-w>f          :<C-u>call FindFileReuseWindow(1, 0, 0)<cr>
+vnoremap            <c-w>gf         :<C-u>call FindFileReuseWindow(1, 1, 0)<cr>
+" TODO: implement
+" vnoremap <c-w>F :<c-u>vertical wincmd F<cr>
+" }}}
+
+" Jumping around {{{
+nnoremap            <C-F><C-O>      :silent call JumpToPrevFile()<Cr><C-g>
+nnoremap            <C-F><C-I>      :silent call JumpToNextFile()<Cr><C-g>
+nnoremap            <C-F><Esc>      <Nop>
+nnoremap            <C-F>           <Nop>
+nnoremap <expr>     k               JumpOffsetExpr(-v:count1)
+nnoremap <expr>     j               JumpOffsetExpr(+v:count1)
+nnoremap            [E              :lfirst<Cr>
+nnoremap            [e              :lbefore<Cr>
+nnoremap            ]e              :lafter<Cr>
+nnoremap            ]E              :llast<Cr>
+nnoremap            (               [(
+vnoremap            (               [(
+nnoremap            )               ])
+vnoremap            )               ])
+" }}}
+
+" Inserting {{{
+inoremap <expr> <CR> MapCarriageReturn()
+" }}}
+
+" Formatting {{{
+vnoremap <A-j> :<C-u>call JsonFormat()<Cr>
+" }}}
+
+" Commenting {{{
+nnoremap <C-_>iw "zciw/* <C-R>z */<Esc>bb
+nnoremap <C-_>iW "zciw/* <C-R>z */<Esc>bB
+vnoremap <C-_>   "zc/* <C-R>z */<Esc>gvo<Esc>W
+" }}}
+
+" Scratch window {{{
+nnoremap <C-W>S :Scratch<Cr>
+" }}}
+
+" URL opening (_G_o _B_rowser) {{{
+vnoremap gb "zy:silent call system('xdg-open ' . shellescape(trim(getreg('z'))) . ' >/dev/null 2>&1') \| redraw!<Cr>
+" }}}
+
+" }}}
+
+" Arithmetic evaluation {{{
+vnoremap <Cr> c<C-r>=<C-r>"<Cr><Esc>
+" }}}
+
+" Debugging {{{
+nnoremap <C-b> :call Break()<Cr>
+" }}}
+
+" Should probably get rid of these... {{{
+nnoremap <F5>       :highlight ExtraWhitespace ctermbg=darkgreen <CR>
+nnoremap <S-F5>     :highlight ExtraWhitespace NONE <CR>
+" }}}
+
+" Scrolling {{{
+nnoremap <Down> <C-e>j
+nnoremap <Up>   <C-y>k
+" }}}
+
+" Backslash finger issues {{{
+inoremap <C-/> \
+cnoremap <C-/> \
+tnoremap <C-/> \
+inoremap <C-_> \
+cnoremap <C-_> \
+tnoremap <C-_> \
+" }}}
+
+" Stuff {{{
+vnoremap x :Xargs<Space>
+" }}}
+
+
+" Special mappings for sequences generated by a terminal emulator {{{
+"   Window navigation {{{
+nnoremap <A-h> <C-w>h
+nnoremap <A-j> <C-w>j
+nnoremap <A-k> <C-w>k
+nnoremap <A-l> <C-w>l
+nnoremap <A-p> <C-w>p
+
+if has('nvim')
+    tnoremap <A-h> <C-\><C-N><C-w>h
+    tnoremap <A-j> <C-\><C-N><C-w>j
+    tnoremap <A-k> <C-\><C-N><C-w>k
+    tnoremap <A-l> <C-\><C-N><C-w>l
+    tnoremap <A-p> <C-\><C-N><C-w>p
+else
+    tnoremap <A-h> <C-^>h
+    tnoremap <A-j> <C-^>j
+    tnoremap <A-k> <C-^>k
+    tnoremap <A-l> <C-^>l
+    tnoremap <A-p> <C-^>p
+endif
+" }}}
+
+"   Align windows with HJKL {{{
+if has('nvim')
+    tnoremap <A-S-h> <C-\><C-O>:call Align('H')<Cr>
+    tnoremap <A-S-j> <C-\><C-O>:call Align('J')<Cr>
+    tnoremap <A-S-k> <C-\><C-O>:call Align('K')<Cr>
+    tnoremap <A-S-l> <C-\><C-O>:call Align('L')<Cr>
+else
+    tnoremap <A-S-h> <C-^>:call Align('H')<Cr>
+    tnoremap <A-S-j> <C-^>:call Align('J')<Cr>
+    tnoremap <A-S-k> <C-^>:call Align('K')<Cr>
+    tnoremap <A-S-l> <C-^>:call Align('L')<Cr>
+endif
+nnoremap <A-S-h> :call Align('H')<Cr>
+nnoremap <A-S-j> :call Align('J')<Cr>
+nnoremap <A-S-k> :call Align('K')<Cr>
+nnoremap <A-S-l> :call Align('L')<Cr>
+" }}}
+
+"   Tab switching {{{
+nnoremap <A-C-h> gT
+nnoremap <A-C-l> gt
+nnoremap <A-S-t> <C-w>s<C-w>T
+nnoremap <A-S-w> <C-w>T
+
+if has('nvim')
+    tnoremap <A-C-h> <C-\><C-N>gT
+    tnoremap <A-C-l> <C-\><C-N>gt
+    tnoremap <A-S-t> <C-\><C-O><C-w>s<C-\><C-O><C-w>T
+    tnoremap <A-S-w> <C-\><C-O><C-w>T
+else
+    tnoremap <A-C-h> <C-^>gT
+    tnoremap <A-C-l> <C-^>gt
+    tnoremap <A-S-t> <C-^>s<C-^>T
+    tnoremap <A-S-w> <C-^>T
+endif
+" }}}
+
+"   Tab shifting {{{
+nnoremap <A-C-S-h> :tabmove -1<Cr>
+nnoremap <A-C-S-l> :tabmove +1<Cr>
+if has('nvim')
+    tnoremap <A-C-S-h> <C-\><C-O>:tabmove -1<Cr>
+    tnoremap <A-C-S-l> <C-\><C-O>:tabmove +1<Cr>
+else
+    tnoremap <A-C-S-h> <C-^>:tabmove -1<Cr>
+    tnoremap <A-C-S-l> <C-^>:tabmove +1<Cr>
+endif
+" }}}
+
+"   Closing and opening windows {{{
+if has('nvim')
+    nnoremap <A-t> :new<Cr>:terminal<Cr>i
+else
+    nnoremap <A-t> :terminal<Cr><C-^>:set nowinfixwidth<Cr>
+endif
+nnoremap <A-n> :exec &bt ==# 'terminal' ? 'rightbelow new' : 'new'<Cr>
+nnoremap <A-b> :tabnew<Cr>
+nnoremap <A-q> :q<Cr>
+nnoremap <A-S-q> :tabclose<Cr>
+nnoremap <A-w> :w<Cr>
+nnoremap <A-x> :wq<Cr>
+inoremap <A-x> <Esc>:wq<Cr>
+nnoremap <A-d> :bd!<Cr>
+nnoremap <A-S-d> :call DropTab()<Cr>
+nnoremap <A-o> :call Only()<Cr>
+nnoremap <A-S-o> :only<Cr>
+nnoremap <A-v> <C-w>v
+nnoremap <A-s> <C-w>s
+nnoremap <A-C-d> :DHidden<Cr>
+nnoremap <A-C-S-d> :DHidden!<Cr>
+if has('nvim')
+    tnoremap <A-t>   <C-\><C-O>:new<Cr><Esc>:terminal<Cr>i
+    tnoremap <A-n>   <C-\><C-O>:rightbelow new<Cr><Esc>
+    tnoremap <A-b>   <C-\><C-O><Cmd>tabnew<Cr><Esc>
+    tnoremap <A-q>   <C-\><C-O>:q<Cr>
+    tnoremap <A-S-q>  <C-\><C-O>:tabclose<Cr>
+    tnoremap <A-d>   <Cmd>call DeleteCurrentTerminalBuffer()<Cr>
+    tnoremap <A-S-d>  <C-\><C-O>:call DropTab()<Cr>
+    tnoremap <A-o>   <C-\><C-O>:call Only()<Cr>
+    tnoremap <A-S-o>  <C-\><C-O>:only<Cr>
+    tnoremap <A-v>   <C-\><C-O><C-w>v
+    tnoremap <A-s>   <C-\><C-O><C-w>s
+    tnoremap <A-C-d>  <C-\><C-O>:DHidden<Cr>
+    tnoremap <A-C-S-d> <C-\><C-O>:DHidden!<Cr>
+else
+    tnoremap <A-t>   <C-^>:terminal<Cr><C-^>:set nowinfixwidth<Cr>
+    tnoremap <A-n>   <C-^>:rightbelow new<Cr>
+    tnoremap <A-b>   <C-^>:tabnew<Cr>
+    tnoremap <A-q>   <C-^>:q<Cr>
+    tnoremap <A-S-q>  <C-^>:tabclose<Cr>
+    tnoremap <A-d>   <C-^>N:call DeleteCurrentTerminalBuffer()<Cr>
+    tnoremap <A-S-d>  <C-^>:call DropTab()<Cr>
+    tnoremap <A-o>   <C-^>:call Only()<Cr>
+    tnoremap <A-S-o>  <C-^>:only<Cr>
+    tnoremap <A-v>   <C-^>v
+    tnoremap <A-s>   <C-^>s
+    tnoremap <A-C-d>  <C-^>:DHidden<Cr>
+    tnoremap <A-C-S-d> <C-^>:DHidden!<Cr>
+endif
+" }}}
+
+" Mode switching in terminal window {{{
+if has('nvim')
+    tnoremap <A-S-n> <Cmd>let b:desired_mode = 'n'<Cr><C-\><C-N>
+else
+    tnoremap <A-S-n> <C-^>N
+endif
+nnoremap <A-S-n> i
+" }}}
+
+" Toggle termwinsize with alt+w
+tnoremap <A-w> <C-^>:call ToggleTermwinsize()<Cr>
+
+" Registers {{{
+if has('nvim')
+    tnoremap <A-r> <C-\><C-O>:execute('normal "' .. nr2char(getchar()) .. 'p')<Cr>
+else
+    tnoremap <A-r> <C-^>"
+endif
+inoremap <A-r> <C-r>
+cnoremap <A-r> <C-r>
+" }}}
+
+"   To tell apart CTRL+I and Tab {{{
+nnoremap <C-i> <C-i>
+" }}}
+
+"   Enter command mode from terminal mode {{{
+if has('nvim')
+    tnoremap <A-;> <C-\><C-N>:
+else
+    tnoremap <A-;> <C-^>:
+endif
+nnoremap <A-;> :
+nnoremap <A-Esc> <Esc>
+inoremap <A-Esc> <Esc>
+vnoremap <A-Esc> <Esc>
+cnoremap <A-Esc> <C-c>
+" }}}
+
+"   Text highlighting {{{
+nnoremap <A-Space> :nohlsearch<Cr>
+inoremap <A-Space> <C-o>:nohlsearch<Cr>
+if has('nvim')
+    tnoremap <A-Space> <C-\><C-o><Cmd>nohlsearch<Cr>
+else
+    tnoremap <A-Space> <C-^>:nohlsearch<Cr>
+endif
+"    }}}
+
+"   Jumping around {{{
+nnoremap <A-u> :call Up()<Cr>
+nnoremap <A-S-u> 100[{
+vnoremap <A-u> :<C-D>call Up()<Cr>
+vnoremap <A-S-u> 100[{
+"    }}}
+
+"    Copy current file path {{{
+nnoremap <A-c> :Yank %:p<Cr>
+tnoremap <A-c> <C-^>:execute 'Yank' getcwd()<Cr>
+"    }}}
+
+"   Grep {{{
+nnoremap <expr> <A-g> GrepExpr(0)
+nnoremap <expr> <A-S-g> GrepExpr(1)
+nnoremap <Tab><Tab> :call Grep('\<' . expand('<cword>') . '\>', 0)<Cr>
+vnoremap <Tab> "zy:call Grep(getreg('z'), 0)<Cr>
+"   }}}
+
+"   SQL {{{
+nnoremap <C-Space> :call CtrlSpace()<Cr>
+vnoremap <C-Space> :<C-U>DBExecVisualSQL<Cr>
+"   }}}
+
+"   Sorting text {{{
+vnoremap <A-s> :sort<Cr>
+"   }}}
+
+"    Settings {{{
+nnoremap <A-w> :let &wrap=!&wrap<Cr>
+nnoremap <A-r> :let &relativenumber=!&relativenumber<Cr>
+"    }}}
+
+" }}}
+
+" ############################################################################## }}}
+" ############################  Automatic commands  ############################ {{{
+" ##############################################################################
+
+if has('nvim')
+    autocmd! nvim.terminal TermClose
+endif
+
+augroup vimrc
+    " Clear all autocommands within augroup 'vimrc'
+    autocmd!
+
+    " Do not clear clipboard on exit
+    autocmd VimLeave *                  call system("xsel -ib", getreg('+'))
+
+    " Highlight extra whitespace
+    autocmd WinNew *                    highlight ExtraWhitespace ctermbg=darkgreen
+    autocmd WinNew *                    match ExtraWhitespace /\s\+$/
+
+    " Set libstdc++ source files options
+    autocmd BufRead,BufNewFile /usr/include/c++/*,/usr/include/x86_64-linux-gnu/c++/*,/usr/include/linux/* call SetLibStdCppOptions()
+
+    autocmd BufRead,BufNewFile *.tf set filetype=terraform | setlocal indentexpr= | setlocal cindent
+    autocmd BufWinEnter */templates/*.tmpl set syntax=go
+    autocmd BufWinEnter */templates/*.tmpl setlocal smartindent
+
+    autocmd BufWinEnter /* call ChdirToParentDir(expand('<amatch>'))
+
+	autocmd BufWinEnter *.go setlocal noet
+
+    autocmd BufEnter  *.go inoremap <buffer> <expr> <Space> MapSpace()
+    autocmd BufRead *.tfvars set filetype=terraform
+    "autocmd BufEnter * if expand('%') == '' && &buftype == ''
+    "    \ | echo "Entering an unnamed buffer"
+    "    \ | set ft=
+    "    \ | endif
+    autocmd FileType nerdtree set relativenumber
+    autocmd FileType nerdtree nnoremap <buffer> <nowait> <C-F> :NERDTreeFind **/
+    autocmd FileType nerdtree nnoremap <buffer>          <A-t>  :call OpenTerminalFromNerdTree(0)<Cr>
+    autocmd FileType nerdtree nnoremap <buffer>          <A-S-t> :call OpenTerminalFromNerdTree(1)<Cr>
+    autocmd FileType nerdtree nnoremap <buffer>          <C-C> :call setreg('"', fnamemodify(g:NERDTreeFileNode.GetSelected().path.str(), ':.')) \| call setreg('+', getreg('"'))<Cr>
+    autocmd FileType nerdtree nnoremap <buffer>          <A-c> :call setreg('"', g:NERDTreeFileNode.GetSelected().path.str()) \| call setreg('+', getreg('"'))<Cr>
+    autocmd FileType nerdtree nunmap <buffer> :call
+    autocmd FileType nerdtree nunmap <buffer> CD
+    autocmd FileType terraform setlocal indentexpr=
+    autocmd FileType terraform setlocal nocindent
+    autocmd FileType terraform setlocal autoindent
+    autocmd FileType terraform setlocal softtabstop=2
+    autocmd FileType terraform setlocal tabstop=2
+    autocmd FileType terraform setlocal shiftwidth=2
+    autocmd FileType qf setlocal foldmethod=manual
+    autocmd FileType yaml setlocal foldmethod=indent
+    " autocmd FileType qf call ReloadQuickFix()
+    autocmd User NERDTreeNewRoot execute 'lcd' g:NERDTree.ForCurrentBuf().root.path.str()
+    autocmd User NERDTreeInit execute 'lcd' g:NERDTree.ForCurrentBuf().root.path.str()
+    autocmd BufEnter * call NerdTreeSync(0, 'BufEnter', expand('<amatch>'))
+    autocmd DirChanged * call NerdTreeSync(0, 'DirChanged', expand('<amatch>'))
+    autocmd BufWritePost * call NerdTreeSync(0, 'BufWritePost', expand('<amatch>'))
+    if has('nvim')
+        autocmd BufWritePre *.go,*.tf :lua vim.lsp.buf.format({timeout_ms=500})
+    else
+        autocmd BufWritePre *.go :YcmCompleter Format
+    endif
+    autocmd BufWinEnter * call NerdTreeSync(1, 'BufWinEnter', expand('<amatch>'))
+    autocmd FileType * call NerdTreeSync(1, 'FileType', expand('<amatch>'))
+    if has('nvim')
+        autocmd TermOpen * call NerdTreeSync(1, 'TermOpen', expand('<amatch>'))
+        autocmd TermOpen * setlocal scrolloff=0
+        autocmd TermOpen * setlocal nonumber relativenumber numberwidth=4 statuscolumn=%=
+        autocmd TermEnter * setlocal statuscolumn=%=
+        autocmd TermLeave * execute get(b:, 'desired_mode', '') == 'n' ? 'setlocal statuscolumn=%=%l\ ' : ''
+        autocmd TermClose term://* call CloseTerminalWindows(expand('<abuf>'))
+    else
+        autocmd TerminalOpen * call NerdTreeSync(1, 'TerminalOpen', expand('<amatch>'))
+        autocmd TerminalOpen * setlocal scrolloff=0
+        autocmd TerminalOpen * set termwinkey=<C-^>
+        autocmd TerminalOpen * setlocal nowrap
+        autocmd TerminalOpen * set wfw | setlocal termwinsize=0*5000
+    endif
+    autocmd FileType proto setlocal smartindent
+    autocmd User OlanInitNtsync call NerdTreeSync(1, 'OlanInitNtsync', expand('<amatch>'))
+    autocmd User YcmQuickFixOpened resize 10|autocmd! ycmquickfix WinLeave
+
+
+    execute 'autocmd BufWritePost' g:olan_path_aliases_file 'unlet! g:olan_path_aliases'
+
+    " autocmd QuickFixCmdPre * copen|execute 'lcd'  ProjectDir()
+    " autocmd QuickFixCmdPre  * silent execute 'lcd'  $ARCADIA_ROOT
+    "autocmd QuickFixCmdPost * execute 'lcd'  $ARCADIA_ROOT
+augroup END
+
+" ############################################################################## }}}
+" ##############################  Custom functions  ############################ {{{
+" ##############################################################################
+
+function! ChdirToParentDir(file) " {{{
+    if &ft ==# 'qf'
+        return
+    endif
+    if &ft ==# 'nerdtree'
+        execute 'lcd' g:NERDTree.ForCurrentBuf().root.path.str()
+        return
+    endif
+    let l:newbufnr = bufnr(a:file)
+    if getbufvar(l:newbufnr, '&buftype') != '' || bufnr() != l:newbufnr
+        return
+    endif
+
+    let l:parent = fnamemodify(a:file, ':p:h')
+    if len(l:parent) > 0
+        execute 'lcd' l:parent
+    endif
+endfunction " }}}
+
+function! SetLibStdCppOptions() " {{{
+    setlocal ft=cpp
+    setlocal tabstop=8
+endfunction " }}}
+
+function! Pad(count) " {{{
+    let l:x = a:count
+    let l:pad_to = col('.')
+    while l:x != 0
+        if l:x > 0
+            exe 'normal j^'
+            let l:x = l:x - 1
+        elseif l:x < 0
+            exe 'normal k^'
+            let l:x = l:x + 1
+        endif
+
+        let l:pad_from = col('.')
+        let l:diff = abs(l:pad_to - l:pad_from)
+        if l:pad_from < l:pad_to
+            exe 'normal ' . l:diff . 'i '
+        elseif l:diff > 0
+            exe 'normal ' . l:diff . 'X'
+        endif
+        call cursor(line('.'), l:pad_to)
+    endwhile
+endfunction " }}}
+
+function! GetCurrentChar() " {{{
+    return matchstr(getline('.'), '\%' . col('.') . 'c.')
+endfunction " }}}
+
+function! BreakAndPad(char, count) " {{{
+    let l:i = 0
+    while l:i < a:count
+        let l:line = line('.')
+        let l:col = col('.')
+        exe 'normal f' . a:char
+        if GetCurrentChar() != a:char
+            return
+        endif
+        exe "normal a\n"
+        call cursor(l:line, l:col)
+        call Pad(1)
+        let l:i = l:i + 1
+    endwhile
+endfunction " }}}
+
+function! DeleteHiddenBuffers(bang) " {{{
+    let tpbl=[]
+    call map(range(1, tabpagenr('$')), 'extend(tpbl, tabpagebuflist(v:val))')
+    for buf in filter(range(1, bufnr('$')), 'bufloaded(v:val) && buflisted(v:val) && index(tpbl, v:val)==-1')
+        silent execute 'silent bdelete' . a:bang buf
+    endfor
+endfunction " }}}
+
+function! Yank(args) " {{{
+    if len(a:args) > 1 && a:args[1] == ' '
+        let l:reg = a:args[0]
+        let l:yanktext = a:args[2 + match(a:args[2:], '[^ ]'):]
+    else
+        let l:reg = '"'
+        let l:yanktext = a:args
+    endif
+
+    if l:yanktext[0] == '!'
+        let l:cmdline = l:yanktext[1:]
+        let l:result = system(l:cmdline)
+        if v:shell_error != 0
+            echoerr l:result
+            return
+        endif
+        let l:rbound = l:result[-1:] == "\n" ? -2 : -1
+        let l:yanktext = l:result[:l:rbound]
+    endif
+
+    exe 'let @' . l:reg . ' = "' . escape(expandcmd(l:yanktext), '"') . '"'
+endfunction " }}}
+
+function! IsTerminalWindow(winnr) " {{{
+    let l:bufnr = winbufnr(a:winnr)
+    let l:buftype = getbufvar(l:bufnr, '&buftype')
+    return l:buftype == 'terminal'
+endfunction " }}}
+
+function! IsNerdTreeWindow(winnr) " {{{
+    let l:bufnr = winbufnr(a:winnr)
+    let l:filetype = getbufvar(l:bufnr, '&filetype')
+    return l:filetype == 'nerdtree'
+endfunction " }}}
+
+function! OpenOrReuseWindow() " {{{
+    let l:curwin = winnr()
+    let l:curtab = tabpagenr()
+    let l:wincnt = tabpagewinnr(l:curtab, '$')
+    let l:termcnt = 0
+    let l:nerdtreecnt = 0
+
+    for l:wnum in range(1, l:wincnt)
+        if IsTerminalWindow(l:wnum)
+            let l:termcnt += 1
+        elseif IsNerdTreeWindow(l:wnum)
+            let l:nerdtreecnt += 1
+        endif
+    endfor
+
+    let l:reusable = l:wincnt
+    let l:reusable -= l:termcnt
+    let l:reusable -= l:nerdtreecnt
+    let l:reusable -= IsTerminalWindow(l:curwin) || IsNerdTreeWindow(l:curwin) ? 0 : 1
+
+    if l:reusable == 0
+        if getwinvar(l:curwin, '&bt') == 'terminal'
+            let l:splitbelow = &splitbelow
+            let &splitbelow = 1
+            split
+            let &splitbelow = l:splitbelow
+        else
+            vsplit
+        endif
+
+        let l:newwin = winnr()
+        call win_gotoid(win_getid(l:curwin))
+        return l:newwin
+    endif
+
+    for l:wnum in range(1, l:wincnt)
+        if l:wnum != l:curwin && !IsTerminalWindow(l:wnum) && !IsNerdTreeWindow(l:wnum)
+            return l:wnum
+        endif
+    endfor
+endfunction " }}}
+
+function! FindFileReuseWindow(visual, newtab, currentwindow) " {{{
+    if a:visual
+        norm gv"zy
+        let l:cfile = getreg('z')
+    else
+        let l:isfname = &isfname
+        try
+            set isfname+=:
+            let l:cfile = expand('<cfile>')
+        finally
+            let &isfname = l:isfname
+        endtry
+    endif
+    let l:cfile = trim(l:cfile)
+
+    let l:location = matchlist(l:cfile, '^\(.*\):\([0-9]\+\)$')
+    if empty(l:location)
+        let l:targetline = 0
+    else
+        let l:cfile = l:location[1]
+        let l:targetline = str2nr(l:location[2])
+    endif
+
+    let l:includeexpr = substitute(&l:includeexpr, 'v:fname', 'l:cfile', '')
+    if len(l:includeexpr)
+        execute 'let l:cfile = ' . l:includeexpr
+    endif
+
+    let l:searchpath = &l:path
+    if empty(l:searchpath)
+        let l:searchpath = &g:path
+    endif
+    let l:searchpath = '.,' . l:searchpath
+
+    let l:path = findfile(l:cfile, l:searchpath)
+    if empty(l:path)
+        let l:path = finddir(l:cfile, l:searchpath)
+        if empty(l:path)
+            echomsg "Can't find file " . l:cfile . " in path"
+            return
+        endif
+    endif
+
+    if a:newtab
+        let l:path = fnamemodify(l:path, ':p')
+        execute 'tabedit' fnameescape(l:path)
+    elseif a:currentwindow
+        execute 'edit' fnameescape(l:path)
+    else
+        let l:oldwinnr = winnr()
+        let l:newwinnr = OpenOrReuseWindow()
+        if getcwd(l:oldwinnr) !=# getcwd(l:newwinnr)
+            let l:path = fnamemodify(l:path, ':p')
+        endif
+
+        call win_gotoid(win_getid(l:newwinnr))
+        execute 'edit' fnameescape(l:path)
+    endif
+
+    if l:targetline > 0
+        call cursor(l:targetline, 1)
+    endif
+endfunction " }}}
+
+function! JumpToPrevFile() " {{{
+    let [l:jumps, l:curjump] = getjumplist()
+    let l:jumps = l:jumps[:l:curjump]
+    call reverse(l:jumps)
+
+    let l:i = l:curjump == len(l:jumps)
+    for l:j in l:jumps
+        if l:j['bufnr'] != bufnr()
+            execute 'normal' l:i . "\<C-O>"
+            return
+        endif
+        let l:i += 1
+    endfor
+    echo 'Already at oldest file'
+endfunction " }}}
+
+function! JumpToNextFile() " {{{
+    let [l:jumps, l:curjump] = getjumplist()
+    let l:jumps = l:jumps[l:curjump:]
+
+    let l:i = 0
+    for l:j in l:jumps
+        if l:j['bufnr'] != bufnr()
+            for l:jj in l:jumps[l:i + 1:]
+                if l:jj['bufnr'] != l:j['bufnr']
+                    break
+                endif
+                let l:i += 1
+            endfor
+
+            execute 'normal' l:i . "\<C-I>"
+            return
+        endif
+        let l:i += 1
+    endfor
+    echo 'Already at newest file'
+endfunction " }}}
+
+function! LoadPathAliases() " {{{
+    if exists('g:olan_path_aliases') && exists('g:olan_root_dirs')
+        return
+    endif
+
+    try
+        let g:olan_path_aliases = {}
+        let g:olan_root_dirs = []
+        for l:line in readfile(g:olan_path_aliases_file)
+            let l:items = l:line->split()
+            for l:alias in l:items[2:]
+                let g:olan_path_aliases[tolower(l:alias)] = {'path': l:items[0], 'name': l:items[2]}
+            endfor
+            if l:items[1] == 'root'
+                call add(g:olan_root_dirs, expand(l:items[0]))
+            endif
+        endfor
+    catch /Can't open file/
+        return
+    endtry
+endfunction " }}}
+
+function! OpenFileByAlias(alias, window_splitter) " {{{
+    call LoadPathAliases()
+
+    let l:value = get(g:olan_path_aliases, tolower(a:alias))
+    if type(l:value) == type(0) && !l:value
+        echom 'Unknown alias: ' . a:alias
+        return
+    endif
+
+    let l:path = expand(l:value['path'])
+
+    if !isdirectory(l:path) && !filereadable(l:path)
+        echom 'Cannot open ' . l:path
+        return
+    end
+
+    if len(a:window_splitter) > 0
+        execute a:window_splitter
+    endif
+
+    if isdirectory(l:path)
+        if has_key(b:, 'NERDTree') && winnr('$') == 1
+            let l:curbuf = bufnr()
+            new
+            execute 'bdelete' l:curbuf
+            let l:emptybuf = bufnr()
+            execute 'NERDTree' l:path
+            execute 'bdelete' l:emptybuf
+        else
+            execute 'NERDTree' l:path
+        endif
+    else
+        execute 'edit' l:path
+    endif
+endfunction " }}}
+
+function! CompleteFileAliases(arglead, ...) " {{{
+    call LoadPathAliases()
+
+    let l:candidates = {}
+    let l:Chop = len(a:arglead) ? {str -> str[:len(a:arglead) - 1]} : {str -> ''}
+
+    for [l:alias, l:value] in items(g:olan_path_aliases)
+        if l:Chop(l:alias) ==? a:arglead
+            let l:name = l:value['name']
+            let l:oldalias = get(l:candidates, l:name, 0)
+            if type(l:oldalias) == type(0) || l:alias < l:oldalias
+                let l:candidates[l:name] = l:alias
+            endif
+        endif
+    endfor
+
+    return map(
+    \   sort(
+    \       items(l:candidates),
+    \       {l, r -> l[1] < r[1] ? -1 : l[1] > r[1]}
+    \   ),
+    \   'v:val[0]'
+    \)
+endfunction " }}}
+
+function! Xargs(args, substitute) " {{{
+    norm gv"zy
+    let l:result = system('xargs --delimiter "\n" ' . a:args, getreg('z'))
+    let l:exit_status = v:shell_error
+
+    if l:exit_status != 0
+        echoerr l:result
+        return
+    endif
+
+    if a:substitute
+        let l:rbound = l:result[-1:] == "\n" ? -2 : -1
+        execute 'normal' "gv\"=l:result[:" . l:rbound . "]\<CR>p"
+    endif
+endfunction " }}}
+
+function! JumpOffsetExpr(offset) " {{{
+    if a:offset == 1
+        return 'j'
+    elseif a:offset == -1
+        return 'k'
+    endif
+
+    return "\<Esc>:call JumpOffset(" . a:offset . ")\<Cr>"
+endfunction " }}}
+
+function! JumpOffset(offset) " {{{
+    let l:contextmark = getpos("''")
+    normal! m'
+    call setpos("''", l:contextmark)
+
+    execute 'normal!' a:offset > 0 ? a:offset . 'j' : -a:offset . 'k'
+endfunction "}}}
+
+function! Aopen(line1, line2, current) " {{{
+    silent execute '!aopen %' a:line1 . '-' . a:line2 a:current ? '-c' : ''
+endfunction " }}}
+
+function! Arel(filename) abort " {{{
+    let l:output = system('arel ' . shellescape(a:filename))
+    let l:exit_status = v:shell_error
+    if l:exit_status != 0
+        throw 'arel: ' . l:output
+    endif
+    return l:output[:-2]
+endfunction " }}}
+
+function! YankArel() abort " {{{
+    if &filetype ==# 'nerdtree'
+        let l:filename = g:NERDTreeFileNode.GetSelected().path.str()
+    else
+        let l:filename = expand('%:p')
+    endif
+    let l:path = Arel(l:filename)
+    call setreg('"', l:path)
+    call setreg('+', l:path)
+endfunction " }}}
+
+function! Tapi_FillQuickfixWindow(buffer, logfile) " {{{
+    cd $ARCADIA_ROOT
+    execute 'cgetfile' a:logfile
+    cd -
+    copen
+    call system('rm -f ' . a:logfile)
+endfunction " }}}
+
+function! Tapi_Chdir(buffer, pwd) " {{{
+    execute 'lcd' a:pwd
+endfunction " }}}
+
+function! MapCarriageReturn() " {{{
+    let l:curcol = col('.')
+    let l:curoffset = l:curcol - 1
+    let l:line = getline('.')
+    let l:prevchar = l:line[l:curoffset - 1]
+    let l:curchar = l:line[l:curoffset]
+    let l:eol = l:curcol - 1 == strlen(l:line)
+    let l:almosteol = l:curcol == strlen(l:line)
+    if l:prevchar != '{' || !(l:eol || l:almosteol && l:curchar == '}')
+        return "\<CR>"
+    endif
+
+    if match(l:line, '^\s*{}\?') >= 0
+        let l:prevline = getline(line('.') - 1)
+        let l:line = l:prevline . l:line
+    endif
+
+    let l:add_semicolon = 0
+    if &filetype == 'cpp'
+        let l:add_semicolon = CppShouldAddSemicolon(l:line)
+    elseif &filetype == 'sql'
+        let l:add_semicolon = SqlShouldAddSemicolon(l:line)
+    endif
+
+    let l:maybe_semicolon = ''
+    let l:maybe_rbrace = l:curchar == '}' ? '' : '}'
+    if l:add_semicolon
+        let l:maybe_semicolon = '}' ? ';' : "\<C-O>a;"
+    endif
+
+    let l:maybe_backspace = &ft == 'proto' ? "\<BS>" : '' " For some reason there is an extra padding after in proto files after <CR>
+
+    return "\<CR>" . l:maybe_rbrace . l:maybe_backspace . l:maybe_semicolon . "\<C-O>O"
+endfunction " }}}
+
+function! CppShouldAddSemicolon(line) " {{{
+    let l:opt_ws = '\s*'
+    let l:ws = '\s\+'
+    let l:ident = '[a-zA-Z_][a-zA-Z0-9_]*'
+    let l:opt_cv = '\(const\s\+\|volatile\s\+\)\?'
+
+    let l:class_definition =        '^' . l:opt_ws . 'class'  . l:ws
+    let l:struct_definition =       '^' . l:opt_ws . 'struct' . l:ws
+    let l:variable_initialization =
+        \ '^' . l:opt_ws . l:opt_cv . l:opt_cv
+        \ . l:ident . l:ws . l:ident . l:opt_ws . '[={]'
+
+    for l:pattern in [
+        \ l:class_definition,
+        \ l:struct_definition,
+        \ l:variable_initialization,
+        \ ]
+        if match(a:line, l:pattern) >= 0
+            return 1
+        endif
+    endfor
+endfunction " }}}
+
+function! SqlShouldAddSemicolon(line) " {{{
+    return match(a:line, '^\s*\%(\$[a-zA-Z_][a-zA-Z0-9_]*\s*=\|return\s\+\)') >= 0
+endfunction " }}}
+
+function! Cbuffer(cmd, line1, line2) " {{{
+    execute a:line1 . ',' . a:line2 . a:cmd
+endfunction " }}}
+
+function! Break() " {{{
+    call term_sendkeys(winbufnr(1), "break " . expand("%:p") . ':' . line('.') . "\<Cr>")
+endfunction " }}}
+
+function! NerdTreeGetPaths() " {{{
+    if &bt ==# 'terminal' || len(expand('%')) == 0
+        let l:curpath = getcwd() . '/'
+    else
+        let l:curpath = expand('%:p')
+    endif
+    let l:root = fnamemodify(l:curpath, ':h')
+    let l:maxlen = 0
+    for l:path in g:olan_root_dirs
+        let l:prefix = l:curpath[0:len(l:path) - 1]
+        if l:prefix == l:path && l:maxlen < len(l:prefix)
+            let l:root = l:path
+            let l:maxlen = len(l:prefix)
+        endif
+    endfor
+    return [l:root, l:curpath, l:maxlen != 0]
+endfunction " }}}
+
+function! NerdTreeFindExpr(prefix) " {{{
+    call LoadPathAliases()
+
+    if &bt != '' && &bt != 'terminal'
+        return "\<Cr>"
+    endif
+
+    let l:paths = NerdTreeGetPaths()
+    let l:root = l:paths[0]
+    let l:curpath = l:paths[1]
+    return a:prefix . ":call NerdTreeFind('" . l:root .  "', '" . l:curpath . "')\<Cr>"
+endfunction " }}}
+
+function! NerdTreeFind(root, findpath) abort " {{{
+    let l:findpath = a:findpath
+    if len(l:findpath) == 0
+        let l:findpath = getcwd()
+    endif
+    if !exists('t:NERDTreeBufName') || getbufvar(t:NERDTreeBufName, 'NERDTreeRoot', {'path': {'str': {->''} } }).path.str() !=# a:root
+        execute 'NERDTree' a:root
+    else
+        NERDTreeFocus
+    endif
+    let l:ntcurtab = g:NERDTree.ForCurrentTab()
+    let l:nodepath = g:NERDTreePath.New(l:findpath)
+    if l:ntcurtab.root.path.str() ==# l:nodepath.str()
+        let l:node = l:ntcurtab.root.putCursorHere(0, 0)
+    else
+        let l:node = l:ntcurtab.root.reveal(l:nodepath)
+        call l:ntcurtab.render()
+        call l:node.putCursorHere(0, 0)
+    endif
+    " execute 'NERDTreeFind' a:findpath
+endfunction " }}}
+
+function! Only() " {{{
+    let l:current_window_number = 1
+    let l:windows_to_close = []
+    for l:bufnr in tabpagebuflist()
+        if l:current_window_number != winnr()
+            \ && type(getbufvar(l:bufnr, 'NERDTree', v:null)) == type(v:null)
+            \ && type(getbufvar(l:bufnr, 'dlvim',    v:null)) == type(v:null)
+
+            call add(l:windows_to_close, l:current_window_number)
+        endif
+        let l:current_window_number += 1
+    endfor
+    call reverse(l:windows_to_close)
+    for l:window_number in l:windows_to_close
+        execute l:window_number .. 'close'
+    endfor
+endfunction " }}}
+
+function! OpenTerminalFromNerdTree(shift) abort " {{{
+    if &ft !=# 'nerdtree'
+        return ":terminal\<Cr>"
+    endif
+
+    let l:curnode = g:NERDTreeFileNode.GetSelected()
+    if l:curnode.path.isDirectory
+        let l:termpath = l:curnode.path.str()
+    else
+        let l:termpath = fnamemodify(l:curnode.path.str(), ':h')
+    endif
+
+    let l:didsplit = SplitForNerdTree()
+    if a:shift == 1 || l:didsplit
+        let l:use_current_window = 1
+        let l:maybe_curwin = ' ++curwin'
+    else
+        let l:use_current_window = 0
+        let l:maybe_curwin = ''
+    endif
+
+    if has('nvim')
+        if !l:use_current_window
+            new
+        endif
+        execute 'terminal /bin/bash -c "cd ' . l:termpath . ' && exec ' . &shell . '"'
+        let b:from_nerd_tree = 1
+        startinsert
+    else
+        execute 'terminal ++close' . l:maybe_curwin . ' /bin/bash -c "cd ' . l:termpath . ' && exec ' . &shell . '"'
+    endif
+    execute 'lcd' l:termpath
+    set nowinfixwidth
+    doautocmd User OlanInitNtsync
+endfunction " }}}
+
+" Shamelessly stolen from NERDTree (s:Opener._newVSplit()) " {{{
+function! SplitForNerdTree() abort
+    if winnr('$') !=# 1
+        wincmd p
+        return 0
+    endif
+
+    let l:splitright = &splitright
+    let l:eventignore = &eventignore
+
+    let &splitright = g:NERDTreeWinPos ==# 'left'
+    let &eventignore = 'all'
+
+    vsplit
+    let l:splitwinnr = winnr()
+    call g:NERDTree.CursorToTreeWin()
+    execute 'silent vertical resize ' . g:NERDTreeWinSize
+    execute l:splitwinnr . 'wincmd w'
+
+    let &eventignore=l:eventignore
+    let &splitright=l:splitright
+    return 1
+endfunction " }}}
+
+function! NerdTreeSync(isinit, event, match) " {{{
+    if a:isinit
+        let b:olan_ntsync =
+            \ (&buftype ==# '' && bufname() !=# 'Result')
+            \ || &buftype ==# 'terminal'
+    endif
+
+    if !exists('b:olan_ntsync') || !b:olan_ntsync
+        return
+    endif
+
+    if exists('*popup_list')
+        for l:winid in popup_list()
+            if popup_getpos(l:winid).visible
+                return
+            endif
+        endfor
+    endif
+
+    let l:ntcurtab = g:NERDTree.ForCurrentTab()
+    if type(l:ntcurtab) != type({}) || !l:ntcurtab.IsOpen()
+        return
+    endif
+
+    " TODO: ugly hack, but i don't know any other way to fix calling this from setloclist()
+    try
+        NERDTreeFocus
+        wincmd p
+    catch /.*/
+        return
+    endtry
+
+    let l:curroot = l:ntcurtab.root.path.str()
+
+    if &bt ==# 'terminal' || len(bufname()) == 0
+        let l:curpath = getcwd()
+    else
+        let l:curpath = expand('%:p')
+    endif
+
+    if l:curpath =~# '^fugitive://'
+        return
+    endif
+
+    if !isdirectory(l:curpath) && !filereadable(l:curpath)
+        let l:parentpath = fnamemodify(l:curpath, ':p:h')
+        if l:parentpath == l:curroot
+            NERDTreeFocus
+            call l:ntcurtab.root.putCursorHere(0, 0)
+        else
+            let l:parentdir = g:NERDTreePath.New(l:parentpath)
+            let l:node = l:ntcurtab.root.reveal(l:parentdir)
+            NERDTreeFocus
+            call l:node.putCursorHere(0, 0)
+        endif
+        wincmd p
+        return
+    endif
+
+    NERDTreeFocus
+    if l:curpath == l:curroot
+        norm P
+    elseif l:curpath[0:len(l:curroot) - 1] !=# l:curroot
+        norm Pk
+    else
+        let l:prevnode = g:NERDTreeFileNode.GetSelected()
+        let l:pathobj = g:NERDTreePath.New(l:curpath)
+        let l:node = l:ntcurtab.root.reveal(l:pathobj)
+
+        mark '
+        let l:line_before = line('.')
+        call l:node.putCursorHere(0, 0)
+        let l:line_after = line('.')
+
+        let l:text = substitute(getline('.'), '^[ ]\+', '', '')
+        let l:rendered_node_text = l:node.displayString()
+        if l:text != l:rendered_node_text || (l:line_before == l:line_after && l:prevnode.path.str() !=# l:node.path.str())
+            call l:ntcurtab.render()
+            call l:node.putCursorHere(0, 0)
+        endif
+        setlocal cursorline " Ghost cursorline workaround
+    endif
+    wincmd p
+endfunction " }}}
+
+function! Align(where) " {{{
+    if type(g:NERDTree.ForCurrentTab()) == type(0) || !g:NERDTree.ForCurrentTab().IsOpen()
+        execute "normal! \<C-w>" . a:where
+        return
+    endif
+
+    NERDTreeToggle
+    execute "normal! \<C-w>" . a:where
+    NERDTreeToggle
+    execute "normal! \<C-w>p"
+endfunction " }}}
+
+function! ProjectDir() " {{{
+    if type(g:NERDTree.ForCurrentTab()) == type(0) || !g:NERDTree.ForCurrentTab().IsOpen()
+        return '.'
+    else
+        return g:NERDTree.ForCurrentTab().root.path.str()
+    endif
+endfunction " }}}
+
+function! GrepExpr(ctrl) " {{{
+    return ":call Grep('', " . a:ctrl . ")\<C-Left>\<Left>\<Left>\<Left>"
+endfunction " }}}
+
+function! Grep(pattern, icase) " {{{
+    let l:nerdtree = &ft ==# 'nerdtree'
+    let l:didsplit = 0
+    if l:nerdtree
+        let l:didsplit = SplitForNerdTree()
+    endif
+    if l:didsplit && &ft ==# 'nerdtree'
+        let l:winid = win_getid()
+        wincmd n
+        call win_gotoid(l:winid)
+        wincmd q
+    endif
+
+    let l:maybe_icase = a:icase ? 'i' : ''
+    silent execute 'grep -nrI' . l:maybe_icase . ' "' . escape(a:pattern, '"\#') . '" ' . shellescape(ProjectDir())
+    if l:didsplit && len(getqflist()) == 0
+        wincmd q
+        wincmd q
+        echom 'Nothing found for pattern ' . a:pattern
+        return
+    endif
+    redraw!
+endfunction " }}}
+
+function! DropTab() " {{{
+    for l:i in range(winnr('$'))
+        execute 'bd!' winbufnr(1)
+    endfor
+endfunction " }}}
+
+function! DeleteCurrentTerminalBuffer() abort " {{{
+    let l:terminalbuf = bufnr()
+    if winnr('$') > 1
+        close!
+    endif
+    execute 'bdelete!' l:terminalbuf
+endfunction " }}}
+
+function! CloseTerminalWindows(bufnr) abort " {{{
+    for l:winid in win_findbuf(str2nr(a:bufnr))
+        call win_execute(l:winid, 'if winnr("$") > 1 | close! | endif')
+    endfor
+endfunction " }}}
+
+function! JsonFormat() "{{{
+    normal! gv"zy
+    let l:output = system('jq --sort-keys', getreg('z'))
+    if v:shell_error != 0
+        echoerr l:output
+        return
+    endif
+    call setreg('z', l:output[:-2])
+
+    execute "normal! gvc\<C-r>z\<Esc>"
+endfunction " }}}
+
+function! ReloadQuickFix() " {{{
+    if exists('g:ycmref') || QuickFixBufNr() != bufnr()
+        return
+    endif
+
+    let l:eventignore = &eventignore
+    set eventignore=all
+    execute 'lcd' ProjectDir()
+    call setqflist(getqflist())
+    let &eventignore = l:eventignore
+endfunction " }}}
+
+function! GoToReferences() " {{{
+    let g:ycmref = 1
+    YcmCompleter GoToReferences
+
+    execute 'lcd' ProjectDir()
+    call setqflist(getqflist())
+    unlet g:ycmref
+endfunction " }}}
+
+function! Diags() " {{{
+    let g:ycmref = 1
+    YcmDiags
+    unlet g:ycmref
+endfunction " }}}
+
+function! RefactorRename(name) " {{{
+    let g:ycmref = 1
+    exec 'YcmCompleter RefactorRename' a:name
+    unlet g:ycmref
+endfunction " }}}
+
+function! GoTo() " {{{
+    let g:ycmref = 1
+    exec 'YcmCompleter GoTo'
+    unlet g:ycmref
+endfunction
+" }}}
+
+function! GoToImplementation() " {{{
+    let g:ycmref = 1
+    YcmCompleter GoToImplementation
+    unlet g:ycmref
+endfunction
+" }}}
+
+function! QuickFixBufNr() " {{{
+    return getqflist({'qfbufnr': 1})['qfbufnr']
+endfunction
+" }}}
+
+function! CtrlSpace() abort " {{{
+    if &ft ==# 'sql'
+        DBExecSQLUnderCursor
+    endif
+endfunction " }}}
+
+function! Include() abort " {{{
+    if &ft == 'go'
+        let l:packageline = getline(1)
+        let l:m = matchlist(l:packageline, 'package \(.*\)')
+        if len(l:m) == 0
+            echoerr 'Invalid package line: ' . l:packageline
+            return
+        endif
+        let l:package = l:m[1]
+
+        let l:arel = system('arel ' . shellescape(expand('%')))
+        let l:arelbase = fnamemodify(l:arel, ':h:h')
+
+        call Yank("\t\"a.yandex-team.ru/" . l:arelbase . '/' .  l:package . "\"\n")
+        return
+    elseif &ft == 'python'
+        let l:relative = trim(system('arel ' . shellescape(expand('%'))))
+        let l:import_string = substitute(l:relative, '/', '.', 'g')
+        let l:import_string = substitute(l:import_string, '\.py$', '', '')
+        call Yank('import ' . l:import_string . "\n")
+    else
+        call Yank("!printf '\\#include <\\%s>\n\n' `arel %`")
+    endif
+endfunction " }}}
+
+function! ToggleTermwinsize() abort " {{{
+    if len(&tws) == 0
+        setlocal termwinsize=0*5000
+    else
+        setlocal termwinsize=
+    endif
+endfunction " }}}
+
+" https://stackoverflow.com/questions/9403098/is-it-possible-to-jump-to-the-next-closed-fold-in-vim
+function! NextClosedFold(dir)
+    let cmd = 'norm!z' . a:dir
+    let view = winsaveview()
+    let [l0, l, open] = [0, view.lnum, 1]
+    while l != l0 && open
+        exe cmd
+        let [l0, l] = [l, line('.')]
+        let open = foldclosed(l) < 0
+    endwhile
+    if open
+        call winrestview(view)
+    endif
+endfunction
+
+function! CurrentSyntaxGroup() abort
+    let l:stack = synstack(line('.'), col('.'))
+    if len(l:stack) == 0
+        return -1
+    endif
+    return l:stack[-1]
+endfunction
+
+function! Skip() abort
+    let l:stack = synstack(line('.'), col('.'))
+    if len(l:stack) == 0
+        return 0
+    endif
+    let l:last = l:stack[-1]
+    return
+        \ l:last == 693
+        \ || l:last == 284
+        \ || l:last == 253
+        \ || l:last == 174
+        "\ || l:last == 166
+endfunction
+
+function! Up() abort
+    if &ft !~# 'go\|json\|cpp'
+        normal! [{
+        return
+    endif
+
+    let l:contextmark = getpos("''")
+    normal! m'
+    call setpos("''", l:contextmark)
+
+    let l:result = searchpair('[[{(]', '', '[]})]', 'b', funcref('Skip'), 1)
+    "let l:result = searchpair('[[{(]', '', '[]})]', 'b', '', 1)
+    if result <= 0
+        execute "normal! \<C-O>"
+    endif
+endfunction
+
+function! Break() abort
+    Arel
+    call setreg('"', 'break ' . getreg('"') . ':' . line('.'))
+endfunction
+
+function! Xrestore() abort
+    xrestore
+    let $SSH_AUTH_SOCK=readfile(expand('~/.ssh_auth_sock_path'))[0]
+endfunction
+
+function! Htonl()
+    execute "normal! gvc\<C-r>=system('htonl \<C-r>" .. '"' .. "')\<Cr>"
+endfunction
+
+function! MapSpace()
+    let l:line = getline('.')
+    if match(l:line, '^\s*if$') < 0
+        return  ' '
+    end
+    let l:index = match(l:line, 'if$')
+    if l:index >= 0
+        let l:whitespace = ''
+    else
+        let l:whitespace = l:line[0:l:index-1]
+    end
+    return " \<Esc>" .. ':lua vim.snippet.expand(" ${1:true} {\n' .. l:whitespace .. '\t$0\n}")' .. "\<Cr>"
+endfunction
+
+function! EditFile(channel, file_path)
+    let l:splitbelow = &splitbelow
+    let &splitbelow = 1
+    let l:terminal_window = win_getid()
+    let l:height = max([10, str2nr(trim(system('wc -l <' .. shellescape(a:file_path))))])
+    execute l:height .. 'new'
+    let &splitbelow = l:splitbelow
+
+    execute 'edit' a:file_path
+    setlocal bufhidden=delete
+    nnoremap <buffer> <Cr> <Cmd>wq<Cr>
+    nnoremap <buffer> <A-q> <Cmd>1,$d<Cr><Cmd>wq<Cr>
+    nnoremap <buffer> <A-d> <Cmd>1,$d<Cr><Cmd>wq<Cr>
+    let l:group = 'g' .. rand()
+    execute 'augroup' l:group
+    execute 'autocmd ' .. l:group .. ' BufWinLeave <buffer> autocmd! ' .. l:group .. ' | call rpcnotify(' .. a:channel .. ', "edit_file_done") | lua vim.schedule(function() vim.fn.win_gotoid(' .. l:terminal_window .. ') end)'
+    execute 'augroup END'
+endfunction
+
+" ############################################################################## }}}
+" ################################  Plugin setup  ############################## {{{
+" ##############################################################################
+
+execute 'source ' . fnameescape(expand('~/.vim/vundle.vim'))
+
+colorscheme desert
+highlight Folded ctermfg=0   ctermbg=255  guifg=#000000   guibg=#F8F8FF
+highlight ExtraWhitespace ctermbg=darkgreen
+highlight Terminal guifg=#c0c0c0 guibg=#000040 ctermfg=gray ctermbg=black
+highlight clear MatchParen
+highlight MatchParen guibg=#505050
+highlight clear Folded
+highlight Folded guibg=#606060
+match ExtraWhitespace /\s\+$/
+
+" ############################################################################## }}}
+" ############################  Extra configuration  ########################### {{{
+" ##############################################################################
+
+let s:extra_conf_file = expand('~/.vim/extra.vim')
+if filereadable(s:extra_conf_file)
+    exe "source " . s:extra_conf_file
+endif
+
+" ############################################################################## }}}
+
+nnoremap K k

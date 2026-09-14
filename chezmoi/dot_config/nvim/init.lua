@@ -117,30 +117,27 @@ if ok then
     vim.keymap.set("n", "[c", function() gitsigns.nav_hunk('prev') end)
 end
 
-vim.api.nvim_set_hl(0, "UserCodeDiffLineInsert", {
-    bg = "#294329",
-    ctermbg = 22,
-})
-vim.api.nvim_set_hl(0, "UserCodeDiffCharInsert", {
-    bg = "#355535",
-    ctermbg = 22,
-})
-vim.api.nvim_set_hl(0, "UserCodeDiffLineDelete", {
-    bg = "#4a2b32",
-    ctermbg = 52,
-})
-vim.api.nvim_set_hl(0, "UserCodeDiffCharDelete", {
-    bg = "#603740",
-    ctermbg = 52,
-})
+local codediff_path = vim.fn.stdpath("data") .. "/plugged/codediff.nvim"
+if vim.fn.isdirectory(codediff_path) == 1 then
+    vim.opt.runtimepath:append(codediff_path)
+    local codediff_ok, codediff = pcall(require, "codediff")
+    if codediff_ok then
+        vim.api.nvim_set_hl(0, "UserCodeDiffLineInsert", { bg = "#294329", ctermbg = 22 })
+        vim.api.nvim_set_hl(0, "UserCodeDiffCharInsert", { bg = "#355535", ctermbg = 22 })
+        vim.api.nvim_set_hl(0, "UserCodeDiffLineDelete", { bg = "#4a2b32", ctermbg = 52 })
+        vim.api.nvim_set_hl(0, "UserCodeDiffCharDelete", { bg = "#603740", ctermbg = 52 })
+        codediff.setup({
+            highlights = {
+                line_insert = "UserCodeDiffLineInsert",
+                char_insert = "UserCodeDiffCharInsert",
+                line_delete = "UserCodeDiffLineDelete",
+                char_delete = "UserCodeDiffCharDelete",
+            },
+        })
+    end
+end
 
-require("codediff").setup({
-    highlights = {
-        line_insert = "UserCodeDiffLineInsert",
-        char_insert = "UserCodeDiffCharInsert",
-        line_delete = "UserCodeDiffLineDelete",
-        char_delete = "UserCodeDiffCharDelete",
-    },
-})
-
-require("arcanum_review").setup()
+local arcanum_review_ok, arcanum_review = pcall(require, "arcanum_review")
+if arcanum_review_ok then
+    arcanum_review.setup()
+end

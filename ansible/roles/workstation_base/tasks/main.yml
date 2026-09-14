@@ -77,6 +77,7 @@
     - "{{ chezmoi_cache_dir }}"
     - "{{ chezmoi_state_dir }}"
     - "{{ neovim_build_root }}"
+    - "{{ workstation_home }}/.vim/bundle"
 
 - name: Trust GitHub SSH host keys
   ansible.builtin.known_hosts:
@@ -461,6 +462,14 @@
     - neovim_build_required
     - not ansible_check_mode
 
+- name: Install Vundle plugin manager
+  ansible.builtin.git:
+    repo: "{{ vundle_repo_url }}"
+    dest: "{{ vundle_install_dir }}"
+    version: "{{ vundle_version }}"
+    update: false
+  when: not ansible_check_mode
+
 - name: Configure independent base chezmoi state
   ansible.builtin.template:
     src: chezmoi-base.toml.j2
@@ -490,4 +499,53 @@
       - --force
       - apply
   changed_when: chezmoi_diff.stdout | length > 0
+  when: not ansible_check_mode
+
+- name: Install missing Vundle plugins
+  ansible.builtin.command:
+    argv:
+      - "{{ neovim_install_dir }}/bin/nvim"
+      - --headless
+      - -u
+      - NONE
+      - -S
+      - "{{ workstation_home }}/.vim/vundle.vim"
+      - +PluginInstall
+      - +qall
+  environment:
+    HOME: "{{ workstation_home }}"
+    XDG_CONFIG_HOME: "{{ workstation_home }}/.config"
+    XDG_DATA_HOME: "{{ workstation_home }}/.local/share"
+  changed_when: false
+  when: not ansible_check_mode
+
+- name: Install missing vim-plug plugins
+  ansible.builtin.command:
+    argv:
+      - "{{ neovim_install_dir }}/bin/nvim"
+      - --headless
+      - -u
+      - "{{ workstation_home }}/.config/nvim/vimrc.vim"
+      - --cmd
+      - "let g:workstation_plugin_bootstrap = 1"
+      - +PlugInstall --sync
+      - +qall
+  environment:
+    HOME: "{{ workstation_home }}"
+    XDG_CONFIG_HOME: "{{ workstation_home }}/.config"
+    XDG_DATA_HOME: "{{ workstation_home }}/.local/share"
+  changed_when: false
+  when: not ansible_check_mode
+
+- name: Verify managed Neovim configuration
+  ansible.builtin.command:
+    argv:
+      - "{{ neovim_install_dir }}/bin/nvim"
+      - --headless
+      - +qall
+  environment:
+    HOME: "{{ workstation_home }}"
+    XDG_CONFIG_HOME: "{{ workstation_home }}/.config"
+    XDG_DATA_HOME: "{{ workstation_home }}/.local/share"
+  changed_when: false
   when: not ansible_check_mode

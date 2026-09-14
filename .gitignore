@@ -13,4 +13,8 @@ opencode.jsonc
 .claude
 .codex
 .agents/
+.ansible/
 .venv/
+
+# Legacy local-only Neovim credential file; CodeCompanion is no longer managed.
+/dotfiles/nvim/api_keys.lua

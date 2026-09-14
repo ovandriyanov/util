@@ -26,26 +26,26 @@ Plug 'saadparwaiz1/cmp_luasnip'
 " Plug 'dcampos/nvim-snippy'
 " Plug 'dcampos/cmp-snippy'
 
-" CodeCompanion
 Plug 'nvim-lua/plenary.nvim'
-Plug 'nvim-mini/mini.diff'
-Plug 'olimorris/codecompanion.nvim'
-Plug 'ravitemer/codecompanion-history.nvim'
 
 " Telescope
 " Plug 'BurntSushi/ripgrep'
-Plug 'sharkdp/fd'
 Plug 'nvim-treesitter/nvim-treesitter'
 Plug 'nvim-tree/nvim-web-devicons'
 Plug 'nvim-telescope/telescope.nvim'
 
-Plug 'esmuellert/codediff.nvim'
-execute "Plug '" . expand('$ARCADIA_TOOLING_ROOT/junk/ovandriyanov/nvim/arcanum-review') . "'"
+let s:arcadia_tooling_root = empty($ARCADIA_TOOLING_ROOT)
+    \ ? expand('$HOME/arc/tooling')
+    \ : $ARCADIA_TOOLING_ROOT
+let s:arcanum_review_path = s:arcadia_tooling_root . "/junk/ovandriyanov/nvim/arcanum-review"
+if isdirectory(s:arcanum_review_path)
+    execute "Plug '" . s:arcanum_review_path . "'"
+endif
 Plug 'nanozuki/tabby.nvim', { 'tag': 'v2.8.1' }
 
 call plug#end()
 
-lua require('mini.diff').setup()
-luafile /home/ovandriyanov/.config/nvim/nvim-cmp.lua
-luafile /home/ovandriyanov/.config/nvim/gosnip.lua
-luafile /home/ovandriyanov/github/ovandriyanov/util/dotfiles/nvim/codecompanion.lua
+if !get(g:, 'workstation_plugin_bootstrap', 0)
+    lua dofile(vim.fn.stdpath('config') .. '/nvim-cmp.lua')
+    lua dofile(vim.fn.stdpath('config') .. '/gosnip.lua')
+endif

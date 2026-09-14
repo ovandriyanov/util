@@ -70,6 +70,10 @@ chezmoi_cache_dir: "{{ workstation_home }}/.cache/chezmoi/base"
 chezmoi_state_dir: "{{ workstation_home }}/.local/state/chezmoi"
 chezmoi_state_file: "{{ chezmoi_state_dir }}/base.boltdb"
 
+vundle_repo_url: https://github.com/VundleVim/Vundle.vim.git
+vundle_version: b255382d6242d7ea3877bf059d2934125e0c4d95
+vundle_install_dir: "{{ workstation_home }}/.vim/bundle/Vundle.vim"
+
 workstation_build_packages:
   Debian:
     - autoconf
@@ -80,9 +84,13 @@ workstation_build_packages:
     - curl
     - gettext
     - git
+    - jq
     - libtool-bin
     - pkg-config
+    - ripgrep
     - unzip
+    - xdg-utils
+    - xsel
     - xz-utils
   RedHat:
     - autoconf
@@ -94,10 +102,14 @@ workstation_build_packages:
     - gcc-c++
     - gettext
     - git
+    - jq
     - libtool
     - make
     - pkgconf-pkg-config
+    - ripgrep
     - unzip
+    - xdg-utils
+    - xsel
     - xz
   Archlinux:
     - autoconf
@@ -108,9 +120,13 @@ workstation_build_packages:
     - curl
     - gettext
     - git
+    - jq
     - libtool
     - pkgconf
+    - ripgrep
     - unzip
+    - xdg-utils
+    - xsel
     - xz
 
 workstation_apt_preferences: []

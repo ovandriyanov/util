@@ -67,3 +67,14 @@ The writable fork is cloned to `~/github/ovandriyanov/neovim`. Ansible does not
 reset or check out an existing clone. It fetches refs, creates a detached build
 worktree for the pinned commit under `~/.cache/workstation/neovim`, installs the
 result under `~/.local/opt/neovim`, and updates `~/bin/nvim`.
+
+## Vim And Neovim Configuration
+
+The base chezmoi source manages `~/.vimrc`, `~/.config/nvim`, and the personal
+files under `~/.vim`. Ansible pins Vundle itself and asks Vundle and vim-plug to
+install missing plugins; it does not update existing plugin checkouts.
+
+CodeDiff and DBExt remain local-only. Their existing checkouts and DBExt's local
+configuration are used when present, but are not installed or modified by this
+playbook. Language servers are also enabled only when their executables are
+available.

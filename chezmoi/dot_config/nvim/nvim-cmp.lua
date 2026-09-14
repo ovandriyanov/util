@@ -130,6 +130,9 @@ cmp.setup.cmdline(':', {
 
 local home = os.getenv("HOME")
 local arcadia_root = os.getenv("ARCADIA_ROOT")
+if not arcadia_root or arcadia_root == "" then
+    arcadia_root = home .. "/arc/tooling"
+end
 local cloudia_base = os.getenv("CLOUDIA_ROOT")
 local cloudia_root = cloudia_base and cloudia_base .. "/cloud/cloud-go" or nil
 
@@ -142,18 +145,21 @@ local has_arcadia = arcadia_root and vim.fn.isdirectory(arcadia_root) == 1 and t
 local has_cloudia = cloudia_root and vim.fn.isdirectory(cloudia_root) == 1 and true or false
 local gopls_args = debug_gopls and { "-logfile", "/tmp/gopls-nvim-" .. vim.fn.getpid() .. ".log", "-rpc.trace" } or {}
 local gopls_cmd = { "gopls" }
-if has_arcadia then
+local arcadia_gopls = home .. "/.ya/tools/v4/gopls-linux/gopls"
+local has_gopls = vim.fn.executable("gopls") == 1
+if has_arcadia and vim.fn.executable(arcadia_gopls) == 1 then
     local command = {
         "cd",
         vim.fn.shellescape(arcadia_root),
         "&&",
         "exec",
-        vim.fn.shellescape(home .. "/.ya/tools/v4/gopls-linux/gopls"),
+        vim.fn.shellescape(arcadia_gopls),
     }
     for _, argument in ipairs(gopls_args) do
         table.insert(command, vim.fn.shellescape(argument))
     end
     gopls_cmd = { "bash", "-c", table.concat(command, " ") }
+    has_gopls = true
 end
 local gopls_root = has_arcadia and arcadia_root or home .. '/github/ovandriyanov/test'
 --local gopls_root = has_cloudia and cloudia_root or home .. '/github/ovandriyanov/test'
@@ -322,7 +328,6 @@ JSCfg = {
     settings = {}
 }
 vim.lsp.config['js'] = JSCfg
-vim.lsp.enable('js')
 
 TerraformCfg = {
     cmd = {
@@ -377,7 +382,7 @@ vim.api.nvim_create_autocmd("FileType", {
     if vim.fn.win_gettype() == "popup" or vim.api.nvim_win_get_config(0).relative ~= "" then
       vim.wo.conceallevel = 0 -- Shows raw markdown characters
       -- Optional: Clear highlights if they are distracting
-      -- vim.cmd("syntax clear") 
+      -- vim.cmd("syntax clear")
     end
   end,
 })
@@ -390,13 +395,13 @@ vim.lsp.config['js'] = JSCfg
 vim.lsp.config['terraform'] = TerraformCfg
 vim.lsp.config['yaml'] = YamlCfg
 
-vim.lsp.enable('gopls')
-vim.lsp.enable('lua_ls')
-vim.lsp.enable('pylsp')
-vim.lsp.enable('clangd')
-vim.lsp.enable('js')
-vim.lsp.enable('terraform')
-vim.lsp.enable('yaml')
+if has_gopls then vim.lsp.enable('gopls') end
+if vim.fn.executable(Lualscfg.cmd[1]) == 1 then vim.lsp.enable('lua_ls') end
+if vim.fn.executable(Pylspcfg.cmd[1]) == 1 then vim.lsp.enable('pylsp') end
+if vim.fn.executable(Clangdcfg.cmd[1]) == 1 then vim.lsp.enable('clangd') end
+if vim.fn.executable(JSCfg.cmd[1]) == 1 then vim.lsp.enable('js') end
+if vim.fn.executable('terraform-ls') == 1 then vim.lsp.enable('terraform') end
+if vim.fn.executable(YamlCfg.cmd[1]) == 1 then vim.lsp.enable('yaml') end
 
 vim.diagnostic.config({
     float = true,
@@ -414,5 +419,5 @@ vim.diagnostic.config({
     virtual_text = false
 })
 
-vim.lsp.start(Goplscfg)
+if has_gopls then vim.lsp.start(Goplscfg) end
 vim.diagnostic.config({ update_in_insert = false })

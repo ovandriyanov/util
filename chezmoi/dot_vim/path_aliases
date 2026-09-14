@@ -1,0 +1,62 @@
+$ARCADIA_ROOT                                                               root  Arcadia                 a
+$CLOUDIA_ROOT                                                               root  Cloudia                 c
+~/cdc-server                                                                root  CdcServer               cdc
+~/tmp                                                                       root  Tmp                     t
+~/.vimrc                                                                    -     Vimrc                   vrc       .vimrc
+~/.vim                                                                      root  ~/.Vim                  vimdir    vd
+~/github/ovandriyanov/util                                                  root  Util                    util
+~/.vim/path_aliases                                                         -     PathAliases             aliases   pa        paa           paal
+~/dbext                                                                     root  Sql                     s         sq
+~/bitbucket/aw-teamcity-settings/.teamcity                                  root  Teamcity                tc        aw
+$ARCADIA_ROOT/logfeller                                                     root  Logfeller               l         lf
+$ARCADIA_ROOT/logfeller/configs                                             -     LogfellerConfigs        cf        configs   lfconf
+$ARCADIA_ROOT/logfeller/configs/parsers/parsers.auto.json                   -     ParsersAutoJson         pau       pauto     paau          paauto  pars   pc
+$ARCADIA_ROOT/logfeller/bin/indexer                                         -     LogfellerIndexer        in        ix        indexer
+$ARCADIA_ROOT/logfeller/bin/indexer/yql_embedded                            -     LogfellerYqlIndexer     yin       yix       yindexer      yqlin   yqlix  yqlindexer
+$ARCADIA_ROOT/logfeller/bin/indexer/yt_native                               -     LogfellerNativeIndexer  nin       nix       nindexer      natin   natix  natindexer  nativeindexer
+$ARCADIA_ROOT/logfeller/bin/parser                                          -     LogfellerParser         pa        parser
+$ARCADIA_ROOT/logfeller/bin/parser/yql_embedded                             -     LogfellerYqlParser      ypa       yqpa      yqlparser
+$ARCADIA_ROOT/logfeller/bin/parser/yt_native                                -     LogfellerNativeParser   npa       napa      nativeparser
+$ARCADIA_ROOT/logfeller/python/logfeller                                    -     LogfellerPython         p         py        lfpy          lpy
+$ARCADIA_ROOT/logfeller/yql/udf                                             -     LogfellerUdf            u         udf       lfu           lfudf
+$ARCADIA_ROOT/junk/ovandriyanov                                             root  Junk                    j
+$ARCADIA_ROOT/junk/d0uble                                                   root  d0uble                  double
+$ARCADIA_ROOT/junk/torkve/vim/vim-signify                                   root  Signify
+$ARCADIA_ROOT/junk/ovandriyanov/vim-quarc                                   -     Quarc                   vq        vimquarc
+$ARCADIA_ROOT/transfer_manager/go                                           root  TransferManager         tm
+$ARCADIA_ROOT/transfer_manager                                              root  TransferManagerRoot     tmr       tr        tmroot
+$ARCADIA_ROOT/cloud/dataplatform/datacatalog                                root  DataCatalog             dc
+$ARCADIA_ROOT/transfer_manager/go/proto/api                                 root  TransferManagerApi      api       tmapi     tmproto       proto
+$ARCADIA_ROOT/cloud/dataplatform/api/connectionmanager                      root  ConnmanApi              capi      coapi     conapi        cmapi
+$ARCADIA_ROOT/transfer_manager/go/cmd/kek/kek.go                            root  GoPlayground            pg        gopg      gpg
+$ARCADIA_ROOT/cloud/dataplatform                                            root  DataPlatform            dpl       dapl
+$ARCADIA_ROOT/cloud/dataplatform/connman                                    root  Connman                 cm
+$CLOUDIA_ROOT/cloud/cloud-go/cli                                            root  YcCli                   yc        cli
+$CLOUDIA_ROOT/cloud/cloud-go                                                root  CloudGo                 cgo       cloud-go  cloud
+~/.vim/dbext.vim                                                            -     Dbext                   db
+$HOME/bitbucket                                                             root  Bitbucket               bb
+$CLOUDIA_ROOT/cloud/cloud-go/devtools/terraform-provider-ycp                root  TerraformYcp            tprivate  tycp
+$HOME/bitbucket/terraform-provider-yandex-mirror                            root  TerraformPublic         tpublci   tyc
+$HOME/github/                                                               root  Github                  gh
+$CLOUDIA_ROOT/cloud/cloud-go/private-api/yandex/cloud/priv/datatransfer/v1  root  PrivateAPI
+$CLOUDIA_ROOT/cloud/cloud-go/public-api/yandex/cloud/datatransfer/v1        root  PublicAPI
+$CLOUDIA_ROOT/cloud/deploy/bootstrap/templates/terraform                    root  Bootstrap
+$CLOUDIA_ROOT/cloud/iam-sync-configs                                        root  IamSyncConfigs
+$HOME/go/src/a.yandex-team.ru/devtools/ya                                   root  Ya
+$HOME/github/ovandriyanov/dlvim                                             root  Dlvim
+$HOME/github/yandex-cloud/docs-source                                       root  Docs
+$ARCADIA_ROOT/cloud/dataplatform/connman/infra/terraform                    root  ConnmanTerraform
+$ARCADIA_ROOT/transfer_manager/ci/terraform                                 root  DataTransferTerraform
+$HOME/.kube/config                                                          -     Kubeconfig
+$HOME/.config/nvim                                                          root  NvimConfig
+$HOME/.config/ycp/config.yaml                                               -     YCPConfig
+$HOME/.config/yandex-cloud/config.yaml                                      -     YCConfig
+$HOME/work/dlp/notes.txt                                                    -     notes
+$HOME/work/dlp/roadmap.txt                                                  -     roadmap
+$HOME/.local/state/opencode/prompt-history.jsonl                            -     prompt-history          ph
+$ARCADIA_TOOLING_ROOT/junk/ovandriyanov/config/opencode                     -     OpencodeConfig
+$HOME/.local/share/nvim/plugged/codediff.nvim                               root  CodeDiff
+$ARCADIA_TOOLING_ROOT/junk/ovandriyanov/nvim/arcanum-review                 -     arcanum-review
+$ARCADIA_ROOT/cloud/dataplatform/lib/saga                                   root  Saga
+$ARCADIA_ROOT/cloud/dataplatform/lib/saga                                   root  Saga
+$ARCADIA_ROOT/cloud/dataplatform/protogen/cmd/sagagen                       root  Sagagen
