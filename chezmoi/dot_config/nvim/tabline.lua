@@ -8,7 +8,6 @@ local tab_name = require("tabby.feature.tab_name")
 local MIN_CONTENT_WIDTH = 15
 local MAX_CONTENT_WIDTH = 23
 local TAB_WEDGE_WIDTH = 2
-local PROCESS_CACHE_MILLISECONDS = 1500
 local ELLIPSIS = "…"
 
 local highlights = {
@@ -37,11 +36,7 @@ local ignored_filetypes = {
 }
 
 local known_roots_cache
-local process_cache = {}
-local terminal_timer
-local terminal_timer_running = false
 local configured = false
-local STATE_KEY = "_user_workspace_tabline_state"
 
 local function display_width(text)
     return vim.fn.strdisplaywidth(text)
@@ -257,22 +252,6 @@ local function tab_window_records(tabid)
     return records
 end
 
-local function has_displayed_terminal_buffer()
-    for _, winid in ipairs(vim.api.nvim_list_wins()) do
-        local ok_config, config = pcall(vim.api.nvim_win_get_config, winid)
-        local ok_buffer, bufnr = pcall(vim.api.nvim_win_get_buf, winid)
-        if ok_config
-            and config.relative == ""
-            and ok_buffer
-            and vim.api.nvim_buf_is_valid(bufnr)
-            and buffer_option(bufnr, "buftype", "") == "terminal"
-        then
-            return true
-        end
-    end
-    return false
-end
-
 local function add_candidate(candidates, seen, path)
     path = normalize_path(path)
     if path ~= nil and not seen[path] then
@@ -384,60 +363,10 @@ local function title_identifies_opencode(bufnr)
     return title:match("^OC%s*|") ~= nil or title:lower():find("opencode", 1, true) ~= nil
 end
 
-local function process_identifies_opencode(pid, depth, seen)
-    if depth > 16 or seen[pid] then
-        return false
-    end
-    seen[pid] = true
-
-    local ok_process, process = pcall(vim.api.nvim_get_proc, pid)
-    if ok_process and type(process) == "table" then
-        local process_name = vim.fs.basename(process.name or ""):lower()
-        if process_name == "opencode" or process_name == "coding-agent" then
-            return true
-        end
-    end
-
-    local ok_children, children = pcall(vim.api.nvim_get_proc_children, pid)
-    if not ok_children or type(children) ~= "table" then
-        return false
-    end
-    for _, child_pid in ipairs(children) do
-        if process_identifies_opencode(child_pid, depth + 1, seen) then
-            return true
-        end
-    end
-    return false
-end
-
 local function terminal_is_opencode(bufnr)
     if title_identifies_opencode(bufnr) then
         return true
     end
-
-    -- Process-tree detection is disabled because these synchronous calls can
-    -- block tabline rendering when terminals have large process trees.
-    --[[
-    local now = vim.uv.hrtime() / 1000000
-    local cached = process_cache[bufnr]
-    if cached ~= nil and now - cached.checked_at < PROCESS_CACHE_MILLISECONDS then
-        return cached.result
-    end
-
-    local result = false
-    local channel = terminal_channel(bufnr)
-    if channel > 0 then
-        local ok_pid, pid = pcall(vim.fn.jobpid, channel)
-        if ok_pid and type(pid) == "number" and pid > 0 then
-            result = process_identifies_opencode(pid, 0, {})
-        end
-    end
-    process_cache[bufnr] = {
-        checked_at = now,
-        result = result,
-    }
-    return result
-    ]]
     return false
 end
 
@@ -460,14 +389,12 @@ local function build_tab_context(tabid, number, current_tab)
     local has_terminal = false
     local has_opencode = false
     local has_modified = false
-    local has_displayed_terminal = false
     for _, record in ipairs(records) do
         windows[#windows + 1] = record.id
         if not seen_buffers[record.buffer] then
             seen_buffers[record.buffer] = true
             buffers[#buffers + 1] = record.buffer
             if record.buftype == "terminal" then
-                has_displayed_terminal = true
                 if terminal_is_running(record.buffer) then
                     has_terminal = true
                     if terminal_is_opencode(record.buffer) then
@@ -491,20 +418,18 @@ local function build_tab_context(tabid, number, current_tab)
         has_terminal = has_terminal,
         has_opencode = has_opencode,
         has_modified = has_modified,
-    }, has_displayed_terminal
+    }
 end
 
 local function build_contexts()
     local tabpages = vim.api.nvim_list_tabpages()
     local current_tab = vim.api.nvim_get_current_tabpage()
     local contexts = {}
-    local has_displayed_terminal = false
     for number, tabid in ipairs(tabpages) do
-        local context, tab_has_terminal = build_tab_context(tabid, number, current_tab)
+        local context = build_tab_context(tabid, number, current_tab)
         contexts[#contexts + 1] = context
-        has_displayed_terminal = has_displayed_terminal or tab_has_terminal
     end
-    return contexts, has_displayed_terminal
+    return contexts
 end
 
 local function clamp(value, minimum, maximum)
@@ -663,23 +588,6 @@ local function request_redraw()
     pcall(vim.cmd, "redrawtabline")
 end
 
-local function update_terminal_timer(has_displayed_terminal)
-    if terminal_timer == nil then
-        return
-    end
-    if has_displayed_terminal and not terminal_timer_running then
-        terminal_timer:start(
-            PROCESS_CACHE_MILLISECONDS,
-            PROCESS_CACHE_MILLISECONDS,
-            vim.schedule_wrap(request_redraw)
-        )
-        terminal_timer_running = true
-    elseif not has_displayed_terminal and terminal_timer_running then
-        terminal_timer:stop()
-        terminal_timer_running = false
-    end
-end
-
 local function apply_highlights()
     vim.api.nvim_set_hl(0, highlights.fill, { fg = "#333333", bg = "#333333" })
     vim.api.nvim_set_hl(0, highlights.inactive.tab, { fg = "#d0d0d0", bg = "#505050" })
@@ -696,8 +604,7 @@ local function apply_highlights()
 end
 
 local function render_line(line)
-    local contexts, has_displayed_terminal = build_contexts()
-    update_terminal_timer(has_displayed_terminal)
+    local contexts = build_contexts()
 
     local current = 1
     for _, context in ipairs(contexts) do
@@ -764,13 +671,6 @@ function M.setup()
     vim.opt.termguicolors = true
     vim.opt.sessionoptions:append("globals")
 
-    local previous_state = rawget(vim, STATE_KEY)
-    if type(previous_state) == "table" and previous_state.timer ~= nil then
-        pcall(previous_state.timer.stop, previous_state.timer)
-        pcall(previous_state.timer.close, previous_state.timer)
-    end
-    terminal_timer = vim.uv.new_timer()
-    rawset(vim, STATE_KEY, { timer = terminal_timer })
     apply_highlights()
 
     local group = vim.api.nvim_create_augroup("UserWorkspaceTabline", { clear = true })
@@ -791,20 +691,7 @@ function M.setup()
         "WinClosed",
     }, {
         group = group,
-        callback = function(args)
-            if args.event == "TermClose" or args.event == "BufWipeout" then
-                process_cache[args.buf] = nil
-            end
-            if args.event == "BufWinEnter"
-                or args.event == "BufWipeout"
-                or args.event == "TabNew"
-                or args.event == "TabClosed"
-                or args.event == "TermOpen"
-                or args.event == "TermClose"
-                or args.event == "WinClosed"
-            then
-                update_terminal_timer(has_displayed_terminal_buffer())
-            end
+        callback = function()
             request_redraw()
         end,
     })
@@ -821,23 +708,6 @@ function M.setup()
             request_redraw()
         end,
     })
-    vim.api.nvim_create_autocmd("VimLeavePre", {
-        group = group,
-        callback = function()
-            local timer = terminal_timer
-            if timer ~= nil then
-                timer:stop()
-                timer:close()
-                terminal_timer = nil
-                terminal_timer_running = false
-            end
-            local state = rawget(vim, STATE_KEY)
-            if type(state) == "table" and state.timer == timer then
-                rawset(vim, STATE_KEY, nil)
-            end
-        end,
-    })
-
     vim.api.nvim_create_user_command("TabNameClear", function()
         tab_name.set(0, "")
         vim.cmd.redrawtabline()
@@ -854,7 +724,6 @@ function M.setup()
             },
         },
     })
-    update_terminal_timer(has_displayed_terminal_buffer())
 end
 
 M.setup()
