@@ -128,6 +128,10 @@ cmp.setup.cmdline(':', {
     matching = { disallow_symbol_nonprefix_matching = false }
 })
 
+if os.getenv("NVIM_DISABLE_LSP") == "1" then
+    return
+end
+
 local home = os.getenv("HOME")
 local arcadia_root = os.getenv("ARCADIA_ROOT")
 if not arcadia_root or arcadia_root == "" then
